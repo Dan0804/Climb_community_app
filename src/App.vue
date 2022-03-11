@@ -46,6 +46,12 @@
             <span>더 보기</span>
         </div>
       </div>
+
+      <div class="w-full h-12">
+        <button class="bg-hover_primary text-white w-40 h-12 rounded-full hover:bg-bgdark">
+          Tweet
+        </button>
+      </div>
     </div>
     <div class="flex-1 bg-blue-50"></div>
   </div>
