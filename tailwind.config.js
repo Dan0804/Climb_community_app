@@ -8,9 +8,11 @@ module.exports = {
       colors : {
         primary : '#E2E2E2',
         hover_primary : '#1DA1F2',
-        bgdark : '#1a19da',
+        BgLightBlue : '#E1F5FE',
         light : '#a5d0f5',
-        lighter : '#D4E5F4'
+        lighter : '#D4E5F4',
+        border_line : '#9C9C9C',
+        button_hover : '#6699FF'
       }
     },
   },
