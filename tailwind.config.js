@@ -11,7 +11,7 @@ module.exports = {
         BgLightBlue : '#E1F5FE',
         light : '#a5d0f5',
         lighter : '#D4E5F4',
-        border_line : '#9C9C9C',
+        border_line : '#E9E9E9',
         button_hover : '#6699FF'
       }
     },

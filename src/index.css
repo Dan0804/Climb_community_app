@@ -5,3 +5,7 @@
 button {
     @apply focus:outline-none;
 }
+
+input {
+    @apply focus:outline-none;
+}
