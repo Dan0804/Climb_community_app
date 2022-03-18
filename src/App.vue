@@ -1,19 +1,11 @@
 <template>
-  <div class="flex h-screen container mx-auto">
-
-    <!-- side frame -->
-    <Menu />
-
-    <!-- main frame -->
-      <router-view />
-  </div>
+  <Layout></Layout>
 </template>
 
 <script>
-import Menu from './components/Menu.vue'
+import Layout from './layouts/Layout.vue'
 export default {
-  components: { Menu },
-  setup() {},
+  components: { Layout },
 }
 </script>
 

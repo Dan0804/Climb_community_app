@@ -12,7 +12,7 @@
                 <i class="fa-solid fa-ellipsis flex place-items-center justify-center hover:border-2 hover:border-gray-100 hover:bg-blue-300 rounded-full w-10 h-10 "></i>
             </div>
             <div>
-                <span class="font-bold">조대현</span> 님의 최근 트윗
+                <span class="font-bold">조대현</span> 님의 최근 글
             </div>
             <div class="text-gray-500">클라이밍해서 손가락이 아프다.</div>
         </div>
