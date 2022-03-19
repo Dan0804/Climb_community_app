@@ -18,6 +18,10 @@ layout 적용 완료
 페이지마다 구성 수정 실시함
 ㄴroutes를 통해서 페이지 연결할 시 profile이 연결되는 문제 아직 해결 안됨
 
-22.03.20(일) firebase 프로젝트 생성 및 authentication 완료 firebase authentication 회원가입 및 firestore 데이터 저장 완료 ㄴ 강의 내용과 현재 버전이 달라서 헤맸지만 공식문서를 통해서 버전 맞게 설정 완료. 테스트 시 정상 확인 ㄴ 해당 버전에 따른 설정은 추후에도 계속 될것 같으니 Bear에 기록하였고 유의하면서 진행하기
+22.03.20(일)
+firebase 프로젝트 생성 및 authentication 완료
+firebase authentication 회원가입 및 firestore 데이터 저장 완료
+ㄴ 강의 내용과 현재 버전이 달라서 헤맸지만 공식문서를 통해서 버전 맞게 설정 완료. 테스트 시 정상 확인
+ㄴ 해당 버전에 따른 설정은 추후에도 계속 될것 같으니 Bear에 기록하였고 유의하면서 진행하기
 
 민감 정보인것 같은것은 github에서 삭제함. 다음에도 천천히 살펴보고 문제될 여지가 없도록 push하기로 하자.
