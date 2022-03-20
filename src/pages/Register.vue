@@ -28,6 +28,12 @@ export default {
     const router = useRouter()
 
     const onRegister = async () => {
+
+      if(!username.value || !email.value || !password.value) {
+        alert('아이디, 이메일, 비밀번호를 모두 입력해주세요!!')
+        return
+      }
+
       try {
         loading.value = true
         const { user } = await signupEmail(email.value, password.value)
@@ -43,12 +49,25 @@ export default {
         alert('회원가입이 완료되었습니다. 로그인 해주세요.')
         router.push('/login')
       } catch(e) {
-        // console.log('create user with email and password error', e)
-        if (e.message === 'Firebase: Password should be at least 6 characters (auth/weak-password).') {alert('비밀번호는 6글자 이상으로 해주세요!')}
+        switch (e.code) {
+          case 'auth/invalid-email':
+            alert('이메일을 바르게 입력해주세요.')
+            break
+          case 'auth/weak-password':
+            alert('비밀번호가 너무 쉬워요.')
+            break
+          case 'auth/email-already-in-use':
+            alert('이미 가입되어있는 이메일입니다.')
+            break
+          default:
+            alert('회원가입 실패')
+            break
+        }
       } finally {
         loading.value = false
       }
     }
+
     return {
       username,
       email,
