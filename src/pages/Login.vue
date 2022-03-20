@@ -3,7 +3,7 @@
     <i :class="`fa-brands fa-twitter text-4xl text-primary ${loading ? 'animate-bounce' : ''}`"></i>
     <span class="text-2xl font-bold">로그인</span>
     <input v-model="email" class="rounded w-96 px-4 py-3 border border-gray-300 focus:ring-2 focus:border-primary" placeholder="이메일" type="text">
-    <input v-model="password" class="rounded w-96 px-4 py-3 border border-gray-300 focus:ring-2 focus:border-primary" placeholder="비밀번호" type="text">
+    <input @keyup.enter="onLogin" v-model="password" class="rounded w-96 px-4 py-3 border border-gray-300 focus:ring-2 focus:border-primary" placeholder="비밀번호" type="password">
     <button class="w-96 rounded bg-primary text-white py-4" @click="onLogin">로그인</button>
     <router-link to="/register">
       <button class="text-primary">계정이 없으신가요? 회원가입하기</button>
@@ -12,7 +12,47 @@
 </template>
 
 <script>
-export default {
+import {ref} from 'vue'
+import { loginEmail } from '../firebase'
+import { useRouter } from 'vue-router'
 
+export default {
+  setup() {
+    const email = ref('')
+    const password = ref('')
+    const loading = ref(false)
+    const router = useRouter()
+
+    const onLogin = async () => {
+      try {
+        loading.value = true
+        const { user } = await loginEmail(email.value, password.value)
+        console.log(user.uid)
+        router.replace("/")
+      } catch(e) {
+        switch (e.code) {
+          case 'auth/invalid-email':
+            alert('잘못된 이메일 형식입니다.')
+            break
+          case 'auth/user-not-found':
+            alert('등록되지 않은 이메일입니다.')
+            break
+          case 'auth/wrong-password':
+            alert('비밀번호가 틀립니다.')
+          default:
+            alert(e.message)
+        }
+      } finally {
+        loading.value = false
+      }
+    }
+
+    return {
+      email,
+      password,
+      loading,
+      onLogin,
+   }
+  } 
 }
 </script>

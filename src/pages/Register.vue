@@ -4,7 +4,7 @@
     <span class="text-2xl font-bold">Climb View 회원가입</span>
     <input v-model="username" class="rounded w-96 px-4 py-3 border border-gray-300 focus:ring-2 focus:border-primary" placeholder="아이디" type="text">
     <input v-model="email" class="rounded w-96 px-4 py-3 border border-gray-300 focus:ring-2 focus:border-primary" placeholder="이메일" type="text">
-    <input v-model="password" class="rounded w-96 px-4 py-3 border border-gray-300 focus:ring-2 focus:border-primary" placeholder="비밀번호" type="password">
+    <input @keyup.enter="onRegister" v-model="password" class="rounded w-96 px-4 py-3 border border-gray-300 focus:ring-2 focus:border-primary" placeholder="비밀번호" type="password">
     <button v-if="loading" class="w-96 rounded bg-primary text-white py-4">회원가입 중입니다.</button>
     <button v-else class="w-96 rounded bg-primary text-white py-4" @click="onRegister">회원가입</button>
     <router-link to="/login">
