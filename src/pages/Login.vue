@@ -12,9 +12,11 @@
 </template>
 
 <script>
-import {ref} from 'vue'
-import { loginEmail } from '../firebase'
+import { ref, onMounted } from 'vue'
+import { loginEmail, db } from '../firebase'
+import { getDoc, doc } from 'firebase/firestore'
 import { useRouter } from 'vue-router'
+import store from '../store'
 
 export default {
   setup() {
@@ -22,6 +24,10 @@ export default {
     const password = ref('')
     const loading = ref(false)
     const router = useRouter()
+
+    onMounted(() => {
+      console.log(store.state.user)
+    })
 
     const onLogin = async () => {
 
@@ -33,8 +39,11 @@ export default {
       try {
         loading.value = true
         const { user } = await loginEmail(email.value, password.value)
-        console.log(user.uid)
+        const docSnap = await getDoc(doc(db, "users", user.uid))
+        store.commit("setUser", docSnap.data())
+        console.log(store.state.user)
         router.replace("/")
+        
       } catch(e) {
         switch (e.code) {
           case 'auth/invalid-email':
