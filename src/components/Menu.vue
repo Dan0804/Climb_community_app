@@ -25,20 +25,37 @@
                 </div>
             </div>
         </div>
-        <!-- profile -->
-        <div class="mr-3 mb-10">
+        <!-- show profile button -->
+        <div class="mr-3 mb-10" @click="showProfileDropdown = !showProfileDropdown">
             <div class="w-full h-12">
-                <router-link to="/Profile">
-                    <button class="flex items-center hover:bg-blue-50 px-2 py-1 w-full h-12 rounded-full">
-                    <img src="http://picsum.photos/200" class="w-10 h-10 rounded-full" />
-                    <div class="lg:ml-2 lg:block hidden">
-                        <div class="text-sm font-bold">wheogus185</div>
-                        <div class="text-gray-500 text-left text-xs">조대현</div>
-                    </div>
-                    <i class="fa-solid fa-ellipsis fa-fw hidden lg:block text-l ml-auto"></i>
-                    </button>
-                </router-link>
+                <button class="flex items-center hover:bg-blue-50 px-2 py-1 w-full h-12 rounded-full">
+                <img src="http://picsum.photos/200" class="w-10 h-10 rounded-full" />
+                <div class="lg:ml-2 lg:block hidden">
+                    <div class="text-sm font-bold">wheogus185</div>
+                    <div class="text-gray-500 text-left text-xs">조대현</div>
+                </div>
+                <i class="fa-solid fa-ellipsis fa-fw hidden lg:block text-l ml-auto"></i>
+                </button>
             </div>
+        </div>
+
+        <!-- profile dropdown menu -->
+        <div class="absolute bottom-24 left-1 lg:left-16 shadow rounded-lg w-40 bg-white" v-if="showProfileDropdown">
+            <router-link to="/profile">
+                <button class="hover:bg-gray-50 border-b border-gray-200 flex p-2 w-full items-center">
+                    <img src="http://picsum.photos/200" class="2-10, h-10 rounded-full" />
+                    <div class="ml-1">
+                        <div class="font-bold text-xs">wheogus185</div>
+                        <div class="text-left text-gray-500 text-xs">@naver.com</div>
+                    </div>
+                    <div class="ml-auto hover:bg-white">
+                        <i class="fa-solid fa-user text-hover_primary ml-auto"></i>
+                    </div>
+                </button>
+            </router-link>
+            <button class="hover:bg-gray-50 w-full text-xs p-2 text-left" @click="onLogout">
+                계정에서 로그아웃
+            </button>
         </div>
     </div>
 </template>
@@ -46,16 +63,26 @@
 <script>
 import {ref, onBeforeMount} from 'vue'
 import router from '../router'
+import { Logout } from '../firebase'
+import store from '../store'
+
 export default {
     setup() {
         const routes = ref([])
+        const showProfileDropdown = ref(false)
+
+        const onLogout = async () => {
+            await Logout
+            store.commit("setUser", null)
+            await router.replace("/login")
+        }
 
         onBeforeMount(() => {
             routes.value = router.options.routes
         })
 
         return {
-            routes,
+            routes, showProfileDropdown, onLogout,
         }
     }
 }

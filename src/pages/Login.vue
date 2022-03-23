@@ -41,7 +41,7 @@ export default {
         const { user } = await loginEmail(email.value, password.value)
         const docSnap = await getDoc(doc(db, "users", user.uid))
         store.commit("setUser", docSnap.data())
-        console.log(store.state.user)
+        // console.log(store.state.user)
         router.replace("/")
         
       } catch(e) {

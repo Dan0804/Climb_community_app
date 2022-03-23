@@ -5,14 +5,15 @@ import Notification from '../pages/Notification.vue'
 import Profile from '../pages/Profile.vue'
 import Register from '../pages/Register.vue'
 import Login from '../pages/Login.vue'
+import store from '../store'
 
 const routes = [
-    { path: '/', component: Home, title: '홈', icon: 'fa-solid fa-house-chimney fa-fw text-2xl lg:mr-2', meta: { isMenu: true, layout: 'AfterLogin'} },
-    { path: '/message', component: Message, title: '메시지', icon: 'fa-regular fa-envelope fa-fw text-2xl lg:mr-2', meta: { isMenu: true, layout: 'AfterLogin'}  },
-    { path: '/notification', component: Notification, title: '알람', icon: 'fa-solid fa-bell fa-fw text-2xl lg:mr-2', meta: { isMenu: true, layout: 'AfterLogin'}  },
-    { path: '/profile', component: Profile, title: '알람', icon: 'fa-solid fa-bell fa-fw text-2xl lg:mr-2', meta: { isMenu: false, layout: 'AfterLogin' }},
-    { path: '/register', component: Register, meta: { isMenu: false, layout: 'BeforeLogin' }},
-    { path: '/login', component: Login, meta: { isMenu: false, layout: 'BeforeLogin' }},
+    { path: '/', component: Home, title: '홈', icon: 'fa-solid fa-house-chimney fa-fw text-2xl lg:mr-2', meta: { isMenu: true, layout: 'AfterLogin', requireAuth: true} },
+    { path: '/message', component: Message, title: '메시지', icon: 'fa-solid fa-message fa-fw text-2xl lg:mr-2', meta: { isMenu: true, layout: 'AfterLogin', requireAuth: true} },
+    { path: '/notification', component: Notification, title: '알람', icon: 'fa-solid fa-bell fa-fw text-2xl lg:mr-2', meta: { isMenu: true, layout: 'AfterLogin', requireAuth: true} },
+    { path: '/profile', component: Profile, meta: { isMenu: false, layout: 'AfterLogin', requireAuth: true }},
+    { path: '/register', component: Register, meta: { isMenu: false, layout: 'BeforeLogin', requireAuth: false }},
+    { path: '/login', component: Login, meta: { isMenu: false, layout: 'BeforeLogin', requireAuth: false }},
 ]
 
 const router = createRouter({
@@ -20,12 +21,14 @@ const router = createRouter({
     routes,
 })
 
-// router.beforeEach((from, to, next) => {
-//     // not authenticated
-//     // router.push('/login')
+router.beforeEach((to, from, next) => {
+    const currentUser = store.state.user
+    const requireAuth = to.matched.some((record) => record.meta.requireAuth)
+    // not authenticated
+    if (requireAuth && !currentUser) next('/login')
 
-//     // authenticated
-//     // next()
-// })
+    // authenticated
+    else next()
+})
 
 export default router
