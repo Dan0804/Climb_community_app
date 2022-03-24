@@ -1,13 +1,12 @@
 <template>
     <div class="flex flex-col justify-between lg:w-1/7 w-30 mt-5 ml-10">
-
         <!-- icons -->
         <div>
         <!-- I will change this logo when I make main logo -->
         <i class="fa-brands fa-apple text-primary mb-5 ml-2 text-6xl"></i>
 
             <div class="flex flex-col items-start">
-                <router-link :to="route.path" class="cursor-pointer hover:text-hover_primary hover:bg-BgLightBlue px-4 py-2 rounded-full" v-for="route in routes" :key="route">
+                <router-link :to="route.path" :class="`cursor-pointer hover:text-hover_primary hover:bg-BgLightBlue px-4 py-2 rounded-full ${router.currentRoute.value.name === route.name ? 'text-hover_primary' : ''}`" v-for="route in routes" :key="route">
                     <div v-if="route.meta.isMenu">
                         <i :class="route.icon"></i>
                         <span class="hidden lg:inline-block"> {{route.title}} </span>
@@ -29,7 +28,7 @@
         <div class="mr-3 mb-10" @click="showProfileDropdown = !showProfileDropdown">
             <div class="w-full h-12">
                 <button class="flex items-center hover:bg-blue-50 px-2 py-1 w-full h-12 rounded-full">
-                <img src="http://picsum.photos/200" class="w-10 h-10 rounded-full" />
+                <img :src="userInfo.profile_image_url" class="w-10 h-10 rounded-full" />
                 <div class="lg:ml-2 lg:block hidden">
                     <div class="text-sm font-bold">wheogus185</div>
                     <div class="text-gray-500 text-left text-xs">조대현</div>
@@ -43,7 +42,7 @@
         <div class="absolute bottom-24 left-1 lg:left-16 shadow rounded-lg w-40 bg-white" v-if="showProfileDropdown">
             <router-link to="/profile">
                 <button class="hover:bg-gray-50 border-b border-gray-200 flex p-2 w-full items-center">
-                    <img src="http://picsum.photos/200" class="2-10, h-10 rounded-full" />
+                    <img :src="userInfo.profile_image_url" class="2-10, h-10 rounded-full" />
                     <div class="ml-1">
                         <div class="font-bold text-xs">wheogus185</div>
                         <div class="text-left text-gray-500 text-xs">@naver.com</div>
@@ -61,7 +60,7 @@
 </template>
 
 <script>
-import {ref, onBeforeMount} from 'vue'
+import {ref, onBeforeMount, computed} from 'vue'
 import router from '../router'
 import { Logout } from '../firebase'
 import store from '../store'
@@ -70,6 +69,7 @@ export default {
     setup() {
         const routes = ref([])
         const showProfileDropdown = ref(false)
+        const userInfo = computed(() => store.state.user)
 
         const onLogout = async () => {
             await Logout
@@ -79,10 +79,12 @@ export default {
 
         onBeforeMount(() => {
             routes.value = router.options.routes
+
+            console.log(router.currentRoute.value)
         })
 
         return {
-            routes, showProfileDropdown, onLogout,
+            routes, showProfileDropdown, onLogout, userInfo, router
         }
     }
 }

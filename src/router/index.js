@@ -8,9 +8,9 @@ import Login from '../pages/Login.vue'
 import store from '../store'
 
 const routes = [
-    { path: '/', component: Home, title: '홈', icon: 'fa-solid fa-house-chimney fa-fw text-2xl lg:mr-2', meta: { isMenu: true, layout: 'AfterLogin', requireAuth: true} },
-    { path: '/message', component: Message, title: '메시지', icon: 'fa-solid fa-message fa-fw text-2xl lg:mr-2', meta: { isMenu: true, layout: 'AfterLogin', requireAuth: true} },
-    { path: '/notification', component: Notification, title: '알람', icon: 'fa-solid fa-bell fa-fw text-2xl lg:mr-2', meta: { isMenu: true, layout: 'AfterLogin', requireAuth: true} },
+    { path: '/', name: 'home', component: Home, title: '홈', icon: 'fa-solid fa-house-chimney fa-fw text-2xl lg:mr-2', meta: { isMenu: true, layout: 'AfterLogin', requireAuth: true} },
+    { path: '/message', name: 'messages', component: Message, title: '메시지', icon: 'fa-solid fa-message fa-fw text-2xl lg:mr-2', meta: { isMenu: true, layout: 'AfterLogin', requireAuth: true} },
+    { path: '/notification', name: 'notifications', component: Notification, title: '알람', icon: 'fa-solid fa-bell fa-fw text-2xl lg:mr-2', meta: { isMenu: true, layout: 'AfterLogin', requireAuth: true} },
     { path: '/profile', component: Profile, meta: { isMenu: false, layout: 'AfterLogin', requireAuth: true }},
     { path: '/register', component: Register, meta: { isMenu: false, layout: 'BeforeLogin', requireAuth: false }},
     { path: '/login', component: Login, meta: { isMenu: false, layout: 'BeforeLogin', requireAuth: false }},
