@@ -1,7 +1,7 @@
 <template>
     <div class="flex-1 border-r border-gray-200 flex-col overflow-y-auto">
         <!-- title -->
-        <div class="p-3 font-bold text-lg border-b border-gray-100">
+        <div class="p-3 font-bold text-lg text-center border-b border-gray-100">
             알림
         </div>
 

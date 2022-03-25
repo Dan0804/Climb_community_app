@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col justify-between lg:w-1/7 w-30 mt-5 ml-10">
+    <div class="flex flex-col justify-between lg:w-1/7 w-30 pt-5 ml-10 border-r border-gray-200">
         <!-- icons -->
         <div>
         <!-- I will change this logo when I make main logo -->
@@ -14,13 +14,15 @@
                 </router-link>
             </div>
 
-            <!-- contents register button -->
+            <!-- post register button -->
             <div class="mr-3">
                 <div class="w-full h-12">
-                    <button class="bg-hover_primary text-white hover:text-hover_primary hover:bg-BgLightBlue hover:border-2 hover:border-hover_primary rounded-full w-12 xl:w-28 h-12 mt-3">
-                        <span class="hidden xl:block font-semibold">등록</span>
-                        <i class="fa-solid fa-photo-film xl:hidden"></i>
+                    <router-link to="/postregister">
+                        <button class="bg-hover_primary text-white hover:text-hover_primary hover:bg-BgLightBlue hover:border-2 hover:border-hover_primary rounded-full w-12 xl:w-28 h-12 mt-3">
+                            <span class="hidden xl:block font-semibold">등록하기</span>
+                            <i class="fa-solid fa-plus xl:hidden"></i>
                         </button>
+                    </router-link>
                 </div>
             </div>
         </div>
