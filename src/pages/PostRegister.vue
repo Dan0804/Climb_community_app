@@ -44,9 +44,8 @@ export default {
                     id: docu.id,
                     post_body: postBody.value,
                     uid: userInfo.value.uid,
-                    create_at: Date.now(),
+                    created_at: Date.now(),
                     num_comments: 0,
-                    num_reposts: 0,
                     num_likes: 0,
                 })
                 router.push('/')
