@@ -15,25 +15,31 @@
 
 <script>
 import Post from "./post.vue"
-import { ref, onBeforeMount, computed } from "vue"
+import { ref, onBeforeMount, computed, onMounted } from "vue"
 import { db } from "../firebase"
 import store from "../store"
-import { collection, query, onSnapshot, orderBy, } from "firebase/firestore"
+import { collection, query, onSnapshot, orderBy, getDoc, doc, } from "firebase/firestore"
 
 export default {
     components: { Post },
     setup() {
         const userInfo = computed(() => store.state.user)
         const posts = ref([]);
-        const q = query(collection(db, "posts"), orderBy("created_at", "desc"));
+        const q = query(collection(db, "posts"), orderBy("created_at", "desc"))
+
+        onMounted(() => {
+            console.log(store.state.user)
+        })
+
         onBeforeMount(() => {
             onSnapshot(q, (snapshot) => {
-                snapshot.docChanges().forEach((change) => {
+                snapshot.docChanges().forEach( async (change) => {
+                    let post = await getUserInfo(change.doc.data())
                     if (change.type === "added") {
-                        posts.value.splice(change.newIndex, 0, change.doc.data());
+                        posts.value.splice(change.newIndex, 0, post);
                     }
                     else if (change.type === "modified") {
-                        posts.value.splice(change.oldIndex, 1, change.doc.data());
+                        posts.value.splice(change.oldIndex, 1, post);
                     }
                     else if (change.type === "removed") {
                         posts.value.splice(change.oldIndex, 1);
@@ -41,6 +47,17 @@ export default {
                 });
             });
         });
+        
+        const getUserInfo = async (post) => {
+            const docu = await getDoc(doc(db, "users", post.uid))
+            post.profile_image_url = docu.data().profile_image_url
+            post.email = docu.data().email
+            post.user_name = docu.data().user_name
+
+            console.log(post)
+
+            return post
+        }
 
         return {
             userInfo, posts

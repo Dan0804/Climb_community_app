@@ -3,8 +3,8 @@
         <img :src="userInfo.profile_image_url" class="hover:opacity-80 cursor-pointer w-10 h-10 rounded-full">
         <div class="flex flex-1 flex-col ml-3 space-y-1">
             <div class="text-sm space-x-2">
-            <span class="font-bold">{{ post.uid }}</span>
-            <span class="text-gray-500 text-sm">wheogus185@naver.com</span>
+            <span class="font-bold">{{ post.user_name }}</span>
+            <span class="text-gray-500 text-sm">{{ post.email }}</span>
             <span class="text-gray-500 text-sm">•</span>
             <span class="text-gray-500 text-sm">{{ moment(post.created_at).fromNow() }}</span>
             </div>

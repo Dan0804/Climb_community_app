@@ -80,7 +80,7 @@ export default {
         }
 
         onBeforeMount(() => {
-            routes.value = router.options.routes
+            routes.value = router.options.routes.filter((route) => route.meta.isMenu === true)
 
             console.log(router.currentRoute.value)
         })

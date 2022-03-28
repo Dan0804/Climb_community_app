@@ -39,6 +39,7 @@ export default {
         const { user } = await signupEmail(email.value, password.value)
         await setDoc(doc(db, "users", user.uid), {
           uid: user.uid,
+          user_name: username.value,
           email: email.value,
           profile_image_url: './profile.jpeg',
           num_tweets: 0,
