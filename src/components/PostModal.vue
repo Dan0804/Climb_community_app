@@ -9,10 +9,10 @@
                     <button @click="$emit('close_modal')" class="fas fa-times text-blue-400 text-xl h-10 w-10 p-2 hover:bg-blue-50 rounded-full"></button>
                     <!-- posting button -->
                     <div class="text-right sm:hidden mr-2 mb-1">
-                        <buttonv v-if="!postBody.length" @click="onAddTweet" class="bg-light text-sm text-white font-bold px-4 py-2 rounded-full">
+                        <buttonv v-if="!postBody.length" @click="onAddPost" class="bg-light text-sm text-white font-bold px-4 py-2 rounded-full">
                             등록
                         </buttonv>
-                        <button v-else @click="onAddTweet" class="bg-hover_primary text-white hover:text-hover_primary hover:bg-BgLightBlue hover:border-hover_primary text-sm font-bold px-4 py-2 rounded-full">
+                        <button v-else @click="onAddPost" class="bg-hover_primary text-white hover:text-hover_primary hover:bg-BgLightBlue hover:border-hover_primary text-sm font-bold px-4 py-2 rounded-full">
                             등록
                         </button>
                     </div>
@@ -26,10 +26,10 @@
                         
                         <!-- posting button -->
                         <div class="text-right hidden sm:block mr-2 mb-1">
-                            <buttonv v-if="!postBody.length" @click="onAddTweet" class="bg-light text-sm text-white font-bold px-4 py-2 rounded-full">
+                            <buttonv v-if="!postBody.length" @click="onAddPost" class="bg-light text-sm text-white font-bold px-4 py-2 rounded-full">
                                 등록
                             </buttonv>
-                            <button v-else @click="onAddTweet" class="bg-hover_primary text-white hover:text-hover_primary hover:bg-BgLightBlue hover:border-hover_primary text-sm font-bold px-4 py-2 rounded-full">
+                            <button v-else @click="onAddPost" class="bg-hover_primary text-white hover:text-hover_primary hover:bg-BgLightBlue hover:border-hover_primary text-sm font-bold px-4 py-2 rounded-full">
                                 등록
                             </button>
                         </div>
@@ -41,14 +41,26 @@
 </template>
 
 <script>
-import { ref } from "vue"
+import { ref, computed } from "vue"
+import addPost from "../utils/addPost"
+import store from "../store"
 
 export default {
-    setup() {
+    setup(props, {emit}) {
         const postBody = ref('')
+        const userInfo = computed(() => store.state.user)
+        const onAddPost = async () => {
+            try {
+                addPost(postBody.value, userInfo.value)
+                postBody.value = ''
+                emit('close_modal')
+            } catch (e) {
+                console.log('on add post error on homepage:', e)
+            }
+        }
 
         return {
-            postBody,
+            postBody, userInfo, onAddPost
         }
     }
 
