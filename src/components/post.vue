@@ -14,7 +14,7 @@
 
             <!-- post icon -->
             <div class="flex justify-between text-gray-500 mr-5">
-                <div class="cursor-pointer hover:bg-blue-100 hover:text-blue-400 rounded-full p-2">
+                <div @click="showCommentModal = true" class="cursor-pointer hover:bg-blue-100 hover:text-blue-400 rounded-full p-2">
                     <i class="fa-regular fa-comment"></i>
                     <span class="ml-1 text-sm">{{ post.num_comments }}</span>
                 </div>
@@ -28,16 +28,23 @@
             </div>
         </div>
     </div>
+    <comment-modal v-if="showCommentModal" @close_modal="showCommentModal = false"></comment-modal>
 </template>
 
 <script>
 import moment from "moment"
+import { ref } from "vue"
+import CommentModal from "./CommentModal.vue"
 
 export default {
+    components: { CommentModal },
     props: ['userInfo', 'post'],
     setup() {
+        const showCommentModal = ref(false)
+
         return {
             moment,
+            showCommentModal,
         }
     }
 }
