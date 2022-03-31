@@ -28,7 +28,7 @@
             </div>
         </div>
     </div>
-    <comment-modal v-if="showCommentModal" @close_modal="showCommentModal = false"></comment-modal>
+    <comment-modal :post="post" v-if="showCommentModal" @close_modal="showCommentModal = false"></comment-modal>
 </template>
 
 <script>
