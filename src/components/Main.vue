@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import Post from "./post.vue"
+import Post from "./Post.vue"
 import { ref, onBeforeMount, computed, } from "vue"
 import { db } from "../firebase"
 import store from "../store"

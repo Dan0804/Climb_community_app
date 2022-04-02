@@ -10,7 +10,7 @@
             </div>
 
             <!-- post contents -->
-            <div>{{ post.post_body }}</div>
+            <router-link :to="`/post/${ post.id }`">{{ post.post_body }}</router-link>
 
             <!-- post icon -->
             <div class="flex justify-between text-gray-500 mr-5">
