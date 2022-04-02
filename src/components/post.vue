@@ -18,8 +18,12 @@
                     <i class="fa-regular fa-comment"></i>
                     <span class="ml-1 text-sm">{{ post.num_comments }}</span>
                 </div>
-                <div class="cursor-pointer hover:bg-red-100 hover:text-red-400 rounded-full p-2">
+                <div v-if="!post.isLiked" @click="handleLike(post)" class="cursor-pointer hover:bg-red-100 hover:text-red-400 rounded-full p-2">
                     <i class="fa-regular fa-heart"></i>
+                    <span class="ml-1 text-sm">{{ post.num_likes }}</span>
+                </div>
+                <div v-else @click="handleLike(post)" class="cursor-pointer bg-red-50 text-red-300 rounded-full p-2">
+                    <i class="fa-solid fa-heart"></i>
                     <span class="ml-1 text-sm">{{ post.num_likes }}</span>
                 </div>
                 <div class="cursor-pointer hover:bg-green-100 hover:text-green-400 rounded-full p-2">
@@ -35,6 +39,7 @@
 import moment from "moment"
 import { ref } from "vue"
 import CommentModal from "./CommentModal.vue"
+import handleLike from "../utils/handleLike"
 
 export default {
     components: { CommentModal },
@@ -45,6 +50,7 @@ export default {
         return {
             moment,
             showCommentModal,
+            handleLike, 
         }
     }
 }

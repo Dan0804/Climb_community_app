@@ -15,10 +15,11 @@
 
 <script>
 import Post from "./post.vue"
-import { ref, onBeforeMount, computed, onMounted } from "vue"
+import { ref, onBeforeMount, computed, } from "vue"
 import { db } from "../firebase"
 import store from "../store"
-import { collection, query, onSnapshot, orderBy, getDoc, doc, } from "firebase/firestore"
+import { collection, query, onSnapshot, orderBy, } from "firebase/firestore"
+import getPostInfo from "../utils/getPostInfo.js"
 
 export default {
     components: { Post },
@@ -27,14 +28,10 @@ export default {
         const posts = ref([]);
         const q = query(collection(db, "posts"), orderBy("created_at", "desc"))
 
-        onMounted(() => {
-            console.log(store.state.user)
-        })
-
         onBeforeMount(() => {
             onSnapshot(q, (snapshot) => {
                 snapshot.docChanges().forEach( async (change) => {
-                    let post = await getUserInfo(change.doc.data())
+                    let post = await getPostInfo(change.doc.data(), userInfo.value)
                     if (change.type === "added") {
                         posts.value.splice(change.newIndex, 0, post);
                     }
@@ -47,17 +44,6 @@ export default {
                 });
             });
         });
-        
-        const getUserInfo = async (post) => {
-            const docu = await getDoc(doc(db, "users", post.uid))
-            post.profile_image_url = docu.data().profile_image_url
-            post.email = docu.data().email
-            post.user_name = docu.data().user_name
-
-            console.log(post)
-
-            return post
-        }
 
         return {
             userInfo, posts
