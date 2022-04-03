@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col justify-between lg:w-1/7 w-30 pt-5 ml-10 border-r border-gray-200">
+    <div v-if="userInfo" class="flex flex-col justify-between lg:w-1/7 w-30 pt-5 ml-10 border-r border-gray-200">
         <!-- icons -->
         <div>
         <!-- I will change this logo when I make main logo -->
@@ -43,12 +43,13 @@
         </div>
 
         <!-- profile dropdown menu -->
-        <div class="absolute bottom-24 left-1 lg:left-16 shadow rounded-lg w-40 bg-white" v-if="showProfileDropdown">
+        <div class="absolute bottom-24 left-10 lg:left-36 shadow rounded-lg w-48 bg-white" v-if="showProfileDropdown">
             <router-link to="/profile">
                 <button class="hover:bg-gray-50 border-b border-gray-200 flex p-2 w-full items-center">
                     <img :src="userInfo.profile_image_url" class="w-10, h-10 rounded-full" />
-                    <div class="ml-4">
-                        <span class="font-bold">프로필</span>
+                    <div class="ml-2">
+                        <span class="font-bold">{{ userInfo.user_name }}</span>
+                        <span class="text-gray text-xs">님의 프로필</span>
                     </div>
                     <div class="ml-auto hover:bg-white">
                         <i class="fa-solid fa-user text-hover_primary ml-auto"></i>

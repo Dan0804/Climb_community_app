@@ -78,6 +78,7 @@ export default {
             try {
                 const docu = doc(CommentCollection)
                 await setDoc(docu, {
+                    id: docu.id,
                     from_post_id: props.post.id,
                     comment_body: commentBody.value,
                     uid: userInfo.value.uid,
