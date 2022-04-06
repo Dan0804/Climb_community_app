@@ -8,8 +8,8 @@
                     <i class="fa-solid fa-arrow-left text-blue-300 rounded-full p-3 hover:bg-blue-50"></i>
                 </button>
                 <div>
-                    <div class="font-semibold text-lg">naver.com</div>
-                    <div class="text-xs text-gray-500">3 트윗</div>
+                    <div class="font-semibold text-lg">{{ userInfo.user_name }}</div>
+                    <div class="text-xs text-gray-500">{{ userInfo.num_posts }} 트윗</div>
                 </div>
             </div>
 
@@ -17,7 +17,7 @@
             <div class="flex-none relative bg-gray-300 h-40">
                 <!-- porfile image -->
                 <div class="border-4 border-white bg-gray-100 w-28 h-28 rounded-full absolute -bottom-14 left-2">
-                    <img src="http://picsum.photos/200" class="rounded-full opacity-90 hover:opacity-100 cursor-pointer">
+                    <img :src="userInfo.profile_image_url" class="rounded-full opacity-90 hover:opacity-100 cursor-pointer">
                 </div>
             </div>
 
@@ -28,16 +28,16 @@
 
             <!-- user info -->
             <div class="mx-4 mt-3">
-                <div class="font-extrabold text-lg">조대현</div>
-                <div class="text-gray">@naver.com</div>
+                <div class="font-extrabold text-lg">{{ userInfo.user_name }}</div>
+                <div class="text-gray">{{ userInfo.email }}</div>
                 <div>
                     <span class="text-gray pr-1">가입일 :</span>
-                    <span class="text-gray">2012년 12월</span>
+                    <span class="text-gray">{{ dayjs(userInfo.created_at).format("YYYY년 MM월 DD일") }}</span>
                 </div>
                 <div>
-                    <span class="font-bold mr-1">28</span>
+                    <span class="font-bold mr-1">{{ userInfo.followings.length }}</span>
                     <span class="text-gray mr-3">팔로우 중</span>
-                    <span class="font-bold mr-1">7</span>
+                    <span class="font-bold mr-1">{{ userInfo.followers.length }}</span>
                     <span class="text-gray">팔로워</span>
                 </div>
             </div>
@@ -47,6 +47,12 @@
                 <div class="flex-1 text-gray-500 hover:border-b-4 border-blue-400 text-center hover:bg-blue-50 cursor-pointer font-bold py-3">등록 글</div>
                 <div class="flex-1 text-gray-500 hover:border-b-4 border-blue-400 text-center hover:bg-blue-50 cursor-pointer font-bold py-3">좋아요</div>
             </div>
+
+            <!-- Posts -->
+            <div class="overflow-y-auto">
+                <Post v-for="post in posts" :key="post" :userInfo="userInfo" :post="post"/>
+            </div>
+
         </div>
         <!-- trend section -->
         <Follow />
@@ -55,8 +61,46 @@
 
 <script>
 import Follow from '../components/Follow.vue'
+import Post from '../components/Post.vue'
+import { ref, computed, onBeforeMount } from 'vue'
+import store from '../store'
+import { PostCollection, db } from '../firebase'
+import { onSnapshot, orderBy, query, where, doc } from 'firebase/firestore'
+import getPostInfo from '../utils/getPostInfo'
+import dayjs from 'dayjs'
+
 export default {
-    components: { Follow },
-    setup() {}
+    components: { Follow, Post },
+    setup() {
+        const userInfo = computed(() => store.state.user)
+        const posts = ref([])
+        const q = query(PostCollection, where("uid", "==", userInfo.value.uid), orderBy("created_at", "desc"))
+
+        onBeforeMount(() => {
+            onSnapshot(doc(db, "users", userInfo.value.uid), (doc) => {
+                store.commit("setUser", doc.data())
+            })
+
+            onSnapshot(q, (snapshot) => {
+                snapshot.docChanges().forEach( async (change) => {
+                    let post = await getPostInfo(change.doc.data(), userInfo.value)
+
+                    if (change.type === "added") {
+                        posts.value.splice(change.newIndex, 0, post)
+                    } else if (change.type === 'modified') {
+                        posts.value.splice(change.oldIndex, 1, post)
+                    } else if (change.type === 'removed') {
+                        posts.value.splice(change.oldIndex, 1)
+                    }
+                })
+            })
+        })
+
+        return {
+            userInfo,
+            posts,
+            dayjs,
+        }
+    }
 }
 </script>

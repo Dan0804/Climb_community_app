@@ -1,5 +1,5 @@
-import { PostCollection } from "../firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { PostCollection, db } from "../firebase";
+import { doc, setDoc, updateDoc, increment } from "firebase/firestore";
 
 export default (postBody, userInfo) => {
 
@@ -15,6 +15,11 @@ export default (postBody, userInfo) => {
                 num_likes: 0,
                 profile_image_url: userInfo.profile_image_url
             })
+
+            await updateDoc(doc(db, "users", userInfo.uid), {
+                num_posts: increment(1),
+            })
+
             resolve(true)
         } catch(e) {
             reject(e)

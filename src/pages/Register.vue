@@ -42,7 +42,7 @@ export default {
           user_name: username.value,
           email: email.value,
           profile_image_url: './profile.jpeg',
-          num_tweets: 0,
+          num_posts: 0,
           followers: [],
           followings: [],
           created_at: Date.now()

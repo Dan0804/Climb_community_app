@@ -6,7 +6,7 @@
             <span class="font-bold">{{ post.user_name }}</span>
             <span class="text-gray-500 text-sm">{{ post.email }}</span>
             <span class="text-gray-500 text-sm">•</span>
-            <span class="text-gray-500 text-sm">{{ moment(post.created_at).fromNow() }}</span>
+            <span class="text-gray-500 text-sm">{{ dayjs(post.created_at).locale("ko").fromNow() }}</span>
             </div>
 
             <!-- post contents -->
@@ -36,19 +36,22 @@
 </template>
 
 <script>
-import moment from "moment"
 import { ref } from "vue"
 import CommentModal from "./CommentModal.vue"
 import handleLike from "../utils/handleLike"
+import dayjs from "dayjs"
+import relativeTime from "dayjs/plugin/relativeTime"
+import "dayjs/locale/ko"
+dayjs.extend(relativeTime)
 
 export default {
     components: { CommentModal },
     props: ['userInfo', 'post'],
     setup() {
         const showCommentModal = ref(false)
-
+        
         return {
-            moment,
+            dayjs,
             showCommentModal,
             handleLike, 
         }

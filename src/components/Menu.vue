@@ -45,7 +45,7 @@
         <!-- profile dropdown menu -->
         <div class="absolute bottom-24 left-10 lg:left-36 shadow rounded-lg w-48 bg-white" v-if="showProfileDropdown">
             <router-link to="/profile">
-                <button class="hover:bg-gray-50 border-b border-gray-200 flex p-2 w-full items-center">
+                <button @click="showProfileDropdown = false" class="hover:bg-gray-50 border-b border-gray-200 flex p-2 w-full items-center">
                     <img :src="userInfo.profile_image_url" class="w-10, h-10 rounded-full" />
                     <div class="ml-2">
                         <span class="font-bold">{{ userInfo.user_name }}</span>
