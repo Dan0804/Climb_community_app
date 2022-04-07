@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-1">
+    <div v-if="userInfo" class="flex flex-1">
         <!-- profile section -->
         <div class="flex-1 flex flex-col border-r border-color">
             <!-- title -->

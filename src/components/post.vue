@@ -1,5 +1,5 @@
 <template>
-  <div class="flex px-3 py-3 border-b border-border_line">
+  <div v-if="userInfo" class="flex px-3 py-3 border-b border-border_line">
         <img :src="userInfo.profile_image_url" class="hover:opacity-80 cursor-pointer w-10 h-10 rounded-full">
         <div class="flex flex-1 flex-col ml-3 space-y-1">
             <div class="text-sm space-x-2">
