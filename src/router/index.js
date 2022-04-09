@@ -14,6 +14,7 @@ const routes = [
     { path: '/notification', name: 'notifications', component: Notification, title: '알람', icon: 'fa-solid fa-bell fa-fw text-2xl lg:mr-2', meta: { isMenu: true, layout: 'AfterLogin', requireAuth: true} },
     { path: '/profile', name: 'profile', component: Profile, meta: { isMenu: false, layout: 'AfterLogin', requireAuth: true }},
     { path: '/post/:id', name: 'postcontent', component: PostContent, meta: { isMenu: false, layout: 'AfterLogin', requireAuth: true }},
+    { path: '/profile/:uid', component: Profile, meta: { isMenu: false, layout: 'AfterLogin', requireAuth: true }},
     { path: '/register', component: Register, meta: { isMenu: false, layout: 'BeforeLogin', requireAuth: false }},
     { path: '/login', component: Login, meta: { isMenu: false, layout: 'BeforeLogin', requireAuth: false }},
 ]

@@ -1,6 +1,8 @@
 <template>
   <div v-if="userInfo" class="flex px-3 py-3 border-b border-border_line">
-        <img :src="userInfo.profile_image_url" class="hover:opacity-80 cursor-pointer w-10 h-10 rounded-full">
+        <router-link :to="`/profile/${post.uid}`">
+            <img :src="userInfo.profile_image_url" class="hover:opacity-80 cursor-pointer w-10 h-10 rounded-full">
+        </router-link>
         <div class="flex flex-1 flex-col ml-3 space-y-1">
             <div class="text-sm space-x-2">
             <span class="font-bold">{{ post.user_name }}</span>

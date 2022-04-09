@@ -1,5 +1,5 @@
 <template>
-    <div v-if="userInfo" class="flex flex-1">
+    <div v-if="profileUser" class="flex flex-1">
         <!-- profile section -->
         <div class="flex-1 flex flex-col border-r border-color">
             <!-- title -->
@@ -8,8 +8,8 @@
                     <i class="fa-solid fa-arrow-left text-blue-300 rounded-full p-3 hover:bg-blue-50"></i>
                 </button>
                 <div>
-                    <div class="font-semibold text-lg">{{ userInfo.user_name }}</div>
-                    <div class="text-xs text-gray-500">{{ userInfo.num_posts }} 트윗</div>
+                    <div class="font-semibold text-lg">{{ profileUser.user_name }}</div>
+                    <div class="text-xs text-gray-500">{{ profileUser.num_posts }} 트윗</div>
                 </div>
             </div>
 
@@ -17,7 +17,7 @@
             <div class="flex-none relative bg-gray-300 h-40">
                 <!-- porfile image -->
                 <div class="border-4 border-white bg-gray-100 w-28 h-28 rounded-full absolute -bottom-14 left-2">
-                    <img :src="userInfo.profile_image_url" class="rounded-full opacity-90 hover:opacity-100 cursor-pointer">
+                    <img :src="profileUser.profile_image_url" class="rounded-full opacity-90 hover:opacity-100 cursor-pointer">
                 </div>
             </div>
 
@@ -28,16 +28,16 @@
 
             <!-- user info -->
             <div class="mx-4 mt-3">
-                <div class="font-extrabold text-lg">{{ userInfo.user_name }}</div>
-                <div class="text-gray">{{ userInfo.email }}</div>
+                <div class="font-extrabold text-lg">{{ profileUser.user_name }}</div>
+                <div class="text-gray">{{ profileUser.email }}</div>
                 <div>
                     <span class="text-gray pr-1">가입일 :</span>
-                    <span class="text-gray">{{ dayjs(userInfo.created_at).format("YYYY년 MM월 DD일") }}</span>
+                    <span class="text-gray">{{ dayjs(profileUser.created_at).format("YYYY년 MM월 DD일") }}</span>
                 </div>
                 <div>
-                    <span class="font-bold mr-1">{{ userInfo.followings.length }}</span>
+                    <span class="font-bold mr-1">{{ profileUser.followings.length }}</span>
                     <span class="text-gray mr-3">팔로우 중</span>
-                    <span class="font-bold mr-1">{{ userInfo.followers.length }}</span>
+                    <span class="font-bold mr-1">{{ profileUser.followers.length }}</span>
                     <span class="text-gray">팔로워</span>
                 </div>
             </div>
@@ -68,20 +68,26 @@ import { PostCollection, LikeCollection, db } from '../firebase'
 import { onSnapshot, orderBy, query, where, doc, getDoc, } from 'firebase/firestore'
 import getPostInfo from '../utils/getPostInfo'
 import dayjs from 'dayjs'
+import { useRoute } from 'vue-router'
 
 export default {
     components: { Follow, Post },
     setup() {
         const userInfo = computed(() => store.state.user)
+        const profileUser = ref(null)
         const posts = ref([])
         const likePosts = ref([])
         const currentTab = ref("post")
-        const qPost = query(PostCollection, where("uid", "==", userInfo.value.uid), orderBy("created_at", "desc"))
-        const qLike = query(LikeCollection, where("uid", "==", userInfo.value.uid), orderBy("created_at", "desc"))
+        const route = useRoute()
 
         onBeforeMount(() => {
-            onSnapshot(doc(db, "users", userInfo.value.uid), (doc) => {
-                store.commit("setUser", doc.data())
+            const profileUID = route.params.uid ?? userInfo.value.uid
+
+            const qPost = query(PostCollection, where("uid", "==", profileUID), orderBy("created_at", "desc"))
+            const qLike = query(LikeCollection, where("uid", "==", profileUID), orderBy("created_at", "desc"))
+            
+            onSnapshot(doc(db, "users", profileUID), (doc) => {
+                profileUser.value = doc.data()
             })
 
             onSnapshot(qPost, (snapshot) => {
@@ -120,6 +126,7 @@ export default {
             likePosts,
             dayjs,
             currentTab,
+            profileUser,
         }
     }
 }
