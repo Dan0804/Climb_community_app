@@ -44,13 +44,13 @@
 
             <!-- taps -->
             <div class="flex border-b border-color mt-3">
-                <div class="flex-1 text-gray-500 hover:border-b-4 border-blue-400 text-center hover:bg-blue-50 cursor-pointer font-bold py-3">등록 글</div>
-                <div class="flex-1 text-gray-500 hover:border-b-4 border-blue-400 text-center hover:bg-blue-50 cursor-pointer font-bold py-3">좋아요</div>
+                <div @click="currentTab = 'post'" :class="`${currentTab === 'post' ? 'border-b border-primary text-primary bg-BgLightBlue' : 'text-gray-500 hover:border-b border-primary hover:bg-BgLightBlue'} flex-1 text-center cursor-pointer font-bold py-3`">등록 글</div>
+                <div @click="currentTab = 'like'" :class="`${currentTab === 'like' ? 'border-b border-primary text-primary bg-BgLightBlue' : 'text-gray-500 hover:border-b border-primary hover:bg-BgLightBlue'} flex-1 text-center cursor-pointer font-bold py-3`">좋아요</div>
             </div>
 
             <!-- Posts -->
             <div class="overflow-y-auto">
-                <Post v-for="post in posts" :key="post" :userInfo="userInfo" :post="post"/>
+                <Post v-for="post in currentTab == 'post' ? posts : likePosts" :key="post" :userInfo="userInfo" :post="post"/>
             </div>
 
         </div>
@@ -64,8 +64,8 @@ import Follow from '../components/Follow.vue'
 import Post from '../components/Post.vue'
 import { ref, computed, onBeforeMount } from 'vue'
 import store from '../store'
-import { PostCollection, db } from '../firebase'
-import { onSnapshot, orderBy, query, where, doc } from 'firebase/firestore'
+import { PostCollection, LikeCollection, db } from '../firebase'
+import { onSnapshot, orderBy, query, where, doc, getDoc, } from 'firebase/firestore'
 import getPostInfo from '../utils/getPostInfo'
 import dayjs from 'dayjs'
 
@@ -74,14 +74,17 @@ export default {
     setup() {
         const userInfo = computed(() => store.state.user)
         const posts = ref([])
-        const q = query(PostCollection, where("uid", "==", userInfo.value.uid), orderBy("created_at", "desc"))
+        const likePosts = ref([])
+        const currentTab = ref("post")
+        const qPost = query(PostCollection, where("uid", "==", userInfo.value.uid), orderBy("created_at", "desc"))
+        const qLike = query(LikeCollection, where("uid", "==", userInfo.value.uid), orderBy("created_at", "desc"))
 
         onBeforeMount(() => {
             onSnapshot(doc(db, "users", userInfo.value.uid), (doc) => {
                 store.commit("setUser", doc.data())
             })
 
-            onSnapshot(q, (snapshot) => {
+            onSnapshot(qPost, (snapshot) => {
                 snapshot.docChanges().forEach( async (change) => {
                     let post = await getPostInfo(change.doc.data(), userInfo.value)
 
@@ -94,12 +97,29 @@ export default {
                     }
                 })
             })
+
+            onSnapshot(qLike, (snapshot) => {
+                snapshot.docChanges().forEach( async (change) => {
+                    const Likedoc = await getDoc(doc(db, "posts", change.doc.data().from_like_id))
+                    let post = await getPostInfo(Likedoc.data(), userInfo.value)
+
+                    if (change.type === "added") {
+                        likePosts.value.splice(change.newIndex, 0, post)
+                    } else if (change.type === "modified") {
+                        likePosts.value.splice(change.oldIndex, 1, post)
+                    } else if (change.type === "removed") {
+                        likePosts.value.splice(change.oldIndex, 1)
+                    }
+                })
+            })
         })
 
         return {
             userInfo,
             posts,
+            likePosts,
             dayjs,
+            currentTab,
         }
     }
 }
