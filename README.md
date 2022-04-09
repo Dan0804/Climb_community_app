@@ -97,3 +97,5 @@ firebase authentication 회원가입 및 firestore 데이터 저장 완료
   프로필 페이지 - post, 좋아요 post 가져오기 적용 완료
 
   프로필 페이지 - 다른 사용자 프로필 조회 적용 완료
+
+  프로필 페이지 - 프로필 수정 모달 팝업 적용 완료

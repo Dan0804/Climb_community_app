@@ -56,22 +56,24 @@
         </div>
         <!-- trend section -->
         <Follow />
+        <profile-edit-modal></profile-edit-modal>
     </div>
 </template>
 
 <script>
 import Follow from '../components/Follow.vue'
 import Post from '../components/Post.vue'
+import ProfileEditModal from '../components/ProfileEditModal.vue'
 import { ref, computed, onBeforeMount } from 'vue'
 import store from '../store'
 import { PostCollection, LikeCollection, db } from '../firebase'
 import { onSnapshot, orderBy, query, where, doc, getDoc, } from 'firebase/firestore'
+import { useRoute } from 'vue-router'
 import getPostInfo from '../utils/getPostInfo'
 import dayjs from 'dayjs'
-import { useRoute } from 'vue-router'
 
 export default {
-    components: { Follow, Post },
+    components: { Follow, Post, ProfileEditModal },
     setup() {
         const userInfo = computed(() => store.state.user)
         const profileUser = ref(null)
