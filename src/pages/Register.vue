@@ -42,6 +42,7 @@ export default {
           user_name: username.value,
           email: email.value,
           profile_image_url: '/profile.jpeg',
+          background_image_url: '/background.png',
           num_posts: 0,
           followers: [],
           followings: [],

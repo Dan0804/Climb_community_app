@@ -11,6 +11,14 @@ const store = createStore({
         setUser: (state, user) => {
             state.user = user
         },
+
+        setBackgroundImage: (state, image) => {
+            state.user.background_image_url = image
+        },
+
+        setProfileImage: (state, image) => {
+            state.user.profile_image_url = image
+        }
     },
     plugins: [createPersistedState()],
 })

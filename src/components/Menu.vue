@@ -46,7 +46,9 @@
         <div class="absolute bottom-24 left-10 lg:left-36 shadow rounded-lg w-48 bg-white" v-if="showProfileDropdown">
             <router-link to="/profile">
                 <button @click="showProfileDropdown = false" class="hover:bg-gray-50 border-b border-gray-200 flex p-2 w-full items-center">
-                    <img :src="userInfo.profile_image_url" class="w-10, h-10 rounded-full" />
+                    <div class="w-10, h-10 rounded-full">
+                        <img :src="userInfo.profile_image_url" class="w-full h-full object-cover rounded-full" />
+                    </div>
                     <div class="ml-2">
                         <span class="font-bold">{{ userInfo.user_name }}</span>
                         <span class="text-gray text-xs">님의 프로필</span>
@@ -60,6 +62,7 @@
                 계정에서 로그아웃
             </button>
         </div>
+        <LogoutModal></LogoutModal>
     </div>
 </template>
 
@@ -69,9 +72,10 @@ import router from '../router'
 import { Logout } from '../firebase'
 import store from '../store'
 import PostModal from './PostModal.vue'
+import LogoutModal from './LogoutModal.vue'
 
 export default {
-    components: { PostModal },
+    components: { PostModal, LogoutModal, LogoutModal },
     setup() {
         const routes = ref([])
         const showProfileDropdown = ref(false)

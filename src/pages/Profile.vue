@@ -13,17 +13,18 @@
                 </div>
             </div>
 
-            <!-- background image -->
-            <div class="flex-none relative bg-gray-300 h-40">
+            <div class="flex-none relative bg-gray-300 h-48">
+                <!-- background image -->
+                <img :src="profileUser.background_image_url" class="w-full h-48 object-cover">
                 <!-- porfile image -->
                 <div class="border-4 border-white bg-gray-100 w-28 h-28 rounded-full absolute -bottom-14 left-2">
-                    <img :src="profileUser.profile_image_url" class="rounded-full opacity-90 hover:opacity-100 cursor-pointer">
+                    <img :src="profileUser.profile_image_url" class="rounded-full opacity-90 hover:opacity-100 cursor-pointer w-full h-full object-cover">
                 </div>
             </div>
 
             <!-- profile edit button -->
             <div class="text-right mt-2 mr-2">
-                <button class="border-2 border-blue-300 text-blue-300 px-3 py-1 hover:bg-blue-50  font-bold rounded-full">프로필 수정</button>
+                <button @click="showProfileEditModal = true" class="border-2 border-blue-300 text-blue-300 px-3 py-1 hover:bg-blue-50  font-bold rounded-full">프로필 수정</button>
             </div>
 
             <!-- user info -->
@@ -56,7 +57,7 @@
         </div>
         <!-- trend section -->
         <Follow />
-        <profile-edit-modal></profile-edit-modal>
+        <profile-edit-modal v-if="showProfileEditModal" @close_modal="showProfileEditModal = false"></profile-edit-modal>
     </div>
 </template>
 
@@ -81,6 +82,7 @@ export default {
         const likePosts = ref([])
         const currentTab = ref("post")
         const route = useRoute()
+        const showProfileEditModal = ref(false)
 
         onBeforeMount(() => {
             const profileUID = route.params.uid ?? userInfo.value.uid
@@ -129,6 +131,7 @@ export default {
             dayjs,
             currentTab,
             profileUser,
+            showProfileEditModal,
         }
     }
 }

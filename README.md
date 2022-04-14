@@ -102,3 +102,8 @@ firebase authentication 회원가입 및 firestore 데이터 저장 완료
 
 - 22.04.12(화)
   프로필 이미지 - 이미지 스토리지 업로드 수강 완료
+
+- 22.04.14(목)
+  이미지 스토리지 업로드 적용 완료
+  ㄴ storage 보안 설정 완료, firestore에 대한 보안 설정 필요
+  ㄴ Menu 부분에 대한 layout 재작성 필요. profile 항목 추가 및 logout button 개정 진행 중
