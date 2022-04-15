@@ -107,3 +107,8 @@ firebase authentication 회원가입 및 firestore 데이터 저장 완료
   이미지 스토리지 업로드 적용 완료
   ㄴ storage 보안 설정 완료, firestore에 대한 보안 설정 필요
   ㄴ Menu 부분에 대한 layout 재작성 필요. profile 항목 추가 및 logout button 개정 진행 중
+
+- 22.04.15(금)
+  팔로우 & 언팔로우 수강 완료, 알림 페이지 수강 중
+  ㄴ firebase Pricing 정책보고 app에 대한 전면적인 변화가 필요할 것 같음
+  ㄴ 당근마켓처럼 클릭한 암장만 post가 뜨게 만드는게 그나마 적게 read값을 가질 것 같음
