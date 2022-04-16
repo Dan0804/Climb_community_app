@@ -112,3 +112,8 @@ firebase authentication 회원가입 및 firestore 데이터 저장 완료
   팔로우 & 언팔로우 수강 완료, 알림 페이지 수강 중
   ㄴ firebase Pricing 정책보고 app에 대한 전면적인 변화가 필요할 것 같음
   ㄴ 당근마켓처럼 클릭한 암장만 post가 뜨게 만드는게 그나마 적게 read값을 가질 것 같음
+
+- 22.04.16(토)
+  알림 페이지 수강 완료
+  ㄴ 알림 페이지 적용 완료
+  ㄴ firebase read count 정책에 대한 제대로 된 이해 필요. 이를 기준으로 코드 재정립 필요할 듯

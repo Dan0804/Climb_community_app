@@ -6,15 +6,17 @@
         </div>
 
         <!-- Notifications -->
-        <div class="cursor-pointer flex flex-col hover:bg-gray-50 border-b border-gray-200 p-3">
+        <div class="cursor-pointer flex flex-col hover:bg-gray-50 border-b border-gray-200 p-3" v-for="notification in notifications" :key="notification">
             <div class="flex justify-between">
-                <img class="hover:opacity-80 rounded-full w-10 h-10" src="http://picsum.photos/100">
-                <i class="fa-solid fa-ellipsis flex place-items-center justify-center hover:border-2 hover:border-gray-100 hover:bg-blue-300 rounded-full w-10 h-10 "></i>
+                <router-link :to="`/profile/${notification.uid}`">
+                    <img class="hover:opacity-80 rounded-full w-10 h-10" :src="notification.profile_image_url">
+                </router-link>
+                <i class="fa-solid fa-ellipsis flex place-items-center justify-center hover:border-2 hover:border-gray-100 hover:bg-blue-300 rounded-full w-10 h-10"></i>
             </div>
             <div>
-                <span class="font-bold">조대현</span> 님의 최근 글
+                <span class="font-bold">{{ notification.user_name }}</span> 님의 최근 글
             </div>
-            <div class="text-gray-500">클라이밍해서 손가락이 아프다.</div>
+            <router-link :to="`/post/${notification.id}`" class="text-gray-500">{{ notification.post_body }}</router-link>
         </div>
     </div>
 
@@ -25,8 +27,32 @@
 
 <script>
 import Follow from '../components/Follow.vue'
+import { ref, computed, onBeforeMount } from 'vue'
+import { getDocs, orderBy, where } from 'firebase/firestore'
+import { PostCollection } from '../firebase'
+import getPostInfo from '../utils/getPostInfo'
+
 export default {
     components: { Follow },
-    setup() {}
+    setup() {
+        const userInfo = computed(() => store.state.user)
+        const notifications = ref([])
+
+        onBeforeMount(() => {
+            userInfo.value.following.forEach( async (following) => {
+                const dateFrom = Date.now() - (7 * 60 * 60 * 24 * 1000)
+                const querySnapshot = await getDocs(query(PostCollection, where("uid", "==", following), where("created_at", ">", dateFrom), orderBy("created_at", "desc")))
+                querySnapshot.docs.forEach( async (doc) => {
+                    let post = await getPostInfo(doc.data(), userInfo.value)
+                    notifications.value.push(post)
+                })
+            })
+        })
+
+        return {
+            userInfo,
+            notifications,
+        }
+    }
 }
 </script>
