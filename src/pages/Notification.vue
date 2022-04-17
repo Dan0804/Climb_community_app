@@ -28,7 +28,8 @@
 <script>
 import Follow from '../components/Follow.vue'
 import { ref, computed, onBeforeMount } from 'vue'
-import { getDocs, orderBy, where } from 'firebase/firestore'
+import store from '../store'
+import { getDocs, orderBy, where, query } from 'firebase/firestore'
 import { PostCollection } from '../firebase'
 import getPostInfo from '../utils/getPostInfo'
 
@@ -39,7 +40,7 @@ export default {
         const notifications = ref([])
 
         onBeforeMount(() => {
-            userInfo.value.following.forEach( async (following) => {
+            userInfo.value.followings.forEach( async (following) => {
                 const dateFrom = Date.now() - (7 * 60 * 60 * 24 * 1000)
                 const querySnapshot = await getDocs(query(PostCollection, where("uid", "==", following), where("created_at", ">", dateFrom), orderBy("created_at", "desc")))
                 querySnapshot.docs.forEach( async (doc) => {

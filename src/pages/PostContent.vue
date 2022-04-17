@@ -73,7 +73,7 @@ import router from "../router"
 import { useRoute } from "vue-router"
 import { ref, computed, onBeforeMount } from 'vue'
 import store from '../store'
-import { deleteDoc, doc, increment, onSnapshot, orderBy, query, updateDoc } from 'firebase/firestore'
+import { deleteDoc, doc, increment, onSnapshot, orderBy, query, updateDoc, where } from 'firebase/firestore'
 import { CommentCollection, db } from "../firebase"
 import getPostInfo from '../utils/getPostInfo'
 import handleLike from "../utils/handleLike"
@@ -85,7 +85,7 @@ export default {
         const comments = ref([])
         const userInfo = computed(() => store.state.user)
         const showCommentModal = ref(false)
-        const q = query(CommentCollection, orderBy("created_at", "desc"))
+        const q = query(CommentCollection, where("from_post_id", "==", post.value.id), orderBy("created_at", "desc"))
 
         const route = useRoute()
 
