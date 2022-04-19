@@ -25,10 +25,6 @@ export default {
     const loading = ref(false)
     const router = useRouter()
 
-    onMounted(() => {
-      console.log(store.state.user)
-    })
-
     const onLogin = async () => {
 
       if(!email.value || !password.value) {

@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import {ref, onBeforeMount, computed} from 'vue'
+import {ref, onBeforeMount, computed, } from 'vue'
 import router from '../router'
 import store from '../store'
 import PostModal from './PostModal.vue'
@@ -64,7 +64,7 @@ export default {
         onBeforeMount(() => {
             routes.value = router.options.routes.filter((route) => route.meta.isMenu === true)
 
-            console.log(router.currentRoute.value)
+            // console.log(router.currentRoute.value)
         })
 
         return {

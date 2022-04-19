@@ -19,21 +19,24 @@
                 </div>
 
                 <!-- posting section -->
-                <div class="flex px-3 py-3">
+                <div class="flex mx-3 py-3">
                     <img src="http://picsum.photos/100" class="w-10 h-10 rounded-full hover:opacity-80 cursor-pointer">
                     <div class="flex flex-1 flex-col ml-2">
-                        <textarea v-model="postBody" class="w-full font-bold focus:outline-none mb-3 resize-none" rows="10" placeholder="오늘은 어떤 재미있는 일이 있었나요?"></textarea>
-                        
-                        <!-- posting button -->
-                        <div class="text-right hidden sm:block mr-2 mb-1">
-                            <buttonv v-if="!postBody.length" @click="onAddPost" class="bg-light text-sm text-white font-bold px-4 py-2 rounded-full">
-                                등록
-                            </buttonv>
-                            <button v-else @click="onAddPost" class="bg-hover_primary text-white hover:text-hover_primary hover:bg-BgLightBlue hover:border-hover_primary text-sm font-bold px-4 py-2 rounded-full">
-                                등록
-                            </button>
-                        </div>
+                        <textarea v-model="postBody" class="border-b border-gray-100 w-full font-bold focus:outline-none mb-3 resize-none" rows="3" placeholder="오늘은 어떤 재미있는 일이 있었나요?"></textarea>
+                        <button @click="onChangeVideo" class="h-10 w-10 hover:text-gray-200 rounded-full fas fa-camera text-gray-500 text-xl"></button>
+                        <input @change="previewVideo" type="file" accept="video/*" id="videoInput" class="hidden">
+                        <video controls ref="videoData" src="splashVideo"></video>
                     </div>
+                </div>
+
+                <!-- posting button -->
+                <div class="text-right hidden sm:block border-t border-gray-100 mx-2 mt-3">
+                    <buttonv v-if="!postBody.length" class="bg-light text-sm text-white font-bold px-4 py-2 rounded-full">
+                        등록
+                    </buttonv>
+                    <button v-else @click="onAddPost" class="bg-hover_primary text-white hover:text-hover_primary hover:bg-BgLightBlue hover:border-hover_primary text-sm font-bold px-4 py-2 rounded-full">
+                        등록
+                    </button>
                 </div>
             </div>
         </div>
@@ -48,6 +51,8 @@ import store from "../store"
 export default {
     setup(props, {emit}) {
         const postBody = ref('')
+        const previewVideoData = ref(null)
+        const videoData = ref(null)
         const userInfo = computed(() => store.state.user)
         const onAddPost = async () => {
             try {
@@ -59,8 +64,29 @@ export default {
             }
         }
 
+        const onChangeVideo = () => {
+            document.getElementById("videoInput").click()
+        }
+
+        const previewVideo = (event) => {
+            const file = event.target.files[0]
+            previewVideoData.value = file
+            let reader = new FileReader()
+            reader.onload = function (event) {
+                videoData.value.src = event.target.result
+                videoData.play()
+            }
+            reader.readAsDataURL(file)
+        }
+
         return {
-            postBody, userInfo, onAddPost
+            postBody,
+            userInfo,
+            onAddPost,
+            onChangeVideo,
+            previewVideoData,
+            previewVideo,
+            videoData,
         }
     }
 
