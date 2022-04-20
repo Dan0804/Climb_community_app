@@ -12,7 +12,10 @@
             </div>
 
             <!-- post contents -->
-            <router-link :to="`/post/${ post.id }`">{{ post.post_body }}</router-link>
+            <router-link :to="`/post/${ post.id }`">
+                {{ post.post_body }}
+                <video :src="post.post_media" width="400" height="300" controls></video>
+            </router-link>
 
             <!-- post icon -->
             <div class="flex justify-between text-gray-500 mr-5">

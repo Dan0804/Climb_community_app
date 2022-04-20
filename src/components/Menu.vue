@@ -31,12 +31,12 @@
         <!-- show LogoutModal button -->
         <div class="mr-3 mb-10" @click="showLogoutModal = true">
             <div class="w-full h-12">
-                <button class="flex items-center hover:bg-blue-50 px-2 py-1 w-full h-12 rounded-full">
+                <button class="flex items-center hover:bg-red-200 px-2 py-1 w-full h-12 rounded-full">
                 <img :src="userInfo.profile_image_url" class="w-10 h-10 rounded-full hidden lg:block" />
                 <div class="lg:ml-2 lg:block hidden">
                     <div class="text-sm text-left font-bold">{{ userInfo.user_name }}</div>
                 </div>
-                <i class="fa-solid fa-right-from-bracket ml-auto p-2"></i>
+                <i class="fa-solid fa-right-from-bracket ml-auto p-2 mr-1"></i>
                 </button>
             </div>
         </div>

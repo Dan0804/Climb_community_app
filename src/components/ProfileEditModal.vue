@@ -38,7 +38,6 @@
 
 <script>
 import { ref, computed } from "vue"
-import addPost from "../utils/addPost.js"
 import store from "../store"
 import { storage, db } from "../firebase"
 import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage"
@@ -46,22 +45,11 @@ import { doc, updateDoc } from "firebase/firestore"
 
 export default {
     setup(props, {emit}) {
-        const postBody = ref('')
         const userInfo = computed(() => store.state.user)
         const backgroundImage = ref(null)
         const backgroundImageData = ref(null)
         const profileImage = ref(null)
         const profileImageData = ref(null)
-
-        const onAddPost = async () => {
-            try {
-                addPost(postBody.value, userInfo.value)
-                postBody.value = ''
-                emit('close_modal')
-            } catch (e) {
-                console.log('on add post error on homepage:', e)
-            }
-        }
 
         const onChangeBackgroundImage = () => {
             document.getElementById('backgroundImageInput').click()
@@ -128,9 +116,7 @@ export default {
         }
 
         return {
-            postBody,
             userInfo,
-            onAddPost,
             onChangeBackgroundImage,
             onChangeProfileImage,
             previewBackgroundImage,

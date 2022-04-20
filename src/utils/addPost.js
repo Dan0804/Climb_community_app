@@ -1,7 +1,7 @@
 import { PostCollection, db } from "../firebase";
 import { doc, setDoc, updateDoc, increment } from "firebase/firestore";
 
-export default (postBody, userInfo) => {
+export default (postBody, userInfo, postMedia) => {
 
     return new Promise( async (resolve, reject) => {
         try {
@@ -9,6 +9,7 @@ export default (postBody, userInfo) => {
             await setDoc(docu, {
                 id: docu.id,
                 post_body: postBody,
+                post_media: postMedia,
                 uid: userInfo.uid,
                 created_at: Date.now(),
                 num_comments: 0,
