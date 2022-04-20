@@ -5,10 +5,13 @@
         </router-link>
         <div class="flex flex-1 flex-col ml-3 space-y-1">
             <div class="text-sm space-x-2">
-            <span class="font-bold">{{ post.user_name }}</span>
-            <span class="text-gray-500 text-sm">{{ post.email }}</span>
-            <span class="text-gray-500 text-sm">•</span>
-            <span class="text-gray-500 text-sm">{{ dayjs(post.created_at).locale("ko").fromNow() }}</span>
+                <span class="font-bold">{{ post.user_name }}</span>
+                <span class="text-gray-500 text-sm">{{ post.email }}</span>
+                <span class="text-gray-500 text-sm">•</span>
+                <span class="text-gray-500 text-sm">{{ dayjs(post.created_at).locale("ko").fromNow() }}</span>
+                <button @click="handleDeletePost(post)" v-if="post.uid === userInfo.uid">
+                    <i class="fas fa-trash text-red-400 hover:bg-red-50 m-2 rounded-full p-2"></i>
+                </button>
             </div>
 
             <!-- post contents -->
@@ -41,12 +44,16 @@
 </template>
 
 <script>
-import { ref } from "vue"
+import { ref, computed } from "vue"
 import CommentModal from "./CommentModal.vue"
+import { db, storage } from '../firebase'
+import { deleteDoc, doc, increment, updateDoc } from 'firebase/firestore'
+import { deleteObject, ref as storageRef } from 'firebase/storage'
 import handleLike from "../utils/handleLike"
 import dayjs from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime"
 import "dayjs/locale/ko"
+import store from '../store'
 dayjs.extend(relativeTime)
 
 export default {
@@ -54,11 +61,24 @@ export default {
     props: ['userInfo', 'post'],
     setup() {
         const showCommentModal = ref(false)
+        const userInfo = computed(() => store.state.user)
+
+        const handleDeletePost = async (post) => {
+            if (confirm("정말로 해당 게시글을 삭제하겠습니까?")) {
+                await updateDoc(doc(db, "users", post.uid), {
+                    num_posts: increment(-1),
+                })
+                await deleteObject(storageRef(storage, `video/${post.uid}/${post.created_at}`))
+                await deleteDoc(doc(db, "posts", post.id))
+            }
+        }
         
         return {
             dayjs,
             showCommentModal,
-            handleLike, 
+            userInfo,
+            handleLike,
+            handleDeletePost,
         }
     }
 }

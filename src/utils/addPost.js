@@ -1,7 +1,7 @@
 import { PostCollection, db } from "../firebase";
 import { doc, setDoc, updateDoc, increment } from "firebase/firestore";
 
-export default (postBody, userInfo, postMedia) => {
+export default (postBody, userInfo, postMedia, createTime) => {
 
     return new Promise( async (resolve, reject) => {
         try {
@@ -11,7 +11,7 @@ export default (postBody, userInfo, postMedia) => {
                 post_body: postBody,
                 post_media: postMedia,
                 uid: userInfo.uid,
-                created_at: Date.now(),
+                created_at: createTime,
                 num_comments: 0,
                 num_likes: 0,
                 profile_image_url: userInfo.profile_image_url

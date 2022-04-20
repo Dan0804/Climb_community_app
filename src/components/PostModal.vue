@@ -47,7 +47,7 @@
 import { ref, computed } from "vue"
 import addPost from "../utils/addPost"
 import store from "../store"
-import { db, storage } from "../firebase"
+import { storage } from "../firebase"
 import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage"
 import { updateDoc } from '@firebase/firestore'
 
@@ -74,16 +74,13 @@ export default {
 
         const onAddPost = async () => {
             try {
-                const videoRef = await storageRef(storage, `video/${userInfo.value.uid}/${Date.now()}.video`)
-                console.log("1")
+                let createTime = Date.now()
+                const videoRef = await storageRef(storage, `video/${userInfo.value.uid}/${createTime}`)
                 await uploadBytes(videoRef, previewVideoData.value)
-                console.log("2")
                 const url = await getDownloadURL(videoRef)
-                console.log("3")
                 postMedia.value = url
-                console.log(postMedia.value)
 
-                addPost(postBody.value, userInfo.value, postMedia.value)
+                addPost(postBody.value, userInfo.value, postMedia.value, createTime)
                 postBody.value = ''
                 postMedia.value = null
 
