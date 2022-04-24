@@ -4,7 +4,7 @@
         <div class="flex-1 flex flex-col border-r border-color">
             <!-- title -->
             <div class="flex px-3 py-1 border-b border-color">
-                <button class="mr-4">
+                <button @click="router.go(-1)" class="mr-4">
                     <i class="fa-solid fa-arrow-left text-blue-300 rounded-full p-3 hover:bg-blue-50"></i>
                 </button>
                 <div>
@@ -70,6 +70,7 @@ import store from '../store'
 import { PostCollection, LikeCollection, db } from '../firebase'
 import { onSnapshot, orderBy, query, where, doc, getDoc, } from 'firebase/firestore'
 import { useRoute } from 'vue-router'
+import router from '../router'
 import getPostInfo from '../utils/getPostInfo'
 import dayjs from 'dayjs'
 
@@ -87,16 +88,18 @@ export default {
         onBeforeMount(() => {
             const profileUID = route.params.uid ?? userInfo.value.uid
 
-            const qPost = query(PostCollection, where("uid", "==", profileUID), orderBy("created_at", "desc"))
-            const qLike = query(LikeCollection, where("uid", "==", profileUID), orderBy("created_at", "desc"))
-            
             onSnapshot(doc(db, "users", profileUID), (doc) => {
                 profileUser.value = doc.data()
             })
 
+            console.log(profileUser)
+
+            const qPost = query(PostCollection, where("uid", "==", profileUID), orderBy("created_at", "desc"))
+            const qLike = query(LikeCollection, where("uid", "==", profileUID), orderBy("created_at", "desc"))
+        
             onSnapshot(qPost, (snapshot) => {
                 snapshot.docChanges().forEach( async (change) => {
-                    let post = await getPostInfo(change.doc.data(), userInfo.value)
+                    let post = await getPostInfo(change.doc.data())
 
                     if (change.type === "added") {
                         posts.value.splice(change.newIndex, 0, post)
@@ -111,7 +114,7 @@ export default {
             onSnapshot(qLike, (snapshot) => {
                 snapshot.docChanges().forEach( async (change) => {
                     const Likedoc = await getDoc(doc(db, "posts", change.doc.data().from_like_id))
-                    let post = await getPostInfo(Likedoc.data(), userInfo.value)
+                    let post = await getPostInfo(Likedoc.data())
 
                     if (change.type === "added") {
                         likePosts.value.splice(change.newIndex, 0, post)
@@ -132,6 +135,7 @@ export default {
             currentTab,
             profileUser,
             showProfileEditModal,
+            router,
         }
     }
 }

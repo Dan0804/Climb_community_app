@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { loginEmail, db } from '../firebase'
 import { getDoc, doc } from 'firebase/firestore'
 import { useRouter } from 'vue-router'

@@ -18,7 +18,8 @@
                     </div>
                 </div>
                 <div class="p-3">{{ post.post_body }}</div>
-                <div class="p-3">{{ moment(post.created_at).fromNow() }}</div>
+                <video class="pl-3" :src="post.post_media" width="400" height="300" controls></video>
+                <div class="p-3">{{ dayjs(post.created_at).locale("ko").fromNow() }}</div>
                 <div class="h-px w-full bg-gray-100"></div>
                 <div class="flex items-baseline space-x-1 pl-3 py-2">
                     <span class="font-bold text-sm pl-5">{{ post.num_likes }}</span>
@@ -50,7 +51,7 @@
                         <div class="flex items-baseline space-x-1">
                             <span class="font-bold">{{ comment.user_name }}</span>
                             <span class="text-gray text-xs">{{ comment.email }}</span>
-                            <span class="text-gray text-xs">{{ moment(comment.created_at).fromNow() }}</span>
+                            <span class="text-gray text-xs">{{ dayjs(comment.created_at).locale("ko").fromNow() }}</span>
                         </div>
                         <div>{{ comment.comment_body }}</div>
                     </div>
@@ -66,7 +67,6 @@
 </template>
 
 <script>
-import moment from "moment"
 import Follow from "../components/Follow.vue"
 import CommentModal from "../components/CommentModal.vue"
 import router from "../router"
@@ -77,6 +77,10 @@ import { deleteDoc, doc, increment, onSnapshot, orderBy, query, updateDoc, where
 import { CommentCollection, db } from "../firebase"
 import getPostInfo from '../utils/getPostInfo'
 import handleLike from "../utils/handleLike"
+import dayjs from "dayjs"
+import relativeTime from "dayjs/plugin/relativeTime"
+import "dayjs/locale/ko"
+dayjs.extend(relativeTime)
 
 export default {
     components: { Follow, CommentModal },
@@ -85,7 +89,6 @@ export default {
         const comments = ref([])
         const userInfo = computed(() => store.state.user)
         const showCommentModal = ref(false)
-        const q = query(CommentCollection, where("from_post_id", "==", post.value.id), orderBy("created_at", "desc"))
 
         const route = useRoute()
 
@@ -100,13 +103,15 @@ export default {
 
         onBeforeMount( async () => {
             await onSnapshot(doc(db, "posts", route.params.id), async (doc) => {
-                const postInfo = await getPostInfo(doc.data(), userInfo.value)
+                const postInfo = await getPostInfo(doc.data())
                 post.value = postInfo
             })
 
+            const q = query(CommentCollection, where("from_post_id", "==", route.params.id), orderBy("created_at", "desc"))
+
             onSnapshot(q, (snapshot) => {
                 snapshot.docChanges().forEach( async (change) => {
-                    let comment = await getPostInfo(change.doc.data(), userInfo.value)
+                    let comment = await getPostInfo(change.doc.data())
                     if (change.type === "added") {
                         comments.value.splice(change.newIndex, 0, comment)
                     } else if (change.type === 'modified') {
@@ -119,12 +124,12 @@ export default {
         })
 
         return {
+            dayjs,
             router, 
             userInfo, 
             post, 
             comments, 
             showCommentModal,
-            moment, 
             handleLike,
             handleDeleteComment, 
         }

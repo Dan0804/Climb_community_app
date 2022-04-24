@@ -46,8 +46,8 @@
 <script>
 import { ref, computed } from "vue"
 import CommentModal from "./CommentModal.vue"
-import { db, storage } from '../firebase'
-import { deleteDoc, doc, increment, updateDoc } from 'firebase/firestore'
+import { db, LikeCollection, CommentCollection, storage } from '../firebase'
+import { deleteDoc, doc, increment, query, updateDoc, where, getDocs } from 'firebase/firestore'
 import { deleteObject, ref as storageRef } from 'firebase/storage'
 import handleLike from "../utils/handleLike"
 import dayjs from "dayjs"
@@ -70,6 +70,12 @@ export default {
                 })
                 await deleteObject(storageRef(storage, `video/${post.uid}/${post.created_at}`))
                 await deleteDoc(doc(db, "posts", post.id))
+
+                const commentSnapshot = await getDocs(query(CommentCollection, where("from_post_id", "==", post.id)))
+                commentSnapshot.docs.forEach( async (doc) => await deleteDoc(doc.ref))
+
+                const likeSnapshot = await getDocs(query(LikeCollection, where("from_like_id", "==", post.id)))
+                likeSnapshot.docs.forEach( async (doc) => await deleteDoc(doc.ref))
             }
         }
         
