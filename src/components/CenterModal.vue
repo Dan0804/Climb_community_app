@@ -8,7 +8,11 @@
                     <div class="text-center pt-5">
                         암장 등록
                     </div>
-                    <input class="bg-gray-100 focus:ring-2 focus:ring-blue-300 focus:bg-white text-sm rounded-full w-48 p-2 pl-8 mt-16 ml-24" type="text" placeholder="Center 입력" />
+                    <input v-model="centerName" class="bg-gray-100 focus:ring-2 focus:ring-blue-300 focus:bg-white text-sm rounded-full w-48 p-2 pl-8 mt-16 ml-24" type="text" placeholder="Center 입력" />
+                    <div id="center_list_app" class="text-right">
+                        <button v-if="!centerName.length" class="bg-light text-sm font-bold px-4 py-2 mt-12 mr-5 rounded-full">등록</button>
+                        <button v-else @click="onCenterRegister" class="bg-primary hover:bg-bgdark text-white text-sm font-bold px-4 py-2 mt-12 mr-5 rounded-full">등록</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -16,14 +20,37 @@
 </template>
 
 <script>
-import { arrayUnion, doc, setDoc, updateDoc } from "firebase/firestore";
-import { CenterCollection, db } from "../firebase";
+import { doc, setDoc, } from "firebase/firestore";
+import { CenterCollection, } from "../firebase";
+import { ref } from "vue";
 
 export default {
     setup(props, {emit}) {
-        const addCenter = async () => {
-            
+        const centerName = ref('')
+
+        const onCenterRegister = async () => {
+            try {
+                const docu = doc(CenterCollection)
+                await setDoc(docu, {
+                    id: docu.id,
+                    center_name: centerName.value,
+                    created_at: Date.now(),
+                    visited_count: 0,
+                    upload_count: 0,
+                })
+                console.log("등록 완료")
+            } catch(e) {
+                console.log('center register error: ', e)
+            }   
         }
+
+        
+
+        return {
+            centerName,
+            onCenterRegister,
+        }
+
     }
 }
 </script>

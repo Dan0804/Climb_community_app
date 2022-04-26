@@ -13,29 +13,35 @@
 
         <!-- Center list -->
         <div class="overflow-y-auto">
+            <CenterMenus :center="center" v-for="center in centerList" :key="center.id"/>
         </div>
     </div>
 </template>
 
 <script>
+import { getDocs, } from 'firebase/firestore'
+import { CenterCollection, } from '../firebase'
+import { onBeforeMount, ref, } from 'vue'
+import centerMenus from './centerMenus.vue'
+import CenterMenus from './centerMenus.vue'
 
 export default {
+    components: { centerMenus, CenterMenus },
     setup() {
-        const handleSearchInput = (event) => {
-            this.search = event.target.value
+        const centerList = ref([])
 
-            if(this.search.length !== 0) {
-                clearTimeout(this.debounce)
-                this.debounce = setTimeout(() => {
-                    const filteredList = this.stageInfoList.filter(item => item.title.includes(this.search))
-                    this.searchList = filteredList
-                }, 500)
-            } else {
-                clearTimeout(this.debounce)
-                this.debounce = setTimeout(() => {
-                    this.searchList= []
-                }, 500)
-            }
+        onBeforeMount( async () => {
+            const q = await getDocs(CenterCollection)
+            q.forEach( (doc) => {
+                centerList.value.push(doc.data())
+            })
+            console.log(centerList)
+        })
+
+        
+
+        return {
+            centerList
         }
     }
 }

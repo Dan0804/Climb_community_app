@@ -92,8 +92,6 @@ export default {
                 profileUser.value = doc.data()
             })
 
-            console.log(profileUser)
-
             const qPost = query(PostCollection, where("uid", "==", profileUID), orderBy("created_at", "desc"))
             const qLike = query(LikeCollection, where("uid", "==", profileUID), orderBy("created_at", "desc"))
         
