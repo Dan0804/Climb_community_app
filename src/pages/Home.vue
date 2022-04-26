@@ -1,14 +1,14 @@
 <template>
-  <Main />
+  <Search />
 
   <Follow />
 </template>
 
 <script>
-import Main from '../components/Main.vue'
+import Search from '../components/Search.vue'
 import Follow from '../components/Follow.vue'
 export default {
-    components: { Main, Follow },
+    components: { Search, Follow },
     setup() {}
 }
 </script>

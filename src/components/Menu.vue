@@ -23,10 +23,23 @@
                     </button>
                 </div>
             </div>
+
+            <!-- center register button, 관리자용!! -->
+            <div class="mr-3 mt-5">
+                <div class="w-full h-12">
+                    <button @click="showCenterRegisterModal = true" class="bg-hover_primary text-white hover:text-hover_primary hover:bg-BgLightBlue hover:border-2 hover:border-hover_primary rounded-full w-14 xl:w-28 h-12 mt-3">
+                        <span class="hidden xl:block font-semibold">암장 등록</span>
+                        <i class="fa-solid fa-location-dot xl:hidden"></i>
+                    </button>
+                </div>
+            </div>
         </div>
 
         <!-- post modal popup -->
         <post-modal v-if="showPostModal" @close_modal="showPostModal = false"></post-modal>
+
+        <!-- center register modal popup -->
+        <CenterModal v-if="showCenterRegisterModal" @center_register_close_modal="showCenterRegisterModal = false"></CenterModal>
 
         <!-- show LogoutModal button -->
         <div class="mr-3 mb-10" @click="showLogoutModal = true">
@@ -51,13 +64,15 @@ import router from '../router'
 import store from '../store'
 import PostModal from './PostModal.vue'
 import LogoutModal from './LogoutModal.vue'
+import CenterModal from './CenterModal.vue'
 
 export default {
-    components: { PostModal, LogoutModal, },
+    components: { PostModal, LogoutModal, CenterModal, },
     setup() {
         const routes = ref([])
         const showProfileDropdown = ref(false)
         const showPostModal = ref(false)
+        const showCenterRegisterModal = ref(false)
         const showLogoutModal = ref(false)
         const userInfo = computed(() => store.state.user)
 
@@ -71,6 +86,7 @@ export default {
             routes,
             showProfileDropdown,
             showPostModal,
+            showCenterRegisterModal,
             showLogoutModal,
             userInfo,
             router
