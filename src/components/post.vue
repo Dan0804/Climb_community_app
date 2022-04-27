@@ -34,7 +34,7 @@
                 <div class="cursor-pointer hover:bg-green-100 hover:text-green-400 rounded-full p-2">
                     <i class="fa-solid fa-share-from-square px-1"></i>
                 </div>
-                <div @click="handleDeletePost(post)" class="cursor-pointer hover:bg-red-100 text-red-400 rounded-full p-2">
+                <div v-if="post.uid === userInfo.uid" @click="handleDeletePost(post)" class="cursor-pointer hover:bg-red-100 text-red-400 rounded-full p-2">
                     <i class="fas fa-trash px-1"></i>
                 </div>
             </div>
