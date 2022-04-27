@@ -1,14 +1,18 @@
 <template>
-  <Layout></Layout>
+    <Layout></Layout>
 </template>
 
 <script>
 import Layout from './layouts/Layout.vue'
+import { onAuthStateChanged } from 'firebase/auth'
+import { auth } from './firebase'
+
 export default {
-  components: { Layout },
+    components: { Layout },
+    setup() {
+        onAuthStateChanged(auth, (user) => {
+            console.log(user)
+        })
+    }
 }
 </script>
-
-<style>
-
-</style>

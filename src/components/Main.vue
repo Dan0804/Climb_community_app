@@ -28,10 +28,6 @@ export default {
         const posts = ref([]);
         const q = query(PostCollection, orderBy("created_at", "desc"))
 
-        onAuthStateChanged(auth, (user) => {
-            console.log(user)
-        })
-
         onBeforeMount(() => {
             onSnapshot(q, (snapshot) => {
                 snapshot.docChanges().forEach( async (change) => {

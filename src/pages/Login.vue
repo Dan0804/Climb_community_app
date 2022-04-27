@@ -5,6 +5,7 @@
     <input v-model="email" class="rounded w-96 px-4 py-3 border border-gray-300 focus:ring-2 focus:border-primary" placeholder="이메일" type="text">
     <input @keyup.enter="onLogin" v-model="password" class="rounded w-96 px-4 py-3 border border-gray-300 focus:ring-2 focus:border-primary" placeholder="비밀번호" type="password">
     <button class="w-96 rounded bg-primary text-white py-4" @click="onLogin">로그인</button>
+    <button class="w-96 rounded bg-primary text-white py-4" @click="googleLogin">구글 로그인</button>
     <router-link to="/register">
       <button class="text-primary">계정이 없으신가요? 회원가입하기</button>
     </router-link>
@@ -13,10 +14,11 @@
 
 <script>
 import { ref } from 'vue'
-import { loginEmail, db } from '../firebase'
-import { getDoc, doc } from 'firebase/firestore'
+import { loginEmail, db, auth } from '../firebase'
+import { getDoc, doc, setDoc } from 'firebase/firestore'
 import { useRouter } from 'vue-router'
 import store from '../store'
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
 
 export default {
   setup() {
@@ -36,6 +38,7 @@ export default {
         loading.value = true
         const { user } = await loginEmail(email.value, password.value)
         const docSnap = await getDoc(doc(db, "users", user.uid))
+        console.log(docSnap)
         store.commit("setUser", docSnap.data())
         // console.log(store.state.user)
         router.replace("/")
@@ -58,11 +61,49 @@ export default {
       }
     }
 
+    const googleLogin = () => {
+        var provider = new GoogleAuthProvider()
+
+        provider.setCustomParameters({
+            'login_hint': 'user@example.com'
+        });
+
+        signInWithPopup(auth, provider).then( async (result) => {
+            const credential = GoogleAuthProvider.credentialFromResult(result)
+            const token = credential.accessToken
+            const user = result.user
+            console.log(user)
+
+            await setDoc(doc(db, "users", user.uid), {
+                uid: user.uid,
+                user_name: user.displayName,
+                email: user.email,
+                profile_image_url: '/profile.jpeg',
+                background_image_url: '/background.png',
+                num_posts: 0,
+                followers: [],
+                followings: [],
+                created_at: Date.now()
+            })
+            const docSnap = await getDoc(doc(db, "users", user.uid))
+            console.log(docSnap)
+            store.commit("setUser", docSnap.data())
+            router.replace("/")
+            
+        }).catch((e) => {
+          const errorCode = e.code
+          const errorMessage = e.message
+          const email = e.email
+          const credential = GoogleAuthProvider.credentialFromError(e)
+        })
+    }
+
     return {
       email,
       password,
       loading,
       onLogin,
+      googleLogin,
    }
   } 
 }
