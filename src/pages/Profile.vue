@@ -23,8 +23,19 @@
             </div>
 
             <!-- profile edit button -->
-            <div class="text-right mt-2 mr-2">
-                <button @click="showProfileEditModal = true" class="border-2 border-blue-300 text-blue-300 px-3 py-1 hover:bg-blue-50  font-bold rounded-full">프로필 수정</button>
+            <div class="text-right mt-2 mr-2 h-32 relative">
+                <div v-if="userInfo.uid === profileUser.uid">
+                    <button @click="showProfileEditModal = true" class="absolute border-2 border-blue-300 text-sm text-blue-300 px-3 py-2 hover:bg-blue-50 w-24 right-0 font-bold rounded-full">프로필 수정</button>
+                </div>
+                <div v-else>
+                    <div v-if="userInfo.followings.includes(profileUser.uid)" @click="onUnfollow">
+                        <button class="absolute w-24 right-0 text-sm bg-primary text-white px-3 py-2 hover:opacity-0 font-bold rounded-full">팔로잉</button>
+                        <button class="absolute w-24 right-0 text-sm bg-red-400 text-white px-3 py-2 opacity-0 hover:opacity-100 font-bold rounded-full">언팔로우</button>
+                    </div>
+                    <div v-else @click="onFollow">
+                        <button class="absolute w-24 right-0 border-2 border-blue-300 text-sm text-blue-300 px-3 py-2 hover:bg-blue-50 font-bold rounded-full">팔로우</button>
+                    </div>
+                </div>
             </div>
 
             <!-- user info -->
@@ -68,7 +79,7 @@ import ProfileEditModal from '../components/ProfileEditModal.vue'
 import { ref, computed, onBeforeMount } from 'vue'
 import store from '../store'
 import { PostCollection, LikeCollection, db } from '../firebase'
-import { onSnapshot, orderBy, query, where, doc, getDoc, } from 'firebase/firestore'
+import { onSnapshot, orderBy, query, where, doc, getDoc, updateDoc, arrayUnion, arrayRemove, } from 'firebase/firestore'
 import { useRoute } from 'vue-router'
 import router from '../router'
 import getPostInfo from '../utils/getPostInfo'
@@ -125,6 +136,30 @@ export default {
             })
         })
 
+        const onFollow = async () => {
+            await updateDoc(doc(db, "users", userInfo.value.uid), {
+                followings: arrayUnion(profileUser.value.uid)
+            })
+
+            await updateDoc(doc(db, "users", profileUser.value.uid), {
+                followers: arrayUnion(userInfo.value.uid)
+            })
+
+            store.commit("setFollow", profileUser.value.uid)
+        }
+
+        const onUnfollow = async () => {
+            await updateDoc(doc(db, "users", userInfo.value.uid), {
+                followings: arrayRemove(profileUser.value.uid)
+            })
+
+            await updateDoc(doc(db, "users", profileUser.value.uid), {
+                followers: arrayRemove(userInfo.value.uid)
+            })
+
+            store.commit("setUnFollow", profileUser.value.uid)
+        }
+
         return {
             userInfo,
             posts,
@@ -134,6 +169,8 @@ export default {
             profileUser,
             showProfileEditModal,
             router,
+            onFollow,
+            onUnfollow,
         }
     }
 }

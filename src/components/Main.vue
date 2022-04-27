@@ -15,7 +15,8 @@
 <script>
 import Post from "./Post.vue"
 import { ref, onBeforeMount, computed, } from "vue"
-import { PostCollection } from "../firebase"
+import { PostCollection, auth } from "../firebase"
+import { onAuthStateChanged } from "firebase/auth"
 import store from "../store"
 import { query, onSnapshot, orderBy, } from "firebase/firestore"
 import getPostInfo from "../utils/getPostInfo.js"
@@ -26,6 +27,10 @@ export default {
         const userInfo = computed(() => store.state.user)
         const posts = ref([]);
         const q = query(PostCollection, orderBy("created_at", "desc"))
+
+        onAuthStateChanged(auth, (user) => {
+            console.log(user)
+        })
 
         onBeforeMount(() => {
             onSnapshot(q, (snapshot) => {

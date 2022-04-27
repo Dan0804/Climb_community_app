@@ -4,14 +4,11 @@
             <img :src="post.profile_image_url" class="hover:opacity-80 cursor-pointer w-10 h-10 rounded-full">
         </router-link>
         <div class="flex flex-1 flex-col ml-3 space-y-1">
-            <div class="text-sm space-x-2">
+            <div class="text-sm space-x-2 my-2 relative">
                 <span class="font-bold">{{ post.user_name }}</span>
                 <span class="text-gray-500 text-sm">{{ post.email }}</span>
                 <span class="text-gray-500 text-sm">•</span>
                 <span class="text-gray-500 text-sm">{{ dayjs(post.created_at).locale("ko").fromNow() }}</span>
-                <button @click="handleDeletePost(post)" v-if="post.uid === userInfo.uid">
-                    <i class="fas fa-trash text-red-400 hover:bg-red-50 m-2 rounded-full p-2"></i>
-                </button>
             </div>
 
             <!-- post contents -->
@@ -36,6 +33,9 @@
                 </div>
                 <div class="cursor-pointer hover:bg-green-100 hover:text-green-400 rounded-full p-2">
                     <i class="fa-solid fa-share-from-square px-1"></i>
+                </div>
+                <div @click="handleDeletePost(post)" class="cursor-pointer hover:bg-red-100 text-red-400 rounded-full p-2">
+                    <i class="fas fa-trash px-1"></i>
                 </div>
             </div>
         </div>

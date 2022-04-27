@@ -49,7 +49,6 @@ import addPost from "../utils/addPost"
 import store from "../store"
 import { storage } from "../firebase"
 import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage"
-import { updateDoc } from '@firebase/firestore'
 
 export default {
     setup(props, {emit}) {

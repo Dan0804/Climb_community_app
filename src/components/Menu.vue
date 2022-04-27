@@ -25,14 +25,14 @@
             </div>
 
             <!-- center register button, 관리자용!! -->
-            <div class="mr-3 mt-5">
+            <!-- <div class="mr-3 mt-5">
                 <div class="w-full h-12">
                     <button @click="showCenterRegisterModal = true" class="bg-hover_primary text-white hover:text-hover_primary hover:bg-BgLightBlue hover:border-2 hover:border-hover_primary rounded-full w-14 xl:w-28 h-12 mt-3">
                         <span class="hidden xl:block font-semibold">암장 등록</span>
                         <i class="fa-solid fa-location-dot xl:hidden"></i>
                     </button>
                 </div>
-            </div>
+            </div> -->
         </div>
 
         <!-- post modal popup -->
