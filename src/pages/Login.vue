@@ -14,11 +14,11 @@
 
 <script>
 import { ref } from 'vue'
-import { loginEmail, db, auth } from '../firebase'
+import { loginEmail, db, } from '../firebase'
 import { getDoc, doc, setDoc } from 'firebase/firestore'
 import { useRouter } from 'vue-router'
 import store from '../store'
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
+import { browserLocalPersistence, getAuth, GoogleAuthProvider, setPersistence, signInWithPopup } from 'firebase/auth'
 
 export default {
   setup() {
@@ -64,38 +64,37 @@ export default {
     const googleLogin = () => {
         var provider = new GoogleAuthProvider()
 
-        provider.setCustomParameters({
-            'login_hint': 'user@example.com'
-        });
+        setPersistence(auth, browserLocalPersistence).then(() => {
+            signInWithPopup(auth, provider).then( async (result) => {
+                const credential = GoogleAuthProvider.credentialFromResult(result)
+                const token = credential.accessToken
+                const user = result.user
+                console.log(user)
 
-        signInWithPopup(auth, provider).then( async (result) => {
-            const credential = GoogleAuthProvider.credentialFromResult(result)
-            const token = credential.accessToken
-            const user = result.user
-            console.log(user)
-
-            await setDoc(doc(db, "users", user.uid), {
-                uid: user.uid,
-                user_name: user.displayName,
-                email: user.email,
-                profile_image_url: '/profile.jpeg',
-                background_image_url: '/background.png',
-                num_posts: 0,
-                followers: [],
-                followings: [],
-                created_at: Date.now()
+                await setDoc(doc(db, "users", user.uid), {
+                    uid: user.uid,
+                    user_name: user.displayName,
+                    email: user.email,
+                    profile_image_url: '/profile.jpeg',
+                    background_image_url: '/background.png',
+                    num_posts: 0,
+                    followers: [],
+                    followings: [],
+                    created_at: Date.now()
+                })
+                const docSnap = await getDoc(doc(db, "users", user.uid))
+                console.log(docSnap)
+                store.commit("setUser", docSnap.data())
+                router.replace("/")
+                
+            }).catch((e) => {
+              const errorCode = e.code
+              const errorMessage = e.message
+              const email = e.email
+              const credential = GoogleAuthProvider.credentialFromError(e)
             })
-            const docSnap = await getDoc(doc(db, "users", user.uid))
-            console.log(docSnap)
-            store.commit("setUser", docSnap.data())
-            router.replace("/")
-            
-        }).catch((e) => {
-          const errorCode = e.code
-          const errorMessage = e.message
-          const email = e.email
-          const credential = GoogleAuthProvider.credentialFromError(e)
         })
+
     }
 
     return {
