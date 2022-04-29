@@ -14,8 +14,9 @@
             <!-- post contents -->
             <router-link :to="`/post/${ post.id }`">
                 {{ post.post_body }}
-                <video :src="post.post_media" width="400" height="300" controls></video>
             </router-link>
+            <video :src="post.post_media" width="400" height="300"></video>
+            
 
             <!-- post icon -->
             <div class="flex justify-between text-gray-500 mr-5">

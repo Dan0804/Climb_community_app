@@ -15,8 +15,7 @@
 <script>
 import Post from "./Post.vue"
 import { ref, onBeforeMount, computed, } from "vue"
-import { PostCollection, auth } from "../firebase"
-import { onAuthStateChanged } from "firebase/auth"
+import { PostCollection, } from "../firebase"
 import store from "../store"
 import { query, onSnapshot, orderBy, } from "firebase/firestore"
 import getPostInfo from "../utils/getPostInfo.js"

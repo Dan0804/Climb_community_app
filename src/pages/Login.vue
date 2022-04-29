@@ -14,11 +14,11 @@
 
 <script>
 import { ref } from 'vue'
-import { loginEmail, db, } from '../firebase'
+import { loginEmail, db, auth } from '../firebase'
 import { getDoc, doc, setDoc } from 'firebase/firestore'
 import { useRouter } from 'vue-router'
 import store from '../store'
-import { browserLocalPersistence, getAuth, GoogleAuthProvider, setPersistence, signInWithPopup } from 'firebase/auth'
+import { browserLocalPersistence, GoogleAuthProvider, setPersistence, signInWithPopup } from 'firebase/auth'
 
 export default {
   setup() {
