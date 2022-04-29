@@ -117,3 +117,7 @@ firebase authentication 회원가입 및 firestore 데이터 저장 완료
   알림 페이지 수강 완료
   ㄴ 알림 페이지 적용 완료
   ㄴ firebase read count 정책에 대한 제대로 된 이해 필요. 이를 기준으로 코드 재정립 필요할 듯
+
+- 22.04.29(금)
+  search - 검색 함수 구현 완료
+  내일은 video custom하기

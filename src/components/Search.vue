@@ -36,7 +36,6 @@ export default {
             q.forEach( (doc) => {
                 centerList.value.push(doc.data())
             })
-            console.log(centerList)
         })
 
         const filter = computed(() => {
