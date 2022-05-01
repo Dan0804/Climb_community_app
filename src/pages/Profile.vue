@@ -72,7 +72,7 @@
 
 <script>
 import Follow from '../components/Follow.vue'
-import Post from '../components/Post.vue'
+import Post from '../components/post.vue'
 import ProfileEditModal from '../components/ProfileEditModal.vue'
 import { ref, computed, onBeforeMount } from 'vue'
 import store from '../store'

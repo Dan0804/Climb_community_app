@@ -2,7 +2,7 @@
     <div class="flex flex-1 flex-col border-r border-l border-border_line">
         <!-- page title -->
         <div class="border-b border-border_line px-3 py-4 font-bold text-lg text-center">
-        홈
+            {{ centerInfo.center_name }}
         </div>
 
         <!-- post -->
@@ -13,21 +13,29 @@
 </template>
 
 <script>
-import Post from "./post.vue"
+import Post from "../components/post.vue"
 import { ref, onBeforeMount, computed, } from "vue"
-import { PostCollection, } from "../firebase"
+import { db, PostCollection, } from "../firebase"
 import store from "../store"
-import { query, onSnapshot, orderBy, } from "firebase/firestore"
+import { query, onSnapshot, orderBy, where, getDoc, doc, } from "firebase/firestore"
 import getPostInfo from "../utils/getPostInfo.js"
+import { useRoute } from 'vue-router'
 
 export default {
     components: { Post },
     setup() {
         const userInfo = computed(() => store.state.user)
-        const posts = ref([]);
-        const q = query(PostCollection, orderBy("created_at", "desc"))
+        const route = useRoute()
+        const posts = ref([])
+        const centerInfo = ref(null)
 
-        onBeforeMount(() => {
+
+        onBeforeMount( async () => {
+            const centerSnap = await getDoc(doc(db, "centers", route.params.id))
+            centerInfo.value = centerSnap.data()
+
+            const q = query(PostCollection, where("center_id", "==", route.params.id), orderBy("created_at", "desc"))
+
             onSnapshot(q, (snapshot) => {
                 snapshot.docChanges().forEach( async (change) => {
                     let post = await getPostInfo(change.doc.data())
@@ -45,7 +53,10 @@ export default {
         });
 
         return {
-            userInfo, posts
+            userInfo,
+            posts,
+            route,
+            centerInfo,
         }
     },
 }

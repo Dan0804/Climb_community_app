@@ -5,6 +5,7 @@ import Message from '../pages/Message.vue'
 import Notification from '../pages/Notification.vue'
 import Profile from '../pages/Profile.vue'
 import PostContent from '../pages/PostContent.vue'
+import CenterPosts from '../pages/CenterPosts.vue'
 import Register from '../pages/Register.vue'
 import Login from '../pages/Login.vue'
 import store from '../store'
@@ -17,6 +18,7 @@ const routes = [
     { path: '/profile', name: 'profile', component: Profile, title: '프로필', icon: 'fa-solid fa-user fa-fw text-2xl lg:mr-2', meta: { isMenu: true, layout: 'AfterLogin', requireAuth: true }},
     { path: '/post/:id', name: 'postcontent', component: PostContent, meta: { isMenu: false, layout: 'AfterLogin', requireAuth: true }},
     { path: '/profile/:uid', component: Profile, meta: { isMenu: false, layout: 'AfterLogin', requireAuth: true }},
+    { path: '/center/:id', component: CenterPosts, meta: { isMenu: false, layout: 'AfterLogin', requireAuth: true }},
     { path: '/register', component: Register, meta: { isMenu: false, layout: 'BeforeLogin', requireAuth: false }},
     { path: '/login', component: Login, meta: { isMenu: false, layout: 'BeforeLogin', requireAuth: false }},
 ]
