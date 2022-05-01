@@ -11,7 +11,9 @@
 
                 <!-- post -->
                 <div class="px-3 py-2 flex">
-                    <img :src="post.profile_image_url" class="w-10 h-10 rounded-full hover:opacity-90 cursor-pointer" />
+                    <router-link :to="`/profile/${post.uid}`">
+                        <img :src="post.profile_image_url" class="w-10 h-10 rounded-full hover:opacity-90 cursor-pointer" />
+                    </router-link>
                     <div class="ml-3">
                         <div class="font-bold">{{ post.user_name }}</div>
                         <div class="text-gray-500 text-xs">{{ post.email }}</div>
@@ -46,7 +48,9 @@
                 
                 <!-- comments -->
                 <div v-for="comment in comments" :key="comment" class="flex px-3 py-2 border-b border-gray-100">
-                    <img :src="comment.profile_image_url" class="w-10 h-10 rounded-full hover:opacity-90 cursor-pointer" />
+                    <router-link :to="`/profile/${comment.uid}`">
+                        <img :src="comment.profile_image_url" class="w-10 h-10 rounded-full hover:opacity-90 cursor-pointer" />
+                    </router-link>
                     <div class="flex-1 ml-3 space-y-2">
                         <div class="flex items-baseline space-x-1">
                             <span class="font-bold">{{ comment.user_name }}</span>
