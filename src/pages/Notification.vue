@@ -20,9 +20,6 @@
         </div>
     </div>
 
-    <!-- Follow -->
-    <Follow />
-
 </template>
 
 <script>

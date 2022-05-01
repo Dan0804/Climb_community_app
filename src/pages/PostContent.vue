@@ -61,13 +61,11 @@
                 </div>
             </div>
         </div>
-        <follow></follow>
     </div>
     <comment-modal :post="post" v-if="showCommentModal" @close_modal="showCommentModal = false"></comment-modal>
 </template>
 
 <script>
-import Follow from "../components/Follow.vue"
 import CommentModal from "../components/CommentModal.vue"
 import router from "../router"
 import { useRoute } from "vue-router"
@@ -83,7 +81,7 @@ import "dayjs/locale/ko"
 dayjs.extend(relativeTime)
 
 export default {
-    components: { Follow, CommentModal },
+    components: { CommentModal, },
     setup() {
         const post = ref(null)
         const comments = ref([])

@@ -13,17 +13,17 @@
                 </div>
             </div>
 
-            <div class="flex-none relative bg-gray-300 h-48">
+            <div class="flex-none relative bg-gray-300 h-36">
                 <!-- background image -->
-                <img :src="profileUser.background_image_url" class="w-full h-48 object-cover">
+                <img :src="profileUser.background_image_url" class="w-full h-36 object-cover">
                 <!-- porfile image -->
-                <div class="border-4 border-white bg-gray-100 w-28 h-28 rounded-full absolute -bottom-14 left-2">
+                <div class="border-4 border-white bg-gray-100 w-28 h-28 rounded-full absolute top-2 left-2">
                     <img :src="profileUser.profile_image_url" class="rounded-full opacity-90 hover:opacity-100 cursor-pointer w-full h-full object-cover">
                 </div>
             </div>
 
             <!-- profile edit button -->
-            <div class="text-right mt-2 mr-2 h-32 relative">
+            <div class="text-right mt-2 mr-2 relative">
                 <div v-if="userInfo.uid === profileUser.uid">
                     <button @click="showProfileEditModal = true" class="absolute border-2 border-blue-300 text-sm text-blue-300 px-3 py-2 hover:bg-blue-50 w-24 right-0 font-bold rounded-full">프로필 수정</button>
                 </div>
@@ -39,7 +39,7 @@
             </div>
 
             <!-- user info -->
-            <div class="mx-4 mt-3">
+            <div class="mx-4 mt-1">
                 <div class="font-extrabold text-lg">{{ profileUser.user_name }}</div>
                 <div class="text-gray">{{ profileUser.email }}</div>
                 <div>
@@ -56,8 +56,8 @@
 
             <!-- taps -->
             <div class="flex border-b border-color mt-3">
-                <div @click="currentTab = 'post'" :class="`${currentTab === 'post' ? 'border-b border-primary text-primary bg-BgLightBlue' : 'text-gray-500 hover:border-b border-primary hover:bg-BgLightBlue'} flex-1 text-center cursor-pointer font-bold py-3`">등록 글</div>
-                <div @click="currentTab = 'like'" :class="`${currentTab === 'like' ? 'border-b border-primary text-primary bg-BgLightBlue' : 'text-gray-500 hover:border-b border-primary hover:bg-BgLightBlue'} flex-1 text-center cursor-pointer font-bold py-3`">좋아요</div>
+                <div @click="currentTab = 'post'" :class="`${currentTab === 'post' ? 'border-b border-primary text-primary bg-BgLightBlue' : 'text-gray-500 hover:border-b border-primary hover:bg-BgLightBlue'} flex-1 text-center cursor-pointer font-bold py-1`">등록 글</div>
+                <div @click="currentTab = 'like'" :class="`${currentTab === 'like' ? 'border-b border-primary text-primary bg-BgLightBlue' : 'text-gray-500 hover:border-b border-primary hover:bg-BgLightBlue'} flex-1 text-center cursor-pointer font-bold py-1`">좋아요</div>
             </div>
 
             <!-- Posts -->
@@ -65,8 +65,7 @@
                 <Post v-for="post in currentTab == 'post' ? posts : likePosts" :key="post" :userInfo="userInfo" :post="post"/>
             </div>
         </div>
-        <!-- trend section -->
-        <Follow />
+
         <profile-edit-modal v-if="showProfileEditModal" @close_modal="showProfileEditModal = false"></profile-edit-modal>
     </div>
 </template>
