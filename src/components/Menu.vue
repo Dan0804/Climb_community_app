@@ -25,14 +25,14 @@
             </div>
 
             <!-- center register button, 관리자용!! -->
-            <!-- <div class="mr-3 mt-5">
+            <div class="mr-3 mt-5">
                 <div class="w-full h-12">
                     <button @click="showCenterRegisterModal = true" class="bg-hover_primary text-white hover:text-hover_primary hover:bg-BgLightBlue hover:border-2 hover:border-hover_primary rounded-full w-14 xl:w-28 h-12 mt-3">
                         <span class="hidden xl:block font-semibold">암장 등록</span>
                         <i class="fa-solid fa-location-dot xl:hidden"></i>
                     </button>
                 </div>
-            </div> -->
+            </div>
         </div>
 
         <!-- post modal popup -->
@@ -44,7 +44,7 @@
         <!-- show LogoutModal button -->
         <div class="mr-3 mb-10" @click="showLogoutModal = true">
             <div class="w-full h-12">
-                <button class="flex items-center hover:bg-red-200 px-2 py-1 w-full h-12 rounded-full">
+                <button class="flex items-center hover:bg-BgLightBlue px-2 py-1 w-full h-12 rounded-full">
                 <img :src="userInfo.profile_image_url" class="w-10 h-10 rounded-full hidden lg:block" />
                 <div class="lg:ml-2 lg:block hidden">
                     <div class="text-sm text-left font-bold">{{ userInfo.user_name }}</div>

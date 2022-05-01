@@ -51,7 +51,6 @@ export default {
             } else {
                 return centerList.value
             }
-            
         })
         
 

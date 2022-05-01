@@ -15,7 +15,7 @@
             <router-link :to="`/post/${ post.id }`">
                 {{ post.post_body }}
             </router-link>
-            <video :src="post.post_media" width="400" height="300"></video>
+            <video :src="post.post_media" width="400" height="300" controls></video>
             
 
             <!-- post icon -->

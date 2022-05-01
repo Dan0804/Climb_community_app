@@ -64,7 +64,6 @@
             <div class="overflow-y-auto">
                 <Post v-for="post in currentTab == 'post' ? posts : likePosts" :key="post" :userInfo="userInfo" :post="post"/>
             </div>
-
         </div>
         <!-- trend section -->
         <Follow />
