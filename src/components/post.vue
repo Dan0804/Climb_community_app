@@ -3,8 +3,8 @@
         <router-link :to="`/profile/${post.uid}`">
             <img :src="post.profile_image_url" class="hover:opacity-80 cursor-pointer w-10 h-10 rounded-full">
         </router-link>
-        <div class="flex flex-1 flex-col ml-3 space-y-1">
-            <div class="text-sm space-x-2 my-2 relative">
+        <div class="flex flex-1 flex-col ml-3">
+            <div class="text-sm space-x-2 my-2">
                 <span class="font-bold">{{ post.user_name }}</span>
                 <span class="text-gray-500 text-sm">{{ post.email }}</span>
                 <span class="text-gray-500 text-sm">•</span>
@@ -32,7 +32,7 @@
                     <i class="fa-solid fa-heart"></i>
                     <span class="ml-1 text-sm">{{ post.num_likes }}</span>
                 </div>
-                <div class="cursor-pointer hover:bg-green-100 hover:text-green-400 rounded-full p-2">
+                <div class="cursor-pointer hover:bg-green-100 hover:text-green-400 rounded-full p-2" @click="linkCopy(post.id)">
                     <i class="fa-solid fa-share-from-square px-1"></i>
                 </div>
                 <div v-if="post.uid === userInfo.uid" @click="handleDeletePost(post)" class="cursor-pointer hover:bg-red-100 text-red-400 rounded-full p-2">
@@ -79,6 +79,18 @@ export default {
                 likeSnapshot.docs.forEach( async (doc) => await deleteDoc(doc.ref))
             }
         }
+
+        const linkCopy = (postId) => {
+            var url = ""
+            var textarea = document.createElement("textarea")
+            document.body.appendChild(textarea)
+            url = window.document.location.href + `post/${postId}`
+            textarea.value = url
+            textarea.select()
+            document.execCommand("copy")
+            document.body.removeChild(textarea)
+            alert("주소 복사가 완료되었습니다.")       
+        }
         
         return {
             dayjs,
@@ -86,6 +98,7 @@ export default {
             userInfo,
             handleLike,
             handleDeletePost,
+            linkCopy,
         }
     }
 }

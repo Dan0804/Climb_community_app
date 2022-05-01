@@ -14,35 +14,39 @@
                     <router-link :to="`/profile/${post.uid}`">
                         <img :src="post.profile_image_url" class="w-10 h-10 rounded-full hover:opacity-90 cursor-pointer" />
                     </router-link>
-                    <div class="ml-3">
-                        <div class="font-bold">{{ post.user_name }}</div>
-                        <div class="text-gray-500 text-xs">{{ post.email }}</div>
+                    <div class="flex-1 flex-col">
+                        <div class="ml-3 space-x-2 pt-2">
+                            <span class="font-bold">{{ post.user_name }}</span>
+                            <span class="text-gray-500 text-xs">{{ post.email }}</span>
+                            <span class="text-gray-500 text-xs">•</span>
+                            <span class="text-gray-500 text-xs">{{ dayjs(post.created_at).locale("ko").fromNow() }}</span>
+                        </div>
+                        <div class="pt-1 px-3">{{ post.post_body }}</div>
+                            <video class="pl-3" :src="post.post_media" width="400" height="300" controls></video>
                     </div>
-                </div>
-                <div class="p-3">{{ post.post_body }}</div>
-                <video class="pl-3" :src="post.post_media" width="400" height="300" controls></video>
-                <div class="p-3">{{ dayjs(post.created_at).locale("ko").fromNow() }}</div>
-                <div class="h-px w-full bg-gray-100"></div>
-                <div class="flex items-baseline space-x-1 pl-3 py-2">
-                    <span class="font-bold text-sm pl-5">{{ post.num_likes }}</span>
-                    <span class="text-gray text-xs">마음에 들어요</span>
                 </div>
                 <div class="h-px w-full bg-gray-100"></div>
 
                 <!-- buttons -->
-                <div class="flex justify-around">
-                    <button @click="showCommentModal = true">
-                        <i class="far fa-comment text-gray-400 text-xl hover:bg-blue-100 hover:text-blue-400 rounded-full m-2 p-1 w-10"></i>
-                    </button>
-                    <button>
-                        <i class="fa-solid fa-retweet text-gray-400 text-xl hover:bg-green-100 hover:text-green-400 rounded-full m-2 p-1 w-10"></i>
-                    </button>
-                    <button v-if="!post.isLiked" @click="handleLike(post)">
-                        <i class="fa-regular fa-heart text-gray-400 text-xl hover:bg-red-100 hover:text-red-400 rounded-full m-2 p-1 w-10"></i>
-                    </button>
-                    <button v-else @click="handleLike(post)">
-                        <i class="fa-solid fa-heart text-xl bg-red-100 text-red-400 rounded-full m-2 p-1 w-10"></i>
-                    </button>
+                <div class="flex justify-between text-gray-500 mx-5">
+                    <div @click="showCommentModal = true" class="cursor-pointer hover:bg-blue-100 hover:text-blue-400 rounded-full p-2">
+                        <i class="fa-regular fa-comment"></i>
+                        <span class="ml-1 text-sm">{{ post.num_comments }}</span>
+                    </div>
+                    <div v-if="!post.isLiked" @click="handleLike(post)" class="cursor-pointer hover:bg-red-100 hover:text-red-400 rounded-full p-2">
+                        <i class="fa-regular fa-heart"></i>
+                        <span class="ml-1 text-sm">{{ post.num_likes }}</span>
+                    </div>
+                    <div v-else @click="handleLike(post)" class="cursor-pointer bg-red-50 text-red-300 rounded-full p-2">
+                        <i class="fa-solid fa-heart"></i>
+                        <span class="ml-1 text-sm">{{ post.num_likes }}</span>
+                    </div>
+                    <div class="cursor-pointer hover:bg-green-100 hover:text-green-400 rounded-full p-2" @click="linkCopy(post.id)">
+                        <i class="fa-solid fa-share-from-square px-1"></i>
+                    </div>
+                    <div v-if="post.uid === userInfo.uid" @click="handleDeletePost(post)" class="cursor-pointer hover:bg-red-100 text-red-400 rounded-full p-2">
+                        <i class="fas fa-trash px-1"></i>
+                    </div>
                 </div>
                 <div class="h-px w-full bg-gray-100"></div>
                 
@@ -103,6 +107,34 @@ export default {
             }
         }
 
+        const linkCopy = (postId) => {
+            var url = ""
+            var textarea = document.createElement("textarea")
+            document.body.appendChild(textarea)
+            url = window.document.location.href
+            textarea.value = url
+            textarea.select()
+            document.execCommand("copy")
+            document.body.removeChild(textarea)
+            alert("주소 복사가 완료되었습니다.")       
+        }
+
+        const handleDeletePost = async (post) => {
+            if (confirm("정말로 해당 게시글을 삭제하겠습니까?")) {
+                await updateDoc(doc(db, "users", post.uid), {
+                    num_posts: increment(-1),
+                })
+                await deleteObject(storageRef(storage, `video/${post.uid}/${post.created_at}`))
+                await deleteDoc(doc(db, "posts", post.id))
+
+                const commentSnapshot = await getDocs(query(CommentCollection, where("from_post_id", "==", post.id)))
+                commentSnapshot.docs.forEach( async (doc) => await deleteDoc(doc.ref))
+
+                const likeSnapshot = await getDocs(query(LikeCollection, where("from_like_id", "==", post.id)))
+                likeSnapshot.docs.forEach( async (doc) => await deleteDoc(doc.ref))
+            }
+        }
+
         onBeforeMount( async () => {
             await onSnapshot(doc(db, "posts", route.params.id), async (doc) => {
                 const postInfo = await getPostInfo(doc.data())
@@ -133,7 +165,9 @@ export default {
             comments, 
             showCommentModal,
             handleLike,
-            handleDeleteComment, 
+            handleDeleteComment,
+            handleDeletePost,
+            linkCopy,
         }
     }
 }
