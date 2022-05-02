@@ -80,12 +80,16 @@ export default {
 
         const previewVideo = (event) => {
             const file = event.target.files[0]
-            previewVideoData.value = file
-            const previewVideo = document.getElementById("previewVideo")
-            const videoUrl = URL.createObjectURL(file)
-            previewVideo.setAttribute("src", videoUrl)
-            previewVideo.play()
-            // console.log(previewVideoData)
+
+            if (file.size > 1024*1024*200) {
+                alert("100MB 이하의 동영상만 등록할 수 있습니다.\n\n" + "현재 파일 용량" + (Math.round(file.size / (1024 * 1024))) + "MB")    
+            } else {
+                previewVideoData.value = file
+                const previewVideo = document.getElementById("previewVideo")
+                const videoUrl = URL.createObjectURL(file)
+                previewVideo.setAttribute("src", videoUrl)
+                previewVideo.play()
+            }
         }
 
         // center hashtag data
@@ -135,13 +139,11 @@ export default {
         // post register
         const onAddPost = async () => {
             try {
-                console.log("됌")
                 let createTime = Date.now()
                 const videoRef = await storageRef(storage, `video/${userInfo.value.uid}/${createTime}`)
                 await uploadBytes(videoRef, previewVideoData.value)
                 const url = await getDownloadURL(videoRef)
                 postMedia.value = url
-                console.log("됨2")
 
                 addPost(postBody.value, hashTagId.value, userInfo.value, postMedia.value, createTime)
                 postBody.value = ''
