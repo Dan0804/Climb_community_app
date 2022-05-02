@@ -31,13 +31,15 @@
                         </button>
                         </div>
                         <div class="h-24 border-b border-gray-150">
-                            <button class="px-3 py-1 my-1 mx-1 bg-BgLightBlue hover:bg-hover_primary hover:text-white rounded-full" v-for="center in filter" :key="center.id" v-bind:value="center.center_name" v-bind:id="center.id" @click="hashTagAdd">
+                            <button class="px-3 py-1 my-1 mx-1 bg-BgLightBlue hover:bg-hover_primary hover:text-white rounded-full" v-for="center in filter" :key="center.id" :value="center.center_name" :id="center.id" @click="hashTagAdd">
                                 {{ center.center_name }}
                             </button>
                         </div>
                         <button @click="onChangeVideo" class="h-10 w-10 hover:text-gray-200 rounded-full fas fa-camera text-gray-500 text-xl"></button>
                         <input @change="previewVideo" type="file" accept="video/*" id="videoInput" class="hidden">
-                        <video controls id="previewVideo" width="400" height="300"></video>
+                        <div @click="videoPlay">
+                            <video id="previewVideo" width="400" height="300"></video>
+                        </div>
                     </div>
                 </div>
 
@@ -151,6 +153,19 @@ export default {
             }
         }
 
+        const videoStatus = ref(false)
+
+        const videoPlay = () => {
+            const video = document.getElementById("previewVideo")
+            if (videoStatus.value === false) {
+                video.play()
+                videoStatus.value = true
+            } else {
+                video.pause()
+                videoStatus.value = false
+            }
+        }
+
         return {
             postBody,
             postMedia,
@@ -165,6 +180,8 @@ export default {
             hashTagId,
             hashTagAdd,
             hashTagDelete,
+            videoStatus,
+            videoPlay,
         }
     }
 

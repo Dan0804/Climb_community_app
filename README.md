@@ -121,3 +121,6 @@ firebase authentication 회원가입 및 firestore 데이터 저장 완료
 - 22.04.29(금)
   search - 검색 함수 구현 완료
   내일은 video custom하기
+
+- 22.05.02(월)
+  video custom 구현 완료 - 일단은 단순히 video 클릭하면 play랑 pause만 하게 했음. 나중에 기회가 되면 클릭 시 play랑 pause icon도 fade되게 만들게 해야겠음

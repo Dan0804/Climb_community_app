@@ -15,8 +15,7 @@
             <router-link :to="`/post/${ post.id }`">
                 {{ post.post_body }}
             </router-link>
-            <video :src="post.post_media" width="400" height="300" controls></video>
-            
+            <video :src="post.post_media" width="500" :id="`${post.id}`" @click="videoPlay(post.id)"></video>
 
             <!-- post icon -->
             <div class="flex justify-between text-gray-500 mr-5">
@@ -89,7 +88,22 @@ export default {
             textarea.select()
             document.execCommand("copy")
             document.body.removeChild(textarea)
-            alert("주소 복사가 완료되었습니다.")       
+            alert("주소 복사가 완료되었습니다.")
+        }
+
+        const videoStatus = ref(false)
+
+        const videoPlay = (postId) => {
+            var video = document.getElementById(`${postId}`)
+            if (videoStatus.value === false) {
+                video.play()
+                console.log(video)
+                videoStatus.value = true
+            } else {
+                video.pause()
+                console.log(video)
+                videoStatus.value = false
+            }
         }
         
         return {
@@ -99,11 +113,9 @@ export default {
             handleLike,
             handleDeletePost,
             linkCopy,
+            videoStatus,
+            videoPlay,
         }
     }
 }
 </script>
-
-<style>
-
-</style>

@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-1 flex-col border-r border-l border-border_line">
+    <div v-if="centerInfo" class="flex flex-1 flex-col border-r border-l border-border_line">
         <!-- page title -->
         <div class="border-b border-border_line px-3 py-4 font-bold text-lg text-center">
             {{ centerInfo.center_name }}
@@ -41,11 +41,9 @@ export default {
                     let post = await getPostInfo(change.doc.data())
                     if (change.type === "added") {
                         posts.value.splice(change.newIndex, 0, post);
-                    }
-                    else if (change.type === "modified") {
+                    } else if (change.type === "modified") {
                         posts.value.splice(change.oldIndex, 1, post);
-                    }
-                    else if (change.type === "removed") {
+                    } else if (change.type === "removed") {
                         posts.value.splice(change.oldIndex, 1);
                     }
                 });
