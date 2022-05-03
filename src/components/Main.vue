@@ -17,32 +17,33 @@ import Post from "./post.vue"
 import { ref, onBeforeMount, computed, } from "vue"
 import { PostCollection, } from "../firebase"
 import store from "../store"
-import { query, onSnapshot, orderBy, } from "firebase/firestore"
+import { query, onSnapshot, orderBy, where, } from "firebase/firestore"
 import getPostInfo from "../utils/getPostInfo.js"
 
 export default {
     components: { Post },
     setup() {
         const userInfo = computed(() => store.state.user)
-        const posts = ref([]);
-        const q = query(PostCollection, orderBy("created_at", "desc"))
+        const posts = ref([])
+        const month = Date.now() - (30 * 60 * 60 * 24 * 1000)
+        const q = query(PostCollection, where("created_at", ">", month), orderBy("created_at", "desc"))
 
         onBeforeMount(() => {
             onSnapshot(q, (snapshot) => {
                 snapshot.docChanges().forEach( async (change) => {
                     let post = await getPostInfo(change.doc.data())
                     if (change.type === "added") {
-                        posts.value.splice(change.newIndex, 0, post);
+                        posts.value.splice(change.newIndex, 0, post)
                     }
                     else if (change.type === "modified") {
-                        posts.value.splice(change.oldIndex, 1, post);
+                        posts.value.splice(change.oldIndex, 1, post)
                     }
                     else if (change.type === "removed") {
-                        posts.value.splice(change.oldIndex, 1);
+                        posts.value.splice(change.oldIndex, 1)
                     }
-                });
-            });
-        });
+                })
+            })
+        })
 
         return {
             userInfo, posts

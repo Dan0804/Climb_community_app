@@ -33,8 +33,8 @@ export default {
         onBeforeMount( async () => {
             const centerSnap = await getDoc(doc(db, "centers", route.params.id))
             centerInfo.value = centerSnap.data()
-
-            const q = query(PostCollection, where("center_id", "==", route.params.id), orderBy("created_at", "desc"))
+            const month = Date.now() - (30 * 60 * 60 * 24 * 1000)
+            const q = query(PostCollection, where("center_id", "==", route.params.id), where("created_at", ">", month), orderBy("created_at", "desc"))
 
             onSnapshot(q, (snapshot) => {
                 snapshot.docChanges().forEach( async (change) => {
