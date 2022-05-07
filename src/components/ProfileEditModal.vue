@@ -34,10 +34,24 @@
 
                 <!-- profile contents section -->
                 <div class="flex flex-col space-y-2 ml-20 mb-10">
+
                         <span>이름</span>
                         <input class="bg-gray-100 focus:ring-2 focus:ring-blue-300 focus:bg-white text-xs rounded-full w-2/5 p-2 px-4" type="text" placeholder="어느 암장이세요?" v-model="UserName">
+
                         <span class="mt-5">주 암장</span>
-                        <input class="bg-gray-100 focus:ring-2 focus:ring-blue-300 focus:bg-white text-xs rounded-full w-2/5 p-2 px-4" type="text" placeholder="어느 암장이세요?" v-model="search">
+                        <div class="relative mb-2">
+                            <input class="bg-gray-100 focus:ring-2 focus:ring-blue-300 focus:bg-white text-xs rounded-full w-2/5 p-2 pl-7" type="text" placeholder="어느 암장이세요?" v-model="search">
+                            <i class="fa-solid fa-hashtag absolute left-0 -top-0.5 mt-2 ml-3 text-sm text-light"></i>
+                            <button v-if="hashTagCenter.length != 0" class="px-3 py-1 my-1 mx-1 bg-hover_primary text-white hover:bg-red-200 hover:text-black rounded-full absolute -top-1" @click="hashTagDelete">
+                                <i class="fa-solid fa-xmark mr-2"></i>{{ hashTagCenter }}
+                            </button>
+                            <div class="h-20 border-b border-gray-150 overflow-y-auto">
+                                <button class="px-3 py-1 my-2 mx-1 bg-BgLightBlue hover:bg-hover_primary hover:text-white rounded-full" v-for="center in filter" :key="center.id" :value="center.center_name" :id="center.id" @click="hashTagAdd">
+                                    {{ center.center_name }}
+                                </button>
+                            </div>
+                        </div>
+
                         <span class="mt-5">주 난이도</span>
                         <div class="p-2 border-2 border-blue-300 mr-auto rounded-full space-x-1">
                             <button v-for="level in LevelList" :key="level" :value="level" :class="`text-${level} w-7 border-2 border-BgLightBlue rounded-full hover:border-primary hover:bg-BgLightBlue`"><i class="fa-solid fa-circle"></i></button>
@@ -49,11 +63,12 @@
 </template>
 
 <script>
-import { ref, computed } from "vue"
+import { ref, computed, onBeforeMount } from "vue"
 import store from "../store"
 import { storage, db } from "../firebase"
 import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage"
-import { doc, updateDoc } from "firebase/firestore"
+import { doc, updateDoc, getDocs } from "firebase/firestore"
+import { CenterCollection, } from '../firebase'
 
 export default {
     setup(props, {emit}) {
@@ -127,6 +142,49 @@ export default {
             emit('close_modal')
         }
 
+        const centerList = ref([])
+        const search = ref('')
+        let i = 0
+
+        onBeforeMount( async () => {
+            const q = await getDocs(CenterCollection)
+            q.forEach( (doc) => {
+                centerList.value.push(doc.data())
+            })
+        })
+
+        const filter = computed(() => {
+            const filteredList = ref([])
+            if ( search.value.length != 0 ) {
+                for (i=0 ; i < centerList.value.length ; i++) {
+                    if ( centerList.value[i].center_name.toLowerCase().includes(search.value.toLowerCase()) ) {
+                        filteredList.value.push(centerList.value[i])
+                    }
+                }
+                return filteredList.value
+
+            } else {
+                return
+            }
+        })
+
+        const hashTagCenter = ref('')
+        const hashTagId = ref('')
+
+        const hashTagAdd = (event) => {
+            if ( hashTagCenter.value === '' ) {
+                hashTagCenter.value = event.target.value
+                hashTagId.value = event.target.id
+            } else {
+                alert("이미 암장을 선택하셨습니다.")
+            }
+        }
+
+        const hashTagDelete = () => {
+            hashTagCenter.value = ''
+            hashTagId.value = ''
+        }
+
         const LevelList = ['white', `yellow-400`, 'orange-400', 'green-800', 'sky-500', 'red-500', 'purple-600', 'gray-300', 'black']
 
         return {
@@ -142,6 +200,13 @@ export default {
             onSaveProfile,
             UserName,
             LevelList,
+            centerList,
+            search,
+            filter,
+            hashTagCenter,
+            hashTagId,
+            hashTagAdd,
+            hashTagDelete,
         }
     }
 
