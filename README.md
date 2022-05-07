@@ -124,3 +124,6 @@ firebase authentication 회원가입 및 firestore 데이터 저장 완료
 
 - 22.05.02(월)
   video custom 구현 완료 - 일단은 단순히 video 클릭하면 play랑 pause만 하게 했음. 나중에 기회가 되면 클릭 시 play랑 pause icon도 fade되게 만들게 해야겠음
+
+- 22.05.08(일)
+  Login 시 사용자 정보가 초기화되는거 관련해서 그렇게 안되도록 수정 완료

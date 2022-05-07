@@ -69,24 +69,29 @@ export default {
                 const credential = GoogleAuthProvider.credentialFromResult(result)
                 const token = credential.accessToken
                 const user = result.user
-                console.log(user)
-
-                await setDoc(doc(db, "users", user.uid), {
-                    uid: user.uid,
-                    user_name: user.displayName,
-                    email: user.email,
-                    profile_image_url: '/profile.jpeg',
-                    background_image_url: '/background.png',
-                    num_posts: 0,
-                    followers: [],
-                    followings: [],
-                    created_at: Date.now()
-                })
+                console.log(user.uid)
 
                 const docSnap = await getDoc(doc(db, "users", user.uid))
-                console.log(docSnap)
-                store.commit("setUser", docSnap.data())
-                router.replace("/")
+                // console.log(docSnap.data())
+                
+                if ( docSnap.data() != undefined ) {
+                    store.commit("setUser", docSnap.data())
+                    router.replace("/")
+                } else {
+                    await setDoc(doc(db, "users", user.uid), {
+                        uid: user.uid,
+                        user_name: user.displayName,
+                        email: user.email,
+                        profile_image_url: '/profile.jpeg',
+                        background_image_url: '/background.png',
+                        num_posts: 0,
+                        followers: [],
+                        followings: [],
+                        created_at: Date.now()
+                    })
+                    store.commit("setUser", docSnap.data())
+                    router.replace("/")
+                }
                 
             }).catch((e) => {
               const errorCode = e.code
