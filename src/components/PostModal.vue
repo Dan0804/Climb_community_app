@@ -27,8 +27,8 @@
                             <input class="bg-gray-100 focus:ring-2 focus:ring-blue-300 focus:bg-white text-xs rounded-full w-2/5 p-2 pl-8" type="text" placeholder="어느 암장이세요?" v-model="search">
                             <i class="fa-solid fa-hashtag absolute left-0 -top-0.5 mt-2 ml-3 text-sm text-light"></i>
                             <button v-if="hashTagCenter.length != 0" class="px-3 py-1 my-1 mx-1 bg-hover_primary text-white hover:bg-red-200 hover:text-black rounded-full absolute -top-1" @click="hashTagDelete">
-                            <i class="fa-solid fa-xmark mr-2"></i>{{ hashTagCenter }}
-                        </button>
+                                <i class="fa-solid fa-xmark mr-2"></i>{{ hashTagCenter }}
+                            </button>
                         </div>
                         <div class="h-24 border-b border-gray-150">
                             <button class="px-3 py-1 my-1 mx-1 bg-BgLightBlue hover:bg-hover_primary hover:text-white rounded-full" v-for="center in filter" :key="center.id" :value="center.center_name" :id="center.id" @click="hashTagAdd">

@@ -8,9 +8,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "axios": "^0.27.2",
     "dayjs": "^1.11.0",
     "firebase": "^9.6.9",
-    "moment": "^2.29.1",
+    "v3-infinite-loading": "^1.0.6",
     "vue": "^3.2.25",
     "vue-moment": "^4.1.0",
     "vue-router": "^4.0.14",

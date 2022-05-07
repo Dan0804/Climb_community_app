@@ -1,11 +1,8 @@
 <template>
-    <div v-if="userInfo" class="flex flex-col justify-between lg:w-1/7 w-30 pt-5 ml-10 border-r border-gray-200">
+    <div v-if="userInfo" class="flex flex-col justify-between lg:w-1/7 w-30 pt-5 ml-3 border-r border-gray-200">
         <!-- icons -->
         <div>
-        <!-- I will change this logo when I make main logo -->
-        <i class="fa-brands fa-apple text-primary mb-5 ml-2 text-6xl"></i>
-
-            <div class="flex flex-col items-start">
+            <div class="flex pt-12 flex-col items-start">
                 <router-link :to="route.path" :class="`cursor-pointer hover:text-hover_primary hover:bg-BgLightBlue w-14 xl:w-28 text-center xl:text-left py-2 xl:px-4 rounded-full ${router.currentRoute.value.name === route.name ? 'text-hover_primary bg-BgLightBlue' : ''}`" v-for="route in routes" :key="route">
                     <div v-if="route.meta.isMenu">
                         <i :class="route.icon"></i>

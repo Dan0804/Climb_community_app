@@ -18,7 +18,7 @@
                 </div>
 
                 <!-- image section -->
-                <div class="h-80">
+                <div class="h-60">
                     <!-- background -->
                     <div class="flex flex-none items-center justify-center relative bg-gray-300 h-40">
                         <img ref="backgroundImage" :src="userInfo.background_image_url" class="object-cover absolute w-full h-full">
@@ -30,6 +30,18 @@
                         <button @click="onChangeProfileImage" class="absolute h-10 w-10 hover:text-gray-200 rounded-full fas fa-camera text-white text-xl -bottom-5 left-11"></button>
                         <input @change="previewProfileImage" type="file" accept="image/*" id="profileImageInput" class="hidden">
                     </div>
+                </div>
+
+                <!-- profile contents section -->
+                <div class="flex flex-col space-y-2 ml-20 mb-10">
+                        <span>이름</span>
+                        <input class="bg-gray-100 focus:ring-2 focus:ring-blue-300 focus:bg-white text-xs rounded-full w-2/5 p-2 px-4" type="text" placeholder="어느 암장이세요?" v-model="UserName">
+                        <span class="mt-5">주 암장</span>
+                        <input class="bg-gray-100 focus:ring-2 focus:ring-blue-300 focus:bg-white text-xs rounded-full w-2/5 p-2 px-4" type="text" placeholder="어느 암장이세요?" v-model="search">
+                        <span class="mt-5">주 난이도</span>
+                        <div class="p-2 border-2 border-blue-300 mr-auto rounded-full space-x-1">
+                            <button v-for="level in LevelList" :key="level" :value="level" :class="`text-${level} w-7 border-2 border-BgLightBlue rounded-full hover:border-primary hover:bg-BgLightBlue`"><i class="fa-solid fa-circle"></i></button>
+                        </div>
                 </div>
             </div>
         </div>
@@ -50,6 +62,7 @@ export default {
         const backgroundImageData = ref(null)
         const profileImage = ref(null)
         const profileImageData = ref(null)
+        const UserName = ref(userInfo.value.user_name)
 
         const onChangeBackgroundImage = () => {
             document.getElementById('backgroundImageInput').click()
@@ -111,9 +124,10 @@ export default {
                     console.log(`background image data error:${e}`)
                 }
             }
-
             emit('close_modal')
         }
+
+        const LevelList = ['white', `yellow-400`, 'orange-400', 'green-800', 'sky-500', 'red-500', 'purple-600', 'gray-300', 'black']
 
         return {
             userInfo,
@@ -126,6 +140,8 @@ export default {
             profileImage,
             profileImageData,
             onSaveProfile,
+            UserName,
+            LevelList,
         }
     }
 

@@ -82,6 +82,7 @@ export default {
                     followings: [],
                     created_at: Date.now()
                 })
+
                 const docSnap = await getDoc(doc(db, "users", user.uid))
                 console.log(docSnap)
                 store.commit("setUser", docSnap.data())
