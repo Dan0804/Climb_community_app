@@ -127,3 +127,7 @@ firebase authentication 회원가입 및 firestore 데이터 저장 완료
 
 - 22.05.08(일)
   Login 시 사용자 정보가 초기화되는거 관련해서 그렇게 안되도록 수정 완료
+  Nick name도 추가함
+  ㄴ profile edit 수정 완료 / 데이터 넘기는 것은 아직 완료 안함
+  Login 구글말고는 없앰 / 나중에 apple이랑 facebook login도 넣어야함
+  

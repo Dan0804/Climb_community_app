@@ -26,7 +26,7 @@
                     </div>
                     <div class="flex-1 ml-3">
                         <div class="flex text-sm space-x-2 items-center">
-                            <span class="font-bold">{{ post.user_name }}</span>
+                            <span class="font-bold">{{ post.nick_name }}</span>
                             <span class="text-gray-500 text-xs">{{ post.email }}</span>
                             <span class="text-gray-500 text-xs">{{ moment(post.created_at).fromNow() }}</span>
                         </div>
@@ -34,7 +34,7 @@
                             {{ post.post_body }}
                         </div>
                         <div class="flex items-baseline">
-                            <span class="text-blue-400 font-bold text-sm">{{ post.user_sname }}</span>
+                            <span class="text-blue-400 font-bold text-sm">{{ post.nick_name }}</span>
                             <span class="text-gray-500 text-xs pt-2">님에게 보내는 답글</span>
                         </div>
                     </div>

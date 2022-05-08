@@ -5,7 +5,7 @@
         </router-link>
         <div class="flex flex-1 flex-col ml-3">
             <div class="text-sm space-x-2 my-2">
-                <span class="font-bold">{{ post.user_name }}</span>
+                <span class="font-bold">{{ post.nick_name }}</span>
                 <span class="text-gray-500 text-sm">{{ post.email }}</span>
                 <span class="text-gray-500 text-sm">•</span>
                 <span class="text-gray-500 text-sm">{{ dayjs(post.created_at).locale("ko").fromNow() }}</span>

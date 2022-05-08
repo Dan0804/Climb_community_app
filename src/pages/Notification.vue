@@ -14,7 +14,7 @@
                 <i class="fa-solid fa-ellipsis flex place-items-center justify-center hover:border-2 hover:border-gray-100 hover:bg-blue-300 rounded-full w-10 h-10"></i>
             </div>
             <div>
-                <span class="font-bold">{{ notification.user_name }}</span> 님의 최근 글
+                <span class="font-bold">{{ notification.nick_name }}</span> 님의 최근 글
             </div>
             <router-link :to="`/post/${notification.id}`" class="text-gray-500">{{ notification.post_body }}</router-link>
         </div>

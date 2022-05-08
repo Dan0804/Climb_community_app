@@ -8,7 +8,7 @@
                     <i class="fa-solid fa-arrow-left text-blue-300 rounded-full p-3 hover:bg-blue-50"></i>
                 </button>
                 <div>
-                    <div class="font-semibold text-lg">{{ profileUser.user_name }}</div>
+                    <div class="font-semibold text-lg">{{ profileUser.nick_name }}</div>
                     <div class="text-xs text-gray-500">{{ profileUser.num_posts }} 트윗</div>
                 </div>
             </div>
@@ -40,7 +40,7 @@
 
             <!-- user info -->
             <div class="mx-4 mt-1">
-                <div class="font-extrabold text-lg">{{ profileUser.user_name }}</div>
+                <div class="font-extrabold text-lg">{{ profileUser.nick_name }}</div>
                 <div class="text-gray">{{ profileUser.email }}</div>
                 <div>
                     <span class="text-gray pr-1">가입일 :</span>

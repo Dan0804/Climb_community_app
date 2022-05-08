@@ -16,7 +16,7 @@
                     </router-link>
                     <div class="flex-1 flex-col">
                         <div class="ml-3 space-x-2 pt-2">
-                            <span class="font-bold">{{ post.user_name }}</span>
+                            <span class="font-bold">{{ post.nick_name }}</span>
                             <span class="text-gray-500 text-xs">{{ post.email }}</span>
                             <span class="text-gray-500 text-xs">•</span>
                             <span class="text-gray-500 text-xs">{{ dayjs(post.created_at).locale("ko").fromNow() }}</span>
@@ -57,7 +57,7 @@
                     </router-link>
                     <div class="flex-1 ml-3 space-y-2">
                         <div class="flex items-baseline space-x-1">
-                            <span class="font-bold">{{ comment.user_name }}</span>
+                            <span class="font-bold">{{ comment.nick_name }}</span>
                             <span class="text-gray text-xs">{{ comment.email }}</span>
                             <span class="text-gray text-xs">{{ dayjs(comment.created_at).locale("ko").fromNow() }}</span>
                         </div>
