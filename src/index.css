@@ -9,3 +9,7 @@ button {
 input {
     @apply focus:outline-none;
 }
+
+.level_red {
+    color: rgb(239, 68, 68)
+}   

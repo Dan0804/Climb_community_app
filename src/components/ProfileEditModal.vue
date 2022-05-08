@@ -33,14 +33,14 @@
                 </div>
 
                 <!-- profile contents section -->
-                <div class="flex flex-col space-y-2 ml-20 mb-10">
+                <div class="flex flex-col space-y-2 ml-12 mb-10">
 
-                        <span>이름</span>
-                        <input class="bg-gray-100 focus:ring-2 focus:ring-blue-300 focus:bg-white text-xs rounded-full w-2/5 p-2 px-4" type="text" placeholder="어느 암장이세요?" v-model="UserName">
+                        <span>닉네임</span>
+                        <input class="bg-gray-100 focus:ring-2 focus:ring-blue-300 focus:bg-white text-sm rounded-full w-48 p-2 px-4" type="text" placeholder="어느 암장이세요?" v-model="UserName">
 
                         <span class="mt-5">주 암장</span>
-                        <div class="relative mb-2">
-                            <input class="bg-gray-100 focus:ring-2 focus:ring-blue-300 focus:bg-white text-xs rounded-full w-2/5 p-2 pl-7" type="text" placeholder="어느 암장이세요?" v-model="search">
+                        <div class="relative mb-2 mr-32">
+                            <input class="bg-gray-100 focus:ring-2 focus:ring-blue-300 focus:bg-white text-sm rounded-full w-48 p-2 pl-7" type="text" placeholder="어느 암장이세요?" v-model="search">
                             <i class="fa-solid fa-hashtag absolute left-0 -top-0.5 mt-2 ml-3 text-sm text-light"></i>
                             <button v-if="hashTagCenter.length != 0" class="px-3 py-1 my-1 mx-1 bg-hover_primary text-white hover:bg-red-200 hover:text-black rounded-full absolute -top-1" @click="hashTagDelete">
                                 <i class="fa-solid fa-xmark mr-2"></i>{{ hashTagCenter }}
@@ -53,8 +53,8 @@
                         </div>
 
                         <span class="mt-5">주 난이도</span>
-                        <div class="p-2 border-2 border-blue-300 mr-auto rounded-full space-x-1">
-                            <button v-for="level in LevelList" :key="level" :value="level" :class="`text-${level} w-7 border-2 border-BgLightBlue rounded-full hover:border-primary hover:bg-BgLightBlue`"><i class="fa-solid fa-circle"></i></button>
+                        <div class="p-1 border-2 border-blue-300 mr-auto rounded-full space-x-1">
+                            <button v-for="level in LevelList" :key="level" :class="`${level} w-8 border-2 border-BgLightBlue rounded-full hover:border-primary hover:bg-BgLightBlue text-xl ${levelClick === true && levelColor === level ? 'border-primary bg-BgLightBlue' : ''}`" @click="LevelSelect(level)"><i class="fa-solid fa-circle"></i></button>
                         </div>
                 </div>
             </div>
@@ -77,7 +77,7 @@ export default {
         const backgroundImageData = ref(null)
         const profileImage = ref(null)
         const profileImageData = ref(null)
-        const UserName = ref(userInfo.value.user_name)
+        const UserName = ref(userInfo.value.nick_name)
 
         const onChangeBackgroundImage = () => {
             document.getElementById('backgroundImageInput').click()
@@ -185,7 +185,24 @@ export default {
             hashTagId.value = ''
         }
 
-        const LevelList = ['white', `yellow-400`, 'orange-400', 'green-800', 'sky-500', 'red-500', 'purple-600', 'gray-300', 'black']
+        const levelClick = ref(false)
+        const levelColor = ref('')
+        const LevelList = ['text-white', `text-yellow-400`, 'text-orange-400', 'text-green-800', 'text-sky-500', 'text-red-600', 'text-purple-600', 'text-gray-300', 'text-black']
+        const LevelSelect = (level) => {
+            if (levelClick.value === false) {
+                levelClick.value = true
+                levelColor.value = level
+                console.log(levelClick.value)
+                console.log(levelColor.value)
+            } else if (levelClick.value === true && levelColor.value === level) {
+                levelClick.value = false
+                levelColor.value = ''
+                console.log(levelClick.value)
+                console.log(levelColor.value)
+            } else {
+                alert("이미 다른 난이도를 선택하셨습니다.")
+            }
+        }
 
         return {
             userInfo,
@@ -199,7 +216,6 @@ export default {
             profileImageData,
             onSaveProfile,
             UserName,
-            LevelList,
             centerList,
             search,
             filter,
@@ -207,8 +223,11 @@ export default {
             hashTagId,
             hashTagAdd,
             hashTagDelete,
+            levelClick,
+            levelColor,
+            LevelList,
+            LevelSelect,
         }
     }
-
 }
 </script>
