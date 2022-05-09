@@ -55,11 +55,14 @@
             </div>
         </div>
     </div>
+
+    <Loading v-if="DuringLoading"></Loading>
 </template>
 
 <script>
 import { ref, computed, onBeforeMount } from "vue"
 import addPost from "../utils/addPost"
+import Loading from "./Loading.vue"
 import store from "../store"
 import { storage } from "../firebase"
 import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage"
@@ -67,12 +70,14 @@ import { getDocs, } from 'firebase/firestore'
 import { CenterCollection, } from '../firebase'
 
 export default {
+    components: { Loading },
     setup(props, {emit}) {
         // postbody, video data update
         const postBody = ref('')
         const postMedia = ref(null)
         const previewVideoData = ref(null)
         const userInfo = computed(() => store.state.user)
+        const DuringLoading = ref(false)
 
         const onChangeVideo = () => {
             document.getElementById("videoInput").click()
@@ -139,6 +144,7 @@ export default {
         // post register
         const onAddPost = async () => {
             try {
+                DuringLoading.value = true
                 let createTime = Date.now()
                 const videoRef = await storageRef(storage, `video/${userInfo.value.uid}/${createTime}`)
                 await uploadBytes(videoRef, previewVideoData.value)
@@ -152,6 +158,8 @@ export default {
                 emit('close_modal')
             } catch (e) {
                 console.log('on add post error on homepage:', e)
+            } finally {
+                DuringLoading.value = false
             }
         }
 
@@ -172,6 +180,7 @@ export default {
             postBody,
             postMedia,
             userInfo,
+            DuringLoading,
             onAddPost,
             onChangeVideo,
             previewVideo,

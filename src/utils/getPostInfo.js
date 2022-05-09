@@ -9,6 +9,7 @@ export default async (post) => {
     post.profile_image_url = docu.data().profile_image_url
     post.email = docu.data().email
     post.user_name = docu.data().user_name
+    post.nick_name = docu.data().nick_name
 
     const likeSnapshot = await getDocs(query(LikeCollection, where("from_like_id", "==", post.id), where("uid", "==", userInfo.value.uid)))
     if (likeSnapshot.empty) {
