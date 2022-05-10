@@ -40,7 +40,14 @@
 
             <!-- user info -->
             <div class="mx-4 mt-1">
-                <div class="font-extrabold text-lg">{{ profileUser.nick_name }}</div>
+                <div>
+                    <span class="font-extrabold text-lg mr-5">{{ profileUser.nick_name }}</span>
+                    <span class="border-2 border-blue-300 px-2 py-1 rounded-full">
+                        <i class="fa-solid fa-location-dot"></i>
+                        {{ profileUser.main_center }}
+                        <i :class="`fa-solid fa-circle ${profileUser.my_level}`"></i>
+                    </span>
+                </div>
                 <div class="text-gray">{{ profileUser.email }}</div>
                 <div>
                     <span class="text-gray pr-1">가입일 :</span>

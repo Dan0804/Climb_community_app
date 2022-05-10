@@ -9,7 +9,7 @@
                     <div style="border-top-color:transparent"
                         class="w-8 h-8 border-4 border-blue-400 border-solid rounded-full animate-spin">
                     </div>
-                    <span class="absolute top-1 right-5">게시글 저장 중...</span>
+                    <span class="absolute top-1 right-5">게시글 업로드 중...</span>
                 </div>
             </div>
         </div>

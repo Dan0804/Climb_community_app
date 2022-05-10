@@ -34,28 +34,29 @@
 
                 <!-- profile contents section -->
                 <div class="flex flex-col space-y-2 ml-12 mb-10">
+                    <span>닉네임</span>
+                    <input class="bg-gray-100 focus:ring-2 focus:ring-blue-300 focus:bg-white text-xs rounded-full w-44 p-2 px-4" type="text" v-model="NickName">
 
-                        <span>닉네임</span>
-                        <input class="bg-gray-100 focus:ring-2 focus:ring-blue-300 focus:bg-white text-sm rounded-full w-48 p-2 px-4" type="text" placeholder="어느 암장이세요?" v-model="UserName">
-
-                        <span class="mt-5">주 암장</span>
-                        <div class="relative mb-2 mr-32">
-                            <input class="bg-gray-100 focus:ring-2 focus:ring-blue-300 focus:bg-white text-sm rounded-full w-48 p-2 pl-7" type="text" placeholder="어느 암장이세요?" v-model="search">
+                    <span class="mt-5">주 암장</span>
+                    <div class="relative mb-2">
+                        <div class="mb-1">
+                            <input class="bg-gray-100 focus:ring-2 focus:ring-blue-300 focus:bg-white text-sm rounded-full w-44 p-2 pl-7" type="text" placeholder="어느 암장이세요?" v-model="search">
                             <i class="fa-solid fa-hashtag absolute left-0 -top-0.5 mt-2 ml-3 text-sm text-light"></i>
-                            <button v-if="hashTagCenter.length != 0" class="px-3 py-1 my-1 mx-1 bg-hover_primary text-white hover:bg-red-200 hover:text-black rounded-full absolute -top-1" @click="hashTagDelete">
+                            <button v-if="hashTagCenter.length != 0" class="px-3 py-2 my-1 mx-1 text-sm bg-hover_primary text-white hover:bg-red-200 hover:text-black rounded-full absolute -top-1" @click="hashTagDelete">
                                 <i class="fa-solid fa-xmark mr-2"></i>{{ hashTagCenter }}
                             </button>
-                            <div class="h-20 border-b border-gray-150 overflow-y-auto">
-                                <button class="px-3 py-1 my-2 mx-1 bg-BgLightBlue hover:bg-hover_primary hover:text-white rounded-full" v-for="center in filter" :key="center.id" :value="center.center_name" :id="center.id" @click="hashTagAdd">
-                                    {{ center.center_name }}
-                                </button>
-                            </div>
                         </div>
+                        <div class="h-20 border-b border-gray-150 mr-24 overflow-y-auto">
+                            <button class="px-3 py-1 my-2 mx-1 bg-BgLightBlue hover:bg-hover_primary hover:text-white rounded-full" v-for="center in filter" :key="center.id" :value="center.center_name" :id="center.id" @click="hashTagAdd">
+                                {{ center.center_name }}
+                            </button>
+                        </div>
+                    </div>
 
-                        <span class="mt-5">주 난이도</span>
-                        <div class="p-1 border-2 border-blue-300 mr-auto rounded-full space-x-1">
-                            <button v-for="level in LevelList" :key="level" :class="`${level} w-8 border-2 border-BgLightBlue rounded-full hover:border-primary hover:bg-BgLightBlue text-xl ${levelClick === true && levelColor === level ? 'border-primary bg-BgLightBlue' : ''}`" @click="LevelSelect(level)"><i class="fa-solid fa-circle"></i></button>
-                        </div>
+                    <span class="mt-5">주 난이도</span>
+                    <div class="p-1 border-2 border-blue-300 mr-auto rounded-full space-x-1">
+                        <button v-for="level in LevelList" :key="level" :class="`${level} w-8 border-2 border-BgLightBlue rounded-full hover:border-primary hover:bg-BgLightBlue text-xl ${levelClick === true && levelColor === level ? 'border-primary bg-BgLightBlue' : ''}`" @click="LevelSelect(level)"><i class="fa-solid fa-circle"></i></button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -67,7 +68,7 @@ import { ref, computed, onBeforeMount } from "vue"
 import store from "../store"
 import { storage, db } from "../firebase"
 import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage"
-import { doc, updateDoc, getDocs } from "firebase/firestore"
+import { doc, updateDoc, getDocs, } from "firebase/firestore"
 import { CenterCollection, } from '../firebase'
 
 export default {
@@ -77,7 +78,7 @@ export default {
         const backgroundImageData = ref(null)
         const profileImage = ref(null)
         const profileImageData = ref(null)
-        const UserName = ref(userInfo.value.nick_name)
+        const NickName = ref(userInfo.value.nick_name)
 
         const onChangeBackgroundImage = () => {
             document.getElementById('backgroundImageInput').click()
@@ -107,8 +108,68 @@ export default {
             reader.readAsDataURL(file)
         }
 
+        const centerList = ref([])
+        const search = ref('')
+        let i = 0
+
+        onBeforeMount( async () => {
+            const q = await getDocs(CenterCollection)
+            q.forEach( (doc) => {
+                centerList.value.push(doc.data())
+            })
+        })
+
+        const filter = computed(() => {
+            const filteredList = ref([])
+            if ( search.value.length != 0 ) {
+                for (i=0 ; i < centerList.value.length ; i++) {
+                    if ( centerList.value[i].center_name.toLowerCase().includes(search.value.toLowerCase()) ) {
+                        filteredList.value.push(centerList.value[i])
+                    }
+                }
+                return filteredList.value
+
+            } else {
+                return
+            }
+        })
+
+        const hashTagCenter = ref(userInfo.value.main_center)
+
+        const hashTagAdd = (event) => {
+            if ( hashTagCenter.value === '' ) {
+                hashTagCenter.value = event.target.value
+                console.log(hashTagCenter.value)
+            } else {
+                alert("이미 암장을 선택하셨습니다.")
+            }
+        }
+
+        const hashTagDelete = () => {
+            hashTagCenter.value = ''
+        }
+
+        const levelClick = ref(false)
+        const levelColor = ref(userInfo.value.my_leve)
+        const LevelList = ['text-white', `text-yellow-400`, 'text-orange-400', 'text-green-800', 'text-sky-500', 'text-red-600', 'text-purple-600', 'text-gray-300', 'text-black']
+        const LevelSelect = (level) => {
+            if (levelClick.value === false) {
+                levelClick.value = true
+                levelColor.value = level
+            } else if (levelClick.value === true && levelColor.value === level) {
+                levelClick.value = false
+                levelColor.value = ''
+            } else {
+                alert("이미 다른 난이도를 선택하셨습니다.")
+            }
+        }
+
         const onSaveProfile = async () => {
-            if ( !profileImageData.value && !backgroundImageData.value) {
+            if ( !profileImageData.value 
+                && !backgroundImageData.value 
+                && NickName.value === userInfo.value.nick_name 
+                && hashTagCenter.value === userInfo.value.center_name
+                && levelColor.value === userInfo.value.my_level ) {
                 return
             }
 
@@ -139,69 +200,42 @@ export default {
                     console.log(`background image data error:${e}`)
                 }
             }
-            emit('close_modal')
-        }
 
-        const centerList = ref([])
-        const search = ref('')
-        let i = 0
-
-        onBeforeMount( async () => {
-            const q = await getDocs(CenterCollection)
-            q.forEach( (doc) => {
-                centerList.value.push(doc.data())
-            })
-        })
-
-        const filter = computed(() => {
-            const filteredList = ref([])
-            if ( search.value.length != 0 ) {
-                for (i=0 ; i < centerList.value.length ; i++) {
-                    if ( centerList.value[i].center_name.toLowerCase().includes(search.value.toLowerCase()) ) {
-                        filteredList.value.push(centerList.value[i])
-                    }
+            if (NickName.value != userInfo.value.nick_name) {
+                try {
+                    console.log(NickName.value)
+                    await updateDoc(doc(db, "users", userInfo.value.uid), {
+                        'nick_name': NickName.value,
+                    })
+                    store.commit("setProfileNickName", NickName.value)
+                } catch(e) {
+                    console.log(`Nick Name data error:${e}`)
                 }
-                return filteredList.value
-
-            } else {
-                return
             }
-        })
 
-        const hashTagCenter = ref('')
-        const hashTagId = ref('')
-
-        const hashTagAdd = (event) => {
-            if ( hashTagCenter.value === '' ) {
-                hashTagCenter.value = event.target.value
-                hashTagId.value = event.target.id
-            } else {
-                alert("이미 암장을 선택하셨습니다.")
+            if (hashTagCenter.value !=userInfo.value.center_name) {
+                try {
+                    await updateDoc(doc(db, "users", userInfo.value.uid), {
+                        main_center: hashTagCenter.value,
+                    })
+                    store.commit("setProfileMainCenter", hashTagCenter.value)
+                } catch(e) {
+                    console.log(`Main Center data error:${e}`)
+                }
             }
-        }
 
-        const hashTagDelete = () => {
-            hashTagCenter.value = ''
-            hashTagId.value = ''
-        }
-
-        const levelClick = ref(false)
-        const levelColor = ref('')
-        const LevelList = ['text-white', `text-yellow-400`, 'text-orange-400', 'text-green-800', 'text-sky-500', 'text-red-600', 'text-purple-600', 'text-gray-300', 'text-black']
-        const LevelSelect = (level) => {
-            if (levelClick.value === false) {
-                levelClick.value = true
-                levelColor.value = level
-                console.log(levelClick.value)
-                console.log(levelColor.value)
-            } else if (levelClick.value === true && levelColor.value === level) {
-                levelClick.value = false
-                levelColor.value = ''
-                console.log(levelClick.value)
-                console.log(levelColor.value)
-            } else {
-                alert("이미 다른 난이도를 선택하셨습니다.")
+            if (levelColor.value != userInfo.value.my_level) {
+                try {
+                    await updateDoc(doc(db, "users", userInfo.value.uid), {
+                        my_level: levelColor.value,
+                    })
+                    store.commit("setProfileMyLevel", levelColor.value)
+                } catch(e) {
+                    console.log(`My Level data error:${e}`)
+                }
             }
+
+            emit('close_modal')
         }
 
         return {
@@ -215,12 +249,11 @@ export default {
             profileImage,
             profileImageData,
             onSaveProfile,
-            UserName,
+            NickName,
             centerList,
             search,
             filter,
             hashTagCenter,
-            hashTagId,
             hashTagAdd,
             hashTagDelete,
             levelClick,

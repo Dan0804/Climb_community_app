@@ -20,6 +20,18 @@ const store = createStore({
             state.user.profile_image_url = image
         },
 
+        setProfileNickName: (state, nick_name) => {
+            state.user.nick_name = nick_name
+        },
+
+        setProfileMainCenter: (state, main_center) => {
+            state.user.main_center = main_center
+        },
+
+        setProfileMyLevel: (state, my_level) => {
+            state.user.my_level = my_level
+        },
+
         setFollow: (state, uid) => {
             state.user.followings.push(uid)
         },
