@@ -2,10 +2,10 @@
   <div class="flex h-screen container mx-auto">
 
     <!-- menu frame -->
-    <Menu class="xl:ml-12"/>
+    <Menu class="xl:ml-36"/>
 
     <!-- main frame -->
-      <router-view class="xl:mr-48" />
+      <router-view class="xl:mr-60" />
   </div>
 </template>
 

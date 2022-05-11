@@ -9,41 +9,36 @@
                 </button>
                 <div>
                     <div class="font-semibold text-lg">{{ profileUser.nick_name }}</div>
-                    <div class="text-xs text-gray-500">{{ profileUser.num_posts }} 트윗</div>
-                </div>
-            </div>
-
-            <div class="flex-none relative bg-gray-300 h-36">
-                <!-- background image -->
-                <img :src="profileUser.background_image_url" class="w-full h-36 object-cover">
-                <!-- porfile image -->
-                <div class="border-4 border-white bg-gray-100 w-28 h-28 rounded-full absolute -bottom-14 right-2">
-                    <img :src="profileUser.profile_image_url" class="rounded-full opacity-90 hover:opacity-100 cursor-pointer w-full h-full object-cover">
+                    <div class="text-xs text-gray-500">{{ profileUser.num_posts }} 게시글</div>
                 </div>
             </div>
 
             <!-- profile edit button -->
             <div class="text-right mt-2 mr-2 relative">
                 <div v-if="userInfo.uid === profileUser.uid">
-                    <button @click="showProfileEditModal = true" class="absolute border-2 border-blue-300 text-sm text-blue-300 px-3 py-2 hover:bg-blue-50 w-24 -bottom-28 right-0 font-bold rounded-full">프로필 수정</button>
+                    <button @click="showProfileEditModal = true" class="absolute border-2 border-blue-300 text-sm text-blue-300 px-3 py-2 hover:bg-blue-50 w-24 -bottom-12 right-0 font-bold rounded-full">프로필 수정</button>
                 </div>
                 <div v-else>
                     <div v-if="userInfo.followings.includes(profileUser.uid)" @click="onUnfollow">
-                        <button class="absolute w-24 -bottom-28 right-0 text-sm bg-primary text-white px-3 py-2 hover:opacity-0 font-bold rounded-full">팔로잉</button>
-                        <button class="absolute w-24 -bottom-28 right-0 text-sm bg-red-400 text-white px-3 py-2 opacity-0 hover:opacity-100 font-bold rounded-full">언팔로우</button>
+                        <button class="absolute w-24 -bottom-12 right-0 text-sm bg-primary text-white px-3 py-2 hover:opacity-0 font-bold rounded-full">팔로잉</button>
+                        <button class="absolute w-24 -bottom-12 right-0 text-sm bg-red-400 text-white px-3 py-2 opacity-0 hover:opacity-100 font-bold rounded-full">언팔로우</button>
                     </div>
                     <div v-else @click="onFollow">
-                        <button class="absolute w-24 -bottom-28 right-0 border-2 border-blue-300 text-sm text-blue-300 px-3 py-2 hover:bg-blue-50 font-bold rounded-full">팔로우</button>
+                        <button class="absolute w-24 -bottom-12 right-0 border-2 border-blue-300 text-sm text-blue-300 px-3 py-2 hover:bg-blue-50 font-bold rounded-full">팔로우</button>
                     </div>
                 </div>
             </div>
 
             <!-- user info -->
             <div class="mx-4 mt-1">
+                <!-- porfile image -->
+                <div class="border-4 border-white bg-gray-100 w-28 h-28 rounded-full mb-2">
+                    <img :src="profileUser.profile_image_url" class="rounded-full opacity-90 hover:opacity-100 cursor-pointer w-full h-full object-cover">
+                </div>
                 <div>
                     <span class="font-extrabold text-lg mr-5">{{ profileUser.nick_name }}</span>
                     <span class="border-2 border-blue-300 px-2 py-1 rounded-full">
-                        <i class="fa-solid fa-location-dot"></i>
+                        <i class="fa-solid fa-location-dot text-primary"></i>
                         {{ profileUser.main_center }}
                         <i :class="`fa-solid fa-circle ${profileUser.my_level}`"></i>
                     </span>

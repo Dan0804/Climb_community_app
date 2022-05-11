@@ -18,22 +18,15 @@
                 </div>
 
                 <!-- image section -->
-                <div class="h-60">
-                    <!-- background -->
-                    <div class="flex flex-none items-center justify-center relative bg-gray-300 h-40">
-                        <img ref="backgroundImage" :src="userInfo.background_image_url" class="object-cover absolute w-full h-full">
-                        <button @click="onChangeBackgroundImage" class="absolute h-10 w-10 hover:text-gray-200 rounded-full fas fa-camera text-white text-xl"></button>
-                        <input @change="previewBackgroundImage" type="file" accept="image/*" id="backgroundImageInput" class="hidden">
-
-                        <!-- profile image -->
-                        <img ref="profileImage" :src="userInfo.profile_image_url" class="border-4 border-white w-28 h-28 rounded-full absolute -bottom-14 left-2 object-cover">
-                        <button @click="onChangeProfileImage" class="absolute h-10 w-10 hover:text-gray-200 rounded-full fas fa-camera text-white text-xl -bottom-5 left-11"></button>
-                        <input @change="previewProfileImage" type="file" accept="image/*" id="profileImageInput" class="hidden">
-                    </div>
+                <div class="flex flex-none items-center justify-center relative h-28">
+                    <!-- profile image -->
+                    <img ref="profileImage" :src="userInfo.profile_image_url" class="border-4 border-white w-44 h-44 rounded-full absolute -bottom-14 right-7 object-cover">
+                    <button @click="onChangeProfileImage" class="absolute h-10 w-10 hover:text-gray-200 rounded-full fas fa-camera text-white text-xl bottom-3 right-24"></button>
+                    <input @change="previewProfileImage" type="file" accept="image/*" id="profileImageInput" class="hidden">
                 </div>
 
                 <!-- profile contents section -->
-                <div class="flex flex-col space-y-2 ml-12 mb-10">
+                <div class="flex flex-col space-y-2 ml-6 mb-10">
                     <span>닉네임</span>
                     <input class="bg-gray-100 focus:ring-2 focus:ring-blue-300 focus:bg-white text-xs rounded-full w-44 p-2 px-4" type="text" v-model="NickName">
 
@@ -46,7 +39,7 @@
                                 <i class="fa-solid fa-xmark mr-2"></i>{{ hashTagCenter }}
                             </button>
                         </div>
-                        <div class="h-20 border-b border-gray-150 mr-24 overflow-y-auto">
+                        <div class="h-20 border-b border-gray-150 mr-40 overflow-y-auto">
                             <button class="px-3 py-1 my-2 mx-1 bg-BgLightBlue hover:bg-hover_primary hover:text-white rounded-full" v-for="center in filter" :key="center.id" :value="center.center_name" :id="center.id" @click="hashTagAdd">
                                 {{ center.center_name }}
                             </button>
@@ -55,7 +48,7 @@
 
                     <span class="mt-5">주 난이도</span>
                     <div class="p-1 border-2 border-blue-300 mr-auto rounded-full space-x-1">
-                        <button v-for="level in LevelList" :key="level" :class="`${level} w-8 border-2 border-BgLightBlue rounded-full hover:border-primary hover:bg-BgLightBlue text-xl ${levelClick === true && levelColor === level ? 'border-primary bg-BgLightBlue' : ''}`" @click="LevelSelect(level)"><i class="fa-solid fa-circle"></i></button>
+                        <button v-for="level in LevelList" :key="level" :class="`${level} w-8 border-2 border-BgLightBlue rounded-full hover:border-primary hover:bg-BgLightBlue text-xl ${levelColor === level ? 'border-primary bg-BgLightBlue' : ''}`" @click="LevelSelect(level)"><i class="fa-solid fa-circle"></i></button>
                     </div>
                 </div>
             </div>
@@ -74,28 +67,12 @@ import { CenterCollection, } from '../firebase'
 export default {
     setup(props, {emit}) {
         const userInfo = computed(() => store.state.user)
-        const backgroundImage = ref(null)
-        const backgroundImageData = ref(null)
         const profileImage = ref(null)
         const profileImageData = ref(null)
         const NickName = ref(userInfo.value.nick_name)
 
-        const onChangeBackgroundImage = () => {
-            document.getElementById('backgroundImageInput').click()
-        }
-
         const onChangeProfileImage = () => {
             document.getElementById('profileImageInput').click()
-        }
-
-        const previewBackgroundImage = (event) => {
-            const file = event.target.files[0]
-            backgroundImageData.value = file
-            let reader = new FileReader()
-            reader.onload = function (event) {
-                backgroundImage.value.src = event.target.result
-            }
-            reader.readAsDataURL(file)
         }
 
         const previewProfileImage = (event) => {
@@ -149,24 +126,20 @@ export default {
             hashTagCenter.value = ''
         }
 
-        const levelClick = ref(false)
-        const levelColor = ref(userInfo.value.my_leve)
+        // const levelClick = ref(false)
+        const levelColor = ref(userInfo.value.my_level)
         const LevelList = ['text-white', `text-yellow-400`, 'text-orange-400', 'text-green-800', 'text-sky-500', 'text-red-600', 'text-purple-600', 'text-gray-300', 'text-black']
         const LevelSelect = (level) => {
-            if (levelClick.value === false) {
-                levelClick.value = true
+            if (levelColor.value != level) {
                 levelColor.value = level
-            } else if (levelClick.value === true && levelColor.value === level) {
-                levelClick.value = false
-                levelColor.value = ''
+                console.log(levelColor.value)
             } else {
-                alert("이미 다른 난이도를 선택하셨습니다.")
+                levelColor.value = ''
             }
         }
 
         const onSaveProfile = async () => {
             if ( !profileImageData.value 
-                && !backgroundImageData.value 
                 && NickName.value === userInfo.value.nick_name 
                 && hashTagCenter.value === userInfo.value.center_name
                 && levelColor.value === userInfo.value.my_level ) {
@@ -187,25 +160,11 @@ export default {
                 }
             }
 
-            if (backgroundImageData.value) {
-                try {
-                    const backgroundRef = await storageRef(storage, `profile/${userInfo.value.uid}/background`)
-                    await uploadBytes(backgroundRef, backgroundImageData.value)
-                    const url = await getDownloadURL(backgroundRef)
-                    await updateDoc(doc(db, "users", userInfo.value.uid), {
-                        background_image_url: url,
-                    })
-                    store.commit("setBackgroundImage", url)
-                } catch(e) {
-                    console.log(`background image data error:${e}`)
-                }
-            }
-
             if (NickName.value != userInfo.value.nick_name) {
                 try {
                     console.log(NickName.value)
                     await updateDoc(doc(db, "users", userInfo.value.uid), {
-                        'nick_name': NickName.value,
+                        nick_name: NickName.value,
                     })
                     store.commit("setProfileNickName", NickName.value)
                 } catch(e) {
@@ -240,12 +199,8 @@ export default {
 
         return {
             userInfo,
-            onChangeBackgroundImage,
             onChangeProfileImage,
-            previewBackgroundImage,
             previewProfileImage,
-            backgroundImage,
-            backgroundImageData,
             profileImage,
             profileImageData,
             onSaveProfile,
@@ -256,7 +211,7 @@ export default {
             hashTagCenter,
             hashTagAdd,
             hashTagDelete,
-            levelClick,
+            // levelClick,
             levelColor,
             LevelList,
             LevelSelect,
