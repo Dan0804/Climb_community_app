@@ -130,4 +130,6 @@ firebase authentication 회원가입 및 firestore 데이터 저장 완료
   Nick name도 추가함
   ㄴ profile edit 수정 완료 / 데이터 넘기는 것은 아직 완료 안함
   Login 구글말고는 없앰 / 나중에 apple이랑 facebook login도 넣어야함
-  
+
+- 22.05.11(수)
+  profile edit 수정 최종 완료 / background image 없앰, user 정보 수정 관련 구현 완료
