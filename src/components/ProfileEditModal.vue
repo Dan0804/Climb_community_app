@@ -20,8 +20,8 @@
                 <!-- image section -->
                 <div class="flex flex-none items-center justify-center relative h-28">
                     <!-- profile image -->
-                    <img ref="profileImage" :src="userInfo.profile_image_url" class="border-4 border-white w-44 h-44 rounded-full absolute -bottom-14 right-7 object-cover">
-                    <button @click="onChangeProfileImage" class="absolute h-10 w-10 hover:text-gray-200 rounded-full fas fa-camera text-white text-xl bottom-3 right-24"></button>
+                    <img ref="profileImage" :src="userInfo.profile_image_url" class="border-4 border-white w-32 h-32 rounded-full absolute -bottom-4 right-9 object-cover">
+                    <button @click="onChangeProfileImage" class="absolute h-10 w-10 hover:text-gray-200 rounded-full fas fa-camera text-white text-xl bottom-6 right-20"></button>
                     <input @change="previewProfileImage" type="file" accept="image/*" id="profileImageInput" class="hidden">
                 </div>
 

@@ -22,7 +22,7 @@
                 <div class="flex mx-3 py-3">
                     <img :src="userInfo.profile_image_url" class="w-10 h-10 rounded-full hover:opacity-80 cursor-pointer">
                     <div class="flex flex-1 flex-col ml-2">
-                        <textarea v-model="postBody" class="border-b border-gray-150 w-full font-bold focus:outline-none mb-3 resize-none" rows="3" placeholder="오늘은 어떤 재미있는 일이 있었나요?"></textarea>
+                        <textarea v-model="postBody" class="border-b border-gray-150 w-full font-bold focus:outline-none mb-3 resize-none" rows="3" placeholder="오늘은 어떤 문제를 푸셨나요?"></textarea>
                         <div class="relative mb-2">
                             <input class="bg-gray-100 focus:ring-2 focus:ring-blue-300 focus:bg-white text-xs rounded-full w-2/5 p-2 pl-7" type="text" placeholder="어느 암장이세요?" v-model="search">
                             <i class="fa-solid fa-hashtag absolute left-0 -top-0.5 mt-2 ml-3 text-sm text-light"></i>
@@ -30,13 +30,16 @@
                                 <i class="fa-solid fa-xmark mr-2"></i>{{ hashTagCenter }}
                             </button>
                         </div>
-                        <div class="h-24 border-b border-gray-150 overflow-y-auto">
+                        <div class="h-32 border-b border-gray-150 overflow-y-auto">
                             <button class="px-3 py-1 my-1 mx-1 bg-BgLightBlue hover:bg-hover_primary hover:text-white rounded-full" v-for="center in filter" :key="center.id" :value="center.center_name" :id="center.id" @click="hashTagAdd">
                                 {{ center.center_name }}
                             </button>
                         </div>
-                        <button @click="onChangeVideo" class="h-10 w-10 hover:text-gray-200 rounded-full fas fa-camera text-gray-500 text-xl"></button>
-                        <input @change="previewVideo" type="file" accept="video/*" id="videoInput" class="hidden">
+                        <div>
+                            <button @click="onChangeVideo" class="h-10 w-10 hover:text-gray-200 rounded-full fas fa-camera text-gray-500 text-xl mr-2"></button>
+                            <input @change="previewVideo" type="file" accept="video/*" id="videoInput" class="hidden">
+                            <i class="text-gray-500 fa-solid fa-left-long mr-2 animate-bounce"><span class="ml-2">동영상을 등록해주세요!</span></i>
+                        </div>
                         <div @click="videoPlay">
                             <video id="previewVideo" width="400" height="300"></video>
                         </div>

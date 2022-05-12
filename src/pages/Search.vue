@@ -22,7 +22,7 @@
 import { getDocs, } from 'firebase/firestore'
 import { CenterCollection, } from '../firebase'
 import { computed, onBeforeMount, ref, } from 'vue'
-import CenterMenus from './centerMenus.vue'
+import CenterMenus from '../components/centerMenus.vue'
 
 export default {
     components: { CenterMenus },
@@ -33,7 +33,7 @@ export default {
 
         onBeforeMount( async () => {
             const q = await getDocs(CenterCollection)
-            q.forEach( (doc) => {
+            q.forEach((doc) => {
                 centerList.value.push(doc.data())
             })
         })

@@ -38,7 +38,7 @@ export default {
                     visited_count: 0,
                     upload_count: 0,
                 })
-
+                centerName.value = ''
                 console.log("등록 완료")
             } catch(e) {
                 console.log('center register error: ', e)

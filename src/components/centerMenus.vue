@@ -10,7 +10,6 @@
 export default {
     props: ['center'],
     setup() {
-        
     }
 }
 </script>

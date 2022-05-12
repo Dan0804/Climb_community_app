@@ -3,8 +3,8 @@
         <!-- icons -->
         <div>
             <div class="flex pt-12 flex-col items-start">
-                <router-link :to="route.path" :class="`cursor-pointer hover:text-hover_primary hover:bg-BgLightBlue w-14 xl:w-28 text-center xl:text-left py-2 xl:px-4 rounded-full ${router.currentRoute.value.name === route.name ? 'text-hover_primary bg-BgLightBlue' : ''}`" v-for="route in routes" :key="route">
-                    <div v-if="route.meta.isMenu">
+                <router-link :to="route.path" :class="`cursor-pointer hover:text-hover_primary hover:bg-BgLightBlue w-14 lg:w-28 py-2 lg:px-4 rounded-full ${router.currentRoute.value.name === route.name ? 'text-hover_primary bg-BgLightBlue' : ''}`" v-for="route in routes" :key="route">
+                    <div v-if="route.meta.isMenu" class="text-center lg:text-left">
                         <i :class="route.icon"></i>
                         <span class="hidden lg:inline-block"> {{route.title}} </span>
                     </div>
@@ -14,9 +14,9 @@
             <!-- post register button -->
             <div class="mr-3">
                 <div class="w-full h-12">
-                    <button @click="showPostModal = true" class="bg-hover_primary text-white hover:text-hover_primary hover:bg-BgLightBlue hover:border-2 hover:border-hover_primary rounded-full w-14 xl:w-28 h-12 mt-3">
-                        <span class="hidden xl:block font-semibold">등록하기</span>
-                        <i class="fa-solid fa-plus xl:hidden"></i>
+                    <button @click="showPostModal = true" class="bg-hover_primary text-white hover:text-hover_primary hover:bg-BgLightBlue hover:border-2 hover:border-hover_primary rounded-full w-14 lg:w-28 h-12 mt-3">
+                        <span class="hidden lg:block font-semibold">등록하기</span>
+                        <i class="fa-solid fa-video text-xl lg:hidden"></i>
                     </button>
                 </div>
             </div>
@@ -24,9 +24,9 @@
             <!-- center register button, 관리자용!! -->
             <div class="mr-3 mt-5">
                 <div class="w-full h-12">
-                    <button @click="showCenterRegisterModal = true" class="bg-hover_primary text-white hover:text-hover_primary hover:bg-BgLightBlue hover:border-2 hover:border-hover_primary rounded-full w-14 xl:w-28 h-12 mt-3">
-                        <span class="hidden xl:block font-semibold">암장 등록</span>
-                        <i class="fa-solid fa-location-dot xl:hidden"></i>
+                    <button @click="showCenterRegisterModal = true" class="bg-hover_primary text-white hover:text-hover_primary hover:bg-BgLightBlue hover:border-2 hover:border-hover_primary rounded-full w-14 lg:w-28 h-12 mt-3">
+                        <span class="hidden lg:block font-semibold">암장 등록</span>
+                        <i class="fa-solid fa-location-dot text-xl lg:hidden"></i>
                     </button>
                 </div>
             </div>
