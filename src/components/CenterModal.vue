@@ -20,8 +20,8 @@
 </template>
 
 <script>
-import { doc, setDoc, } from "firebase/firestore";
-import { CenterCollection, } from "../firebase";
+import { arrayUnion, doc, setDoc, updateDoc, } from "firebase/firestore";
+import { db, } from "../firebase";
 import { ref } from "vue";
 
 export default {
@@ -30,14 +30,17 @@ export default {
 
         const onCenterRegister = async () => {
             try {
-                const centerdocu = doc(CenterCollection)
+                const centerdocu = doc(db, 'centers', centerName.value)
                 await setDoc(centerdocu, {
-                    id: centerdocu.id,
                     center_name: centerName.value,
                     created_at: Date.now(),
-                    visited_count: 0,
                     upload_count: 0,
                 })
+
+                updateDoc(doc(db, 'centersList', 'List'), {
+                    centers: arrayUnion(centerName.value)
+                })
+
                 centerName.value = ''
                 console.log("등록 완료")
             } catch(e) {

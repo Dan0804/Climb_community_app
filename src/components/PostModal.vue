@@ -31,8 +31,8 @@
                             </button>
                         </div>
                         <div class="h-32 border-b border-gray-150 overflow-y-auto">
-                            <button class="px-3 py-1 my-1 mx-1 bg-BgLightBlue hover:bg-hover_primary hover:text-white rounded-full" v-for="center in filter" :key="center.id" :value="center.center_name" :id="center.id" @click="hashTagAdd">
-                                {{ center.center_name }}
+                            <button class="px-3 py-1 my-1 mx-1 bg-BgLightBlue hover:bg-hover_primary hover:text-white rounded-full" v-for="center in filter" :key="center.id" :value="center" :id="center.id" @click="hashTagAdd">
+                                {{ center }}
                             </button>
                         </div>
                         <div>
@@ -69,8 +69,8 @@ import Loading from "./Loading.vue"
 import store from "../store"
 import { storage } from "../firebase"
 import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage"
-import { getDocs, } from 'firebase/firestore'
-import { CenterCollection, } from '../firebase'
+import { getDoc, doc, } from 'firebase/firestore'
+import { db, } from '../firebase'
 
 export default {
     components: { Loading },
@@ -106,17 +106,15 @@ export default {
         let i = 0
 
         onBeforeMount( async () => {
-            const q = await getDocs(CenterCollection)
-            q.forEach( (doc) => {
-                centerList.value.push(doc.data())
-            })
+            const document = await getDoc(doc(db, 'centersList', 'List'))
+            centerList.value = document.data().centers
         })
 
         const filter = computed(() => {
             const filteredList = ref([])
             if ( search.value.length != 0 ) {
                 for (i=0 ; i < centerList.value.length ; i++) {
-                    if ( centerList.value[i].center_name.toLowerCase().includes(search.value.toLowerCase()) ) {
+                    if ( centerList.value[i].toLowerCase().includes(search.value.toLowerCase()) ) {
                         filteredList.value.push(centerList.value[i])
                     }
                 }
@@ -128,12 +126,10 @@ export default {
         })
 
         const hashTagCenter = ref('')
-        const hashTagId = ref('')
 
         const hashTagAdd = (event) => {
             if ( hashTagCenter.value === '' ) {
                 hashTagCenter.value = event.target.value
-                hashTagId.value = event.target.id
             } else {
                 alert("이미 암장을 선택하셨습니다.")
             }
@@ -141,7 +137,6 @@ export default {
 
         const hashTagDelete = () => {
             hashTagCenter.value = ''
-            hashTagId.value = ''
         }
 
         // post register
@@ -154,7 +149,7 @@ export default {
                 const url = await getDownloadURL(videoRef)
                 postMedia.value = url
 
-                addPost(postBody.value, hashTagId.value, userInfo.value, postMedia.value, createTime)
+                addPost(postBody.value, hashTagCenter.value, userInfo.value, postMedia.value, createTime)
                 postBody.value = ''
                 postMedia.value = null
 
@@ -191,7 +186,6 @@ export default {
             search,
             filter,
             hashTagCenter,
-            hashTagId,
             hashTagAdd,
             hashTagDelete,
             videoStatus,

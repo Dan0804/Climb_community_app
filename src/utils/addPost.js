@@ -1,13 +1,13 @@
 import { PostCollection, db } from "../firebase";
 import { doc, setDoc, updateDoc, increment } from "firebase/firestore";
 
-export default (postBody, hashTagId, userInfo, postMedia, createTime) => {
+export default (postBody, hashTagCenter, userInfo, postMedia, createTime) => {
 
     return new Promise( async (resolve, reject) => {
         try {
             const docu = doc(PostCollection)
             await setDoc(docu, {
-                center_id: hashTagId,
+                center_id: hashTagCenter,
                 id: docu.id,
                 post_body: postBody,
                 post_media: postMedia,
@@ -22,7 +22,7 @@ export default (postBody, hashTagId, userInfo, postMedia, createTime) => {
                 num_posts: increment(1),
             })
 
-            await updateDoc(doc(db, "centers", hashTagId), {
+            await updateDoc(doc(db, "centers", hashTagCenter), {
                 upload_count: increment(1),
             })
 

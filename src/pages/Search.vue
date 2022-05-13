@@ -19,30 +19,29 @@
 </template>
 
 <script>
-import { getDocs, } from 'firebase/firestore'
-import { CenterCollection, } from '../firebase'
+import { doc, getDoc, } from 'firebase/firestore'
+import { db, } from '../firebase'
 import { computed, onBeforeMount, ref, } from 'vue'
 import CenterMenus from '../components/centerMenus.vue'
 
 export default {
-    components: { CenterMenus },
+    components: { CenterMenus, },
     setup() {
         const centerList = ref([])
         const search = ref('')
         let i = 0
 
         onBeforeMount( async () => {
-            const q = await getDocs(CenterCollection)
-            q.forEach((doc) => {
-                centerList.value.push(doc.data())
-            })
+            const document = await getDoc(doc(db, 'centersList', 'List'))
+            // console.log(document.data().centers)
+            centerList.value = document.data().centers
         })
 
         const filter = computed(() => {
             const filteredList = ref([])
             if ( search.value.length != 0 ) {
                 for (i=0 ; i < centerList.value.length ; i++) {
-                    if ( centerList.value[i].center_name.toLowerCase().includes(search.value.toLowerCase()) ) {
+                    if ( centerList.value[i].toLowerCase().includes(search.value.toLowerCase()) ) {
                         filteredList.value.push(centerList.value[i])
                     }
                 }
@@ -53,7 +52,6 @@ export default {
             }
         })
         
-
         return {
             centerList,
             search,

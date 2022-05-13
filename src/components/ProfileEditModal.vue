@@ -61,8 +61,7 @@ import { ref, computed, onBeforeMount } from "vue"
 import store from "../store"
 import { storage, db } from "../firebase"
 import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage"
-import { doc, updateDoc, getDocs, } from "firebase/firestore"
-import { CenterCollection, } from '../firebase'
+import { doc, updateDoc, getDoc, } from "firebase/firestore"
 
 export default {
     setup(props, {emit}) {
@@ -90,17 +89,15 @@ export default {
         let i = 0
 
         onBeforeMount( async () => {
-            const q = await getDocs(CenterCollection)
-            q.forEach( (doc) => {
-                centerList.value.push(doc.data())
-            })
+            const document = await getDoc(doc(db, 'centersList', 'List'))
+            centerList.value = document.data().centers
         })
 
         const filter = computed(() => {
             const filteredList = ref([])
             if ( search.value.length != 0 ) {
                 for (i=0 ; i < centerList.value.length ; i++) {
-                    if ( centerList.value[i].center_name.toLowerCase().includes(search.value.toLowerCase()) ) {
+                    if ( centerList.value[i].toLowerCase().includes(search.value.toLowerCase()) ) {
                         filteredList.value.push(centerList.value[i])
                     }
                 }
@@ -211,7 +208,6 @@ export default {
             hashTagCenter,
             hashTagAdd,
             hashTagDelete,
-            // levelClick,
             levelColor,
             LevelList,
             LevelSelect,
