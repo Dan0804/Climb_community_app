@@ -4,21 +4,21 @@
             <img :src="post.profile_image_url" class="hover:opacity-80 cursor-pointer w-10 h-10 rounded-full">
         </router-link>
         <div class="flex flex-1 flex-col ml-3">
-            <div class="space-x-1 -mt-1">
+            <div class="space-x-1 -mt-0.5">
                 <span class="font-bold">{{ post.nick_name }}</span>
                 <span class="text-gray-500 text-xs">{{ dayjs(post.created_at).locale("ko").fromNow() }}</span>
                 <div class="text-gray-500 text-xs">{{ post.email }}</div>
             </div>
 
             <!-- post contents -->
-            <div class="-ml-12 mt-1">
+            <div class="-ml-10 mt-1">
                 <router-link :to="`/post/${ post.id }`">
                     {{ post.post_body }}
                 </router-link>
-                <video :src="post.post_media" width="500" :id="`${post.id}`" @click="videoPlay(post.id)"></video>
+                <video :src="post.post_media" width="400" :id="`${post.id}`" @click="videoPlay(post.id)"></video>
 
                 <!-- post icon -->
-                <div class="flex justify-between text-gray-500 mr-5">
+                <div class="flex justify-between text-gray-500 xl:mr-80 mr-1 mt-1">
                     <div @click="showCommentModal = true" class="cursor-pointer hover:bg-blue-100 hover:text-blue-400 rounded-full p-2">
                         <i class="fa-regular fa-comment"></i>
                         <span class="ml-1 text-sm">{{ post.num_comments }}</span>
@@ -98,11 +98,9 @@ export default {
             var video = document.getElementById(`${postId}`)
             if (videoStatus.value === false) {
                 video.play()
-                console.log(video)
                 videoStatus.value = true
             } else {
                 video.pause()
-                console.log(video)
                 videoStatus.value = false
             }
         }

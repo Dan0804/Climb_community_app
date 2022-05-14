@@ -34,11 +34,9 @@ export default {
                     let post = await getPostInfo(change.doc.data())
                     if (change.type === "added") {
                         posts.value.splice(change.newIndex, 0, post)
-                    }
-                    else if (change.type === "modified") {
+                    } else if (change.type === "modified") {
                         posts.value.splice(change.oldIndex, 1, post)
-                    }
-                    else if (change.type === "removed") {
+                    } else if (change.type === "removed") {
                         posts.value.splice(change.oldIndex, 1)
                     }
                 })

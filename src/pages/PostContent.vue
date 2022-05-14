@@ -14,16 +14,18 @@
                     <router-link :to="`/profile/${post.uid}`">
                         <img :src="post.profile_image_url" class="w-10 h-10 rounded-full hover:opacity-90 cursor-pointer" />
                     </router-link>
-                    <div class="flex-1 flex-col">
-                        <div class="ml-3 space-x-2 pt-2">
+                    <div class="flex-1 flex-col ml-3">
+                        <div class="space-x-1 -mt-0.5">
                             <span class="font-bold">{{ post.nick_name }}</span>
-                            <span class="text-gray-500 text-xs">{{ post.email }}</span>
-                            <span class="text-gray-500 text-xs">•</span>
                             <span class="text-gray-500 text-xs">{{ dayjs(post.created_at).locale("ko").fromNow() }}</span>
+                            <div class="text-gray-500 text-xs">{{ post.email }}</div>
                         </div>
-                        <div class="pt-1 px-3">{{ post.post_body }}</div>
-                            <video class="pl-3" :src="post.post_media" width="400" height="300" controls></video>
+                        <div class="-ml-10 mt-1">
+                            <span>{{ post.post_body }}</span>
+                            <video :src="post.post_media" width="400" :id="`${post.id}`" @click="videoPlay(post.id)"></video>
+                        </div>
                     </div>
+                    
                 </div>
                 <div class="h-px w-full bg-gray-100"></div>
 
@@ -56,10 +58,10 @@
                         <img :src="comment.profile_image_url" class="w-10 h-10 rounded-full hover:opacity-90 cursor-pointer" />
                     </router-link>
                     <div class="flex-1 ml-3 space-y-2">
-                        <div class="flex items-baseline space-x-1">
+                        <div class="space-x-1 -mt-0.5">
                             <span class="font-bold">{{ comment.nick_name }}</span>
-                            <span class="text-gray text-xs">{{ comment.email }}</span>
                             <span class="text-gray text-xs">{{ dayjs(comment.created_at).locale("ko").fromNow() }}</span>
+                            <div class="text-gray-500 text-xs">{{ comment.email }}</div>
                         </div>
                         <div>{{ comment.comment_body }}</div>
                     </div>
@@ -157,6 +159,19 @@ export default {
             })
         })
 
+        const videoStatus = ref(false)
+
+        const videoPlay = (postId) => {
+            var video = document.getElementById(`${postId}`)
+            if (videoStatus.value === false) {
+                video.play()
+                videoStatus.value = true
+            } else {
+                video.pause()
+                videoStatus.value = false
+            }
+        }
+
         return {
             dayjs,
             router, 
@@ -168,6 +183,8 @@ export default {
             handleDeleteComment,
             handleDeletePost,
             linkCopy,
+            videoStatus,
+            videoPlay,
         }
     }
 }
