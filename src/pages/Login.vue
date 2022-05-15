@@ -15,9 +15,9 @@
     </button>
 
     <!-- 이거는 이메일 가입하고 로그인하는걸로 이제는 안쓸거임 -->
-    <!-- <input v-model="email" class="rounded w-96 px-4 py-3 border border-gray-300 focus:ring-2 focus:border-primary" placeholder="이메일" type="text">
+    <input v-model="email" class="rounded w-96 px-4 py-3 border border-gray-300 focus:ring-2 focus:border-primary" placeholder="이메일" type="text">
     <input @keyup.enter="onLogin" v-model="password" class="rounded w-96 px-4 py-3 border border-gray-300 focus:ring-2 focus:border-primary" placeholder="비밀번호" type="password">
-    <button class="w-96 rounded bg-primary text-white py-4" @click="onLogin">로그인</button> -->
+    <button class="w-96 rounded bg-primary text-white py-4" @click="onLogin">로그인</button>
     <!-- <router-link to="/register">
       <button class="text-primary">계정이 없으신가요? 회원가입하기</button>
     </router-link> -->
@@ -41,39 +41,39 @@ export default {
     const router = useRouter()
 
     // 이메일 가입하고 로그인하는 함수
-    // const onLogin = async () => {
+    const onLogin = async () => {
 
-    //   if(!email.value || !password.value) {
-    //     alert('이메일, 비밀번호를 모두 입력해주세요!!')
-    //     return
-    //   }
+      if(!email.value || !password.value) {
+        alert('이메일, 비밀번호를 모두 입력해주세요!!')
+        return
+      }
 
-    //   try {
-    //     loading.value = true
-    //     const { user } = await loginEmail(email.value, password.value)
-    //     const docSnap = await getDoc(doc(db, "users", user.uid))
-    //     console.log(docSnap)
-    //     store.commit("setUser", docSnap.data())
-    //     // console.log(store.state.user)
-    //     router.replace("/")
+      try {
+        loading.value = true
+        const { user } = await loginEmail(email.value, password.value)
+        const docSnap = await getDoc(doc(db, "users", user.uid))
+        console.log(docSnap)
+        store.commit("setUser", docSnap.data())
+        // console.log(store.state.user)
+        router.replace("/")
         
-    //   } catch(e) {
-    //     switch (e.code) {
-    //       case 'auth/invalid-email':
-    //         alert('잘못된 이메일 형식입니다.')
-    //         break
-    //       case 'auth/user-not-found':
-    //         alert('등록되지 않은 이메일입니다.')
-    //         break
-    //       case 'auth/wrong-password':
-    //         alert('비밀번호가 틀립니다.')
-    //       default:
-    //         alert(e.message)
-    //     }
-    //   } finally {
-    //     loading.value = false
-    //   }
-    // }
+      } catch(e) {
+        switch (e.code) {
+          case 'auth/invalid-email':
+            alert('잘못된 이메일 형식입니다.')
+            break
+          case 'auth/user-not-found':
+            alert('등록되지 않은 이메일입니다.')
+            break
+          case 'auth/wrong-password':
+            alert('비밀번호가 틀립니다.')
+          default:
+            alert(e.message)
+        }
+      } finally {
+        loading.value = false
+      }
+    }
 
     const GoogleLogin = () => {
         const provider = new GoogleAuthProvider()
@@ -167,7 +167,7 @@ export default {
       email,
       password,
       loading,
-      // onLogin,
+      onLogin,
       GoogleLogin,
       FacebookLogin,
    }

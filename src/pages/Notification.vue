@@ -6,17 +6,23 @@
         </div>
 
         <!-- Notifications -->
-        <div class="cursor-pointer flex flex-col hover:bg-gray-50 border-b border-gray-200 p-3" v-for="notification in notifications" :key="notification">
-            <div class="flex justify-between">
-                <router-link :to="`/profile/${notification.uid}`">
-                    <img class="hover:opacity-80 rounded-full w-10 h-10" :src="notification.profile_image_url">
-                </router-link>
-                <i class="fa-solid fa-ellipsis flex place-items-center justify-center hover:border-2 hover:border-gray-100 hover:bg-blue-300 rounded-full w-10 h-10"></i>
+        <div class="flex hover:bg-gray-50 border-b border-gray-200 p-3" v-for="notification in notifications" :key="notification">
+            <router-link :to="`/profile/${notification.uid}`">
+                <img class="hover:opacity-80 rounded-full w-10 h-10" :src="notification.profile_image_url">
+            </router-link>
+            <div class="flex flex-1 flex-col ml-3">
+                <div class="space-x-1 -mt-0.5">
+                    <span class="font-bold">{{ notification.nick_name }}</span>
+                    <span class="text-gray-500 text-xs">{{ dayjs(notification.created_at).locale("ko").fromNow() }}</span>
+                    <div class="text-gray-500 text-xs">{{ notification.email }}</div>
+                </div>
+                <div class="space-x-1 mt-2">
+                    <router-link :to="`/post/${notification.id}`">
+                        <span>{{ notification.center_id }}</span>
+                        <span class="text-sm text-gray-500">에서 게시글을 업로드하셨습니다.</span>
+                    </router-link>
+                </div>
             </div>
-            <div>
-                <span class="font-bold">{{ notification.nick_name }}</span> 님의 최근 글
-            </div>
-            <router-link :to="`/post/${notification.id}`" class="text-gray-500">{{ notification.post_body }}</router-link>
         </div>
     </div>
 
@@ -29,6 +35,10 @@ import store from '../store'
 import { getDocs, orderBy, where, query } from 'firebase/firestore'
 import { PostCollection } from '../firebase'
 import getPostInfo from '../utils/getPostInfo'
+import dayjs from "dayjs"
+import relativeTime from "dayjs/plugin/relativeTime"
+import "dayjs/locale/ko"
+dayjs.extend(relativeTime)
 
 export default {
     components: { Follow },
@@ -40,6 +50,7 @@ export default {
             userInfo.value.followings.forEach( async (following) => {
                 const dateFrom = Date.now() - (3 * 60 * 60 * 24 * 1000)
                 const querySnapshot = await getDocs(query(PostCollection, where("uid", "==", following), where("created_at", ">", dateFrom), orderBy("created_at", "desc")))
+                console.log(querySnapshot.docs[0].data())
                 querySnapshot.docs.forEach( async (doc) => {
                     let post = await getPostInfo(doc.data())
                     notifications.value.push(post)
@@ -48,6 +59,7 @@ export default {
         })
 
         return {
+            dayjs,
             userInfo,
             notifications,
         }

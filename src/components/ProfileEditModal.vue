@@ -18,10 +18,10 @@
                 </div>
 
                 <!-- image section -->
-                <div class="flex flex-none items-center justify-center relative h-28">
+                <div class="relative h-16">
                     <!-- profile image -->
-                    <img ref="profileImage" :src="userInfo.profile_image_url" class="border-4 border-white w-32 h-32 rounded-full absolute -bottom-4 right-9 object-cover">
-                    <button @click="onChangeProfileImage" class="absolute h-10 w-10 hover:text-gray-200 rounded-full fas fa-camera text-white text-xl bottom-6 right-20"></button>
+                    <img ref="profileImage" :src="userInfo.profile_image_url" class="border-4 border-white w-32 h-32 rounded-full absolute right-9 object-cover">
+                    <button @click="onChangeProfileImage" class="absolute h-10 w-10 hover:text-gray-200 rounded-full fas fa-camera text-white text-xl right-20 -bottom-4"></button>
                     <input @change="previewProfileImage" type="file" accept="image/*" id="profileImageInput" class="hidden">
                 </div>
 
@@ -39,9 +39,9 @@
                                 <i class="fa-solid fa-xmark mr-2"></i>{{ hashTagCenter }}
                             </button>
                         </div>
-                        <div class="h-20 border-b border-gray-150 mr-40 overflow-y-auto">
-                            <button class="px-3 py-1 my-2 mx-1 bg-BgLightBlue hover:bg-hover_primary hover:text-white rounded-full" v-for="center in filter" :key="center.id" :value="center.center_name" :id="center.id" @click="hashTagAdd">
-                                {{ center.center_name }}
+                        <div class="h-28 border-b border-gray-150 mr-40 overflow-y-auto">
+                            <button class="px-3 py-1 my-0.5 mx-1 bg-BgLightBlue hover:bg-hover_primary hover:text-white rounded-full" v-for="center in filter" :key="center.id" :value="center" @click="hashTagAdd">
+                                {{ center }}
                             </button>
                         </div>
                     </div>
@@ -91,6 +91,7 @@ export default {
         onBeforeMount( async () => {
             const document = await getDoc(doc(db, 'centersList', 'List'))
             centerList.value = document.data().centers
+            console.log(centerList.value)
         })
 
         const filter = computed(() => {
@@ -113,7 +114,6 @@ export default {
         const hashTagAdd = (event) => {
             if ( hashTagCenter.value === '' ) {
                 hashTagCenter.value = event.target.value
-                console.log(hashTagCenter.value)
             } else {
                 alert("이미 암장을 선택하셨습니다.")
             }
