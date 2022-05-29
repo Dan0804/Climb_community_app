@@ -15,7 +15,11 @@
                 <router-link :to="`/post/${ post.id }`">
                     {{ post.post_body }}
                 </router-link>
-                <video :src="post.post_media" width="400" :id="`${post.id}`" @click="videoPlay(post.id)"></video>
+                <div class="relative">
+                    <video :src="post.post_media" width="400" :id="`${post.id}`" @click="videoPlay(post.id)" type="video/mp4"></video>
+                    <i v-if="videoStatus === true" class="fa-solid fa-play absolute bottom-1 left-1"> 재생 중</i>
+                    <i v-else class="fa-solid fa-pause absolute bottom-1 left-1"> 멈춤</i>
+                </div>
 
                 <!-- post icon -->
                 <div class="flex justify-between text-gray-500 xl:mr-80 mr-1 mt-1">
@@ -99,6 +103,10 @@ export default {
             if (videoStatus.value === false) {
                 video.play()
                 videoStatus.value = true
+                video.addEventListener('ended', () => {
+                    video.currentTime = 0
+                    videoStatus.value = false
+                })
             } else {
                 video.pause()
                 videoStatus.value = false

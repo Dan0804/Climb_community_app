@@ -22,7 +22,11 @@
                         </div>
                         <div class="-ml-10 mt-1">
                             <span>{{ post.post_body }}</span>
-                            <video :src="post.post_media" width="400" :id="`${post.id}`" @click="videoPlay(post.id)"></video>
+                            <div class="relative">
+                                <video :src="post.post_media" width="400" :id="`${post.id}`" @click="videoPlay(post.id)" type="video/mp4"></video>
+                                <i v-if="videoStatus === true" class="fa-solid fa-play absolute bottom-1 left-1"> 재생 중</i>
+                                <i v-else class="fa-solid fa-pause absolute bottom-1 left-1"> 멈춤</i>
+                            </div>
                         </div>
                     </div>
                     
@@ -166,6 +170,10 @@ export default {
             if (videoStatus.value === false) {
                 video.play()
                 videoStatus.value = true
+                video.addEventListener('ended', () => {
+                    video.currentTime = 0
+                    videoStatus.value = false
+                })
             } else {
                 video.pause()
                 videoStatus.value = false

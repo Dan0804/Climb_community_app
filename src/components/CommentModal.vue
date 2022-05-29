@@ -64,7 +64,6 @@
 
 <script>
 import { ref, computed } from "vue"
-import moment from "moment"
 import store from "../store"
 import { CommentCollection, db } from '../firebase'
 import { doc, increment, setDoc, updateDoc } from "firebase/firestore"
@@ -98,7 +97,6 @@ export default {
             commentBody,
             onCommentPost,
             userInfo,
-            moment,
         }
     }
 }
