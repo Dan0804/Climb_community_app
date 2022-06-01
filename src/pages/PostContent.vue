@@ -47,7 +47,7 @@
                         <i class="fa-solid fa-heart"></i>
                         <span class="ml-1 text-sm">{{ post.num_likes }}</span>
                     </div>
-                    <div class="cursor-pointer hover:bg-green-100 hover:text-green-400 rounded-full p-2" @click="linkCopy(post.id)">
+                    <div class="cursor-pointer hover:bg-green-100 hover:text-green-400 rounded-full p-2" @click="linkCopy()">
                         <i class="fa-solid fa-share-from-square px-1"></i>
                     </div>
                     <div v-if="post.uid === userInfo.uid" @click="handleDeletePost(post)" class="cursor-pointer hover:bg-red-100 text-red-400 rounded-full p-2">
@@ -113,7 +113,7 @@ export default {
             }
         }
 
-        const linkCopy = (postId) => {
+        const linkCopy = () => {
             var url = ""
             var textarea = document.createElement("textarea")
             document.body.appendChild(textarea)

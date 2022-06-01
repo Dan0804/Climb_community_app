@@ -38,7 +38,8 @@
                         <div>
                             <button @click="onChangeVideo" class="h-10 w-10 hover:text-gray-200 rounded-full fas fa-camera text-gray-500 text-xl mr-2"></button>
                             <input @change="previewVideo" type="file" accept="video/*" id="videoInput" class="hidden">
-                            <i class="text-gray-500 fa-solid fa-left-long mr-2 animate-bounce"><span class="ml-2">동영상을 등록해주세요!</span></i>
+                            <i class="text-gray-500 fa-solid fa-left-long mr-2 animate-bounce"><span class="ml-2">동영상을 등록해주세요</span></i>
+                            <i class="fa-solid fa-circle-exclamation text-xl text-gray-300 ml-10" title="동영상 코덱(확장자)은 mp4로 사용해야합니다."></i>
                         </div>
                         <div @click="videoPlay">
                             <video id="previewVideo" width="400" height="300"></video>
