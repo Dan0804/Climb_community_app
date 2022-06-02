@@ -15,10 +15,11 @@
                 <router-link :to="`/post/${ post.id }`">
                     {{ post.post_body }}
                 </router-link>
-                <div class="relative">
-                    <video :src="post.post_media" width="400" :id="`${post.id}`" @click="videoPlay(post.id)" type="video/mp4"></video>
-                    <i v-if="videoStatus === true" class="fa-solid fa-play absolute bottom-1 left-1"> 재생 중</i>
-                    <i v-else class="fa-solid fa-pause absolute bottom-1 left-1"> 멈춤</i>
+                <div class="relative w-48">
+                    <video :src="post.post_media" :id="`${post.id}`" class="object-contain h-64 w-48 bg-black rounded-xl" @click="videoPlay(post.id)" type="video/mp4"></video>
+                    <i v-if="videoStatus === true" class="fa-solid fa-play absolute bottom-1 left-1 text-white"> 재생 중</i>
+                    <i v-else class="fa-solid fa-pause absolute bottom-1.5 left-2 text-white"> 멈춤</i>
+                    <I class="fa-solid fa-expand absolute bottom-1.5 right-2 text-white" @click="openFullscreen(`${post.id}`)"></i>
                 </div>
 
                 <!-- post icon -->
@@ -112,6 +113,10 @@ export default {
                 videoStatus.value = false
             }
         }
+
+        const openFullscreen = (postId) => {
+            document.getElementById(`${postId}`).requestFullscreen()
+        }
         
         return {
             dayjs,
@@ -122,6 +127,7 @@ export default {
             linkCopy,
             videoStatus,
             videoPlay,
+            openFullscreen,
         }
     }
 }
