@@ -37,13 +37,13 @@
                         </div>
                         <div>
                             <input @change="previewVideo" type="file" accept="video/*" id="videoInput" class="hidden">
-                            <i class="text-gray-500 fa-solid fa-left-long mr-2 animate-bounce"><span class="ml-2">동영상을 등록해주세요</span></i>
-                            <i class="fa-solid fa-circle-exclamation text-xl text-gray-300 ml-10" title="동영상 코덱(확장자)은 mp4로 사용해야합니다."></i>
+                            <i class="text-gray-500 fa-solid fa-arrow-down ml-3 animate-bounce"><span class="ml-2">동영상을 등록해주세요</span></i>
+                            <i class="fa-solid fa-circle-exclamation text-xl text-gray-300 ml-5" title="동영상 코덱(확장자)은 mp4로 사용해야합니다."></i>
                         </div>
-                        <div class="flex flex-nowrap">
-                            <button @click="onChangeVideo" class="bg-gray-300 h-64 w-48 rounded-xl fas fa-camera text-3xl text-white"></button>
-                            <div @click="videoPlay">
-                                <video id="previewVideo" @click="videoPlay" class="object-contain h-64 w-48 bg-black rounded-xl ml-2"></video>
+                        <div class="flex">
+                            <button @click="onChangeVideo" class="bg-gray-300 h-64 w-36 rounded-xl mr-2 fas fa-camera text-3xl text-white"></button>
+                            <div class="flex overflow-x-auto">
+                                <video v-for="video in videoList.slice().reverse()" :key="video" :id="`${video}`" @click="videoPlay(video)" class="object-contain h-64 p-1 bg-black rounded-xl mr-2 max-w-48" :src="`${video}`"></video>
                             </div>
                         </div>
                     </div>
@@ -84,6 +84,7 @@ export default {
         const previewVideoData = ref(null)
         const userInfo = computed(() => store.state.user)
         const DuringLoading = ref(false)
+        const videoList = ref([])
 
         const onChangeVideo = () => {
             document.getElementById("videoInput").click()
@@ -96,10 +97,7 @@ export default {
                 alert("100MB 이하의 동영상만 등록할 수 있습니다.\n\n" + "현재 파일 용량" + (Math.round(file.size / (1024 * 1024))) + "MB")    
             } else {
                 previewVideoData.value = file
-                const previewVideo = document.getElementById("previewVideo")
-                const videoUrl = URL.createObjectURL(file)
-                previewVideo.setAttribute("src", videoUrl)
-                previewVideo.play()
+                videoList.value.push(URL.createObjectURL(file))
             }
         }
 
@@ -166,13 +164,13 @@ export default {
 
         const videoStatus = ref(false)
 
-        const videoPlay = () => {
-            const video = document.getElementById("previewVideo")
+        const videoPlay = (video) => {
+            const preVideo = document.getElementById(`${video}`)
             if (videoStatus.value === false) {
-                video.play()
+                preVideo.play()
                 videoStatus.value = true
             } else {
-                video.pause()
+                preVideo.pause()
                 videoStatus.value = false
             }
         }
@@ -193,6 +191,7 @@ export default {
             hashTagDelete,
             videoStatus,
             videoPlay,
+            videoList,
         }
     }
 
