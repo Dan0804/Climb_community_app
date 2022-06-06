@@ -15,11 +15,14 @@
                 <router-link :to="`/post/${ post.id }`">
                     {{ post.post_body }}
                 </router-link>
-                <div class="relative w-48">
-                    <video :src="post.post_media" :id="`${post.id}`" class="object-contain h-64 w-48 bg-black rounded-xl" @click="videoPlay(post.id)" type="video/mp4"></video>
-                    <i v-if="videoStatus === true" class="fa-solid fa-play absolute bottom-1 left-1 text-white"> 재생 중</i>
-                    <i v-else class="fa-solid fa-pause absolute bottom-1.5 left-2 text-white"> 멈춤</i>
-                    <I class="fa-solid fa-expand absolute bottom-1.5 right-2 text-white" @click="openFullscreen(`${post.id}`)"></i>
+                <div class="flex">
+                    <div class="flex overflow-x-auto">
+                        <div v-for="video in post.post_media" :key="video" class="relative w-48 mr-2">
+                            <video :src="video" :id="`${video}`" class="object-contain h-64 w-48 bg-black rounded-xl" @click="videoPlay(video)" type="video/mp4"></video>
+                            <i v-if="videoStatus != video" class="fa-solid fa-play absolute top-2 left-5 text-white text-4xl"></i>
+                            <I class="fa-solid fa-expand absolute bottom-1.5 right-2 text-white" @click="openFullscreen(`${video}`)"></i>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- post icon -->
@@ -68,13 +71,16 @@ export default {
     setup() {
         const showCommentModal = ref(false)
         const userInfo = computed(() => store.state.user)
+        let i = 0
 
         const handleDeletePost = async (post) => {
             if (confirm("정말로 해당 게시글을 삭제하겠습니까?")) {
                 await updateDoc(doc(db, "users", post.uid), {
                     num_posts: increment(-1),
                 })
-                await deleteObject(storageRef(storage, `video/${post.uid}/${post.created_at}`))
+                for (i=0 ; i < post.post_media.length ; i++) {
+                    await deleteObject(storageRef(storage, `video/${post.uid}/${post.center_id}/${post.created_at}_${i}.mp4`))
+                }
                 await deleteDoc(doc(db, "posts", post.id))
 
                 const commentSnapshot = await getDocs(query(CommentCollection, where("from_post_id", "==", post.id)))
@@ -97,25 +103,26 @@ export default {
             alert("주소 복사가 완료되었습니다.")
         }
 
-        const videoStatus = ref(false)
+        const videoStatus = ref(null)
 
-        const videoPlay = (postId) => {
-            var video = document.getElementById(`${postId}`)
-            if (videoStatus.value === false) {
-                video.play()
-                videoStatus.value = true
-                video.addEventListener('ended', () => {
-                    video.currentTime = 0
-                    videoStatus.value = false
+        const videoPlay = (video) => {
+            var preVideo = document.getElementById(`${video}`)
+            var nowVideo = preVideo.getAttribute('src')
+            if (videoStatus.value != nowVideo) {
+                preVideo.play()
+                videoStatus.value = nowVideo
+                preVideo.addEventListener('ended', () => {
+                    preVideo.currentTime = 0
+                    videoStatus.value = null
                 })
             } else {
-                video.pause()
-                videoStatus.value = false
+                preVideo.pause()
+                videoStatus.value = null
             }
         }
 
-        const openFullscreen = (postId) => {
-            document.getElementById(`${postId}`).requestFullscreen()
+        const openFullscreen = (video) => {
+            document.getElementById(`${video}`).requestFullscreen()
         }
         
         return {

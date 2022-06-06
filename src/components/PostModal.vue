@@ -80,8 +80,8 @@ export default {
     setup(props, {emit}) {
         // postbody, video data update
         const postBody = ref('')
-        const postMedia = ref(null)
-        const previewVideoData = ref(null)
+        const postMedia = ref([])
+        const videoData = ref([])
         const userInfo = computed(() => store.state.user)
         const DuringLoading = ref(false)
         const videoList = ref([])
@@ -96,7 +96,7 @@ export default {
             if (file.size > 1024*1024*200) {
                 alert("100MB 이하의 동영상만 등록할 수 있습니다.\n\n" + "현재 파일 용량" + (Math.round(file.size / (1024 * 1024))) + "MB")    
             } else {
-                previewVideoData.value = file
+                videoData.value.push(file)
                 videoList.value.push(URL.createObjectURL(file))
             }
         }
@@ -145,14 +145,13 @@ export default {
             try {
                 DuringLoading.value = true
                 let createTime = Date.now()
-                const videoRef = await storageRef(storage, `video/${userInfo.value.uid}/${createTime}`)
-                await uploadBytes(videoRef, previewVideoData.value)
-                const url = await getDownloadURL(videoRef)
-                postMedia.value = url
+                for (i=0 ; i < videoList.value.length ; i++) {
+                    const videoRef = await storageRef(storage, `video/${userInfo.value.uid}/${hashTagCenter.value}/${createTime}_${i}.mp4`)
+                    await uploadBytes(videoRef, videoData.value[i])
+                    postMedia.value.push(await getDownloadURL(videoRef))
+                }
 
                 addPost(postBody.value, hashTagCenter.value, userInfo.value, postMedia.value, createTime)
-                postBody.value = ''
-                postMedia.value = null
 
                 emit('close_modal')
             } catch (e) {
@@ -178,6 +177,7 @@ export default {
         return {
             postBody,
             postMedia,
+            videoData,
             userInfo,
             DuringLoading,
             onAddPost,
