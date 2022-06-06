@@ -31,44 +31,41 @@ export default {
 
     const GoogleLogin = () => {
         const provider = new GoogleAuthProvider()
+        signInWithPopup(auth, provider).then( async (result) => {
+            const credential = GoogleAuthProvider.credentialFromResult(result)
+            const token = credential.accessToken
+            const user = result.user
 
-        setPersistence(auth, browserLocalPersistence).then(() => {
-            signInWithPopup(auth, provider).then( async (result) => {
-                const credential = GoogleAuthProvider.credentialFromResult(result)
-                const token = credential.accessToken
-                const user = result.user
-
+            const docSnap = await getDoc(doc(db, "users", user.uid))
+            
+            if ( docSnap.data() != undefined ) {
+                store.commit("setUser", docSnap.data())
+                router.replace("/")
+            } else {
+                await setDoc(doc(db, "users", user.uid), {
+                    uid: user.uid,
+                    user_name: user.displayName,
+                    nick_name: user.displayName,
+                    main_center: '',
+                    my_level: '',
+                    email: user.email,
+                    profile_image_url: '/profile.jpeg',
+                    background_image_url: '/background.png',
+                    num_posts: 0,
+                    followers: [],
+                    followings: [],
+                    created_at: Date.now()
+                })
                 const docSnap = await getDoc(doc(db, "users", user.uid))
-                
-                if ( docSnap.data() != undefined ) {
-                    store.commit("setUser", docSnap.data())
-                    router.replace("/")
-                } else {
-                    await setDoc(doc(db, "users", user.uid), {
-                        uid: user.uid,
-                        user_name: user.displayName,
-                        nick_name: user.displayName,
-                        main_center: '',
-                        my_level: '',
-                        email: user.email,
-                        profile_image_url: '/profile.jpeg',
-                        background_image_url: '/background.png',
-                        num_posts: 0,
-                        followers: [],
-                        followings: [],
-                        created_at: Date.now()
-                    })
-                    const docSnap = await getDoc(doc(db, "users", user.uid))
-                    store.commit("setUser", docSnap.data())
-                    router.replace("/")
-                }
-                
-            }).catch((e) => {
-              const errorCode = e.code
-              const errorMessage = e.message
-              const email = e.email
-              const credential = GoogleAuthProvider.credentialFromError(e)
-            })
+                store.commit("setUser", docSnap.data())
+                router.replace("/")
+            }
+            
+        }).catch((e) => {
+            const errorCode = e.code
+            const errorMessage = e.message
+            const email = e.email
+            const credential = GoogleAuthProvider.credentialFromError(e)
         })
     }
 

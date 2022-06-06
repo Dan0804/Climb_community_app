@@ -28,7 +28,7 @@
                         <div class="flex text-sm space-x-2 items-center">
                             <span class="font-bold">{{ post.nick_name }}</span>
                             <span class="text-gray-500 text-xs">{{ post.email }}</span>
-                            <span class="text-gray-500 text-xs">{{ moment(post.created_at).fromNow() }}</span>
+                            <span class="text-gray-500 text-xs">{{ dayjs(post.created_at).locale("ko").fromNow() }}</span>
                         </div>
                         <div>
                             {{ post.post_body }}
@@ -67,6 +67,10 @@ import { ref, computed } from "vue"
 import store from "../store"
 import { CommentCollection, db } from '../firebase'
 import { doc, increment, setDoc, updateDoc } from "firebase/firestore"
+import dayjs from "dayjs"
+import relativeTime from "dayjs/plugin/relativeTime"
+import "dayjs/locale/ko"
+dayjs.extend(relativeTime)
 
 export default {
     props: ["post"],
@@ -97,6 +101,7 @@ export default {
             commentBody,
             onCommentPost,
             userInfo,
+            dayjs,
         }
     }
 }
