@@ -9,6 +9,10 @@ import { auth } from './firebase'
 
 export default {
     components: { Layout },
-    setup() {}
+    setup() {
+        onAuthStateChanged(auth, (user) => {
+            console.log(user)
+        })
+    }
 }
 </script>

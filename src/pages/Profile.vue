@@ -1,75 +1,72 @@
 <template>
-    <div v-if="profileUser" class="flex flex-1">
-        <!-- profile section -->
-        <div class="flex-1 flex flex-col border-r border-color">
-            <!-- title -->
-            <div class="flex px-3 py-1 border-b border-color">
-                <button @click="router.go(-1)" class="mr-4">
-                    <i class="fa-solid fa-arrow-left text-blue-300 rounded-full p-3 hover:bg-blue-50"></i>
-                </button>
-                <div>
-                    <div class="font-semibold text-lg">{{ profileUser.nick_name }}</div>
-                    <div class="text-xs text-gray-500">{{ profileUser.num_posts }} 게시글</div>
-                </div>
-            </div>
-
-            <!-- profile edit button -->
-            <div class="text-right mt-2 mr-2 relative">
-                <div v-if="userInfo.uid === profileUser.uid">
-                    <button @click="showProfileEditModal = true" class="absolute border-2 border-blue-300 text-sm text-blue-300 px-3 py-2 hover:bg-blue-50 w-24 -bottom-12 right-0 font-bold rounded-full">프로필 수정</button>
-                </div>
-                <div v-else>
-                    <div v-if="userInfo.followings.includes(profileUser.uid)" @click="onUnfollow">
-                        <button class="absolute w-24 -bottom-12 right-0 text-sm bg-primary text-white px-3 py-2 hover:opacity-0 font-bold rounded-full">팔로잉</button>
-                        <button class="absolute w-24 -bottom-12 right-0 text-sm bg-red-400 text-white px-3 py-2 opacity-0 hover:opacity-100 font-bold rounded-full">언팔로우</button>
-                    </div>
-                    <div v-else @click="onFollow">
-                        <button class="absolute w-24 -bottom-12 right-0 border-2 border-blue-300 text-sm text-blue-300 px-3 py-2 hover:bg-blue-50 font-bold rounded-full">팔로우</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- user info -->
-            <div class="mx-4 mt-1">
-                <!-- porfile image -->
-                <div class="border-4 border-white bg-gray-100 w-28 h-28 rounded-full mb-2">
-                    <img :src="profileUser.profile_image_url" class="rounded-full opacity-90 hover:opacity-100 cursor-pointer w-full h-full object-cover">
-                </div>
-                <div>
-                    <span class="font-extrabold text-lg mr-5">{{ profileUser.nick_name }}</span>
-                    <span class="border-2 border-blue-300 px-2 py-1 rounded-full">
-                        <i class="fa-solid fa-location-dot text-primary"></i>
-                        {{ profileUser.main_center }}
-                        <i :class="`fa-solid fa-circle ${profileUser.my_level}`"></i>
-                    </span>
-                </div>
-                <div class="text-gray">{{ profileUser.email }}</div>
-                <div>
-                    <span class="text-gray pr-1">가입일 :</span>
-                    <span class="text-gray">{{ dayjs(profileUser.created_at).format("YYYY년 MM월 DD일") }}</span>
-                </div>
-                <div>
-                    <span class="font-bold mr-1">{{ profileUser.followings.length }}</span>
-                    <span class="text-gray mr-3">팔로우 중</span>
-                    <span class="font-bold mr-1">{{ profileUser.followers.length }}</span>
-                    <span class="text-gray">팔로워</span>
-                </div>
-            </div>
-
-            <!-- taps -->
-            <div class="flex border-b border-color mt-3">
-                <div @click="currentTab = 'post'" :class="`${currentTab === 'post' ? 'border-b border-primary text-primary bg-BgLightBlue' : 'text-gray-500 hover:border-b border-primary hover:bg-BgLightBlue'} flex-1 text-center cursor-pointer font-bold py-1`">등록 글</div>
-                <div @click="currentTab = 'like'" :class="`${currentTab === 'like' ? 'border-b border-primary text-primary bg-BgLightBlue' : 'text-gray-500 hover:border-b border-primary hover:bg-BgLightBlue'} flex-1 text-center cursor-pointer font-bold py-1`">좋아요</div>
-            </div>
-
-            <!-- Posts -->
-            <div class="overflow-y-auto">
-                <Post v-for="post in currentTab == 'post' ? posts : likePosts" :key="post" :userInfo="userInfo" :post="post"/>
+    <div v-if="profileUser" class="flex flex-1 flex-col border-r border-color">
+        <!-- title -->
+        <div class="flex px-3 py-1 border-b border-color">
+            <button @click="router.go(-1)" class="mr-4">
+                <i class="fa-solid fa-arrow-left text-blue-300 rounded-full p-3 hover:bg-blue-50"></i>
+            </button>
+            <div>
+                <div class="font-semibold text-lg">{{ profileUser.nick_name }}</div>
+                <div class="text-xs text-gray-500">{{ profileUser.num_posts }} 게시글</div>
             </div>
         </div>
 
-        <profile-edit-modal v-if="showProfileEditModal" @close_modal="showProfileEditModal = false"></profile-edit-modal>
+        <!-- profile edit button -->
+        <div class="text-right mt-2 mr-2 relative">
+            <div v-if="userInfo.uid === profileUser.uid">
+                <button @click="showProfileEditModal = true" class="absolute border-2 border-blue-300 text-sm text-blue-300 px-3 py-2 hover:bg-blue-50 w-24 -bottom-12 right-0 font-bold rounded-full">프로필 수정</button>
+            </div>
+            <div v-else>
+                <div v-if="userInfo.followings.includes(profileUser.uid)" @click="onUnfollow">
+                    <button class="absolute w-24 -bottom-12 right-0 text-sm bg-primary text-white px-3 py-2 hover:opacity-0 font-bold rounded-full">팔로잉</button>
+                    <button class="absolute w-24 -bottom-12 right-0 text-sm bg-red-400 text-white px-3 py-2 opacity-0 hover:opacity-100 font-bold rounded-full">언팔로우</button>
+                </div>
+                <div v-else @click="onFollow">
+                    <button class="absolute w-24 -bottom-12 right-0 border-2 border-blue-300 text-sm text-blue-300 px-3 py-2 hover:bg-blue-50 font-bold rounded-full">팔로우</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- user info -->
+        <div class="mx-4 mt-1">
+            <!-- porfile image -->
+            <div class="border-4 border-white bg-gray-100 w-28 h-28 rounded-full mb-2">
+                <img :src="profileUser.profile_image_url" class="rounded-full opacity-90 hover:opacity-100 cursor-pointer w-full h-full object-cover">
+            </div>
+            <div>
+                <span class="font-extrabold text-lg mr-5">{{ profileUser.nick_name }}</span>
+                <span class="border-2 border-blue-300 px-2 py-1 rounded-full">
+                    <i class="fa-solid fa-location-dot text-primary"></i>
+                    {{ profileUser.main_center }}
+                    <i :class="`fa-solid fa-circle ${profileUser.my_level}`"></i>
+                </span>
+            </div>
+            <div class="text-gray">{{ profileUser.email }}</div>
+            <div>
+                <span class="text-gray pr-1">가입일 :</span>
+                <span class="text-gray">{{ dayjs(profileUser.created_at).format("YYYY년 MM월 DD일") }}</span>
+            </div>
+            <div>
+                <span class="font-bold mr-1">{{ profileUser.followings.length }}</span>
+                <span class="text-gray mr-3">팔로우 중</span>
+                <span class="font-bold mr-1">{{ profileUser.followers.length }}</span>
+                <span class="text-gray">팔로워</span>
+            </div>
+        </div>
+
+        <!-- taps -->
+        <div class="flex border-b border-color mt-3">
+            <div @click="currentTab = 'post'" :class="`${currentTab === 'post' ? 'border-b border-primary text-primary bg-BgLightBlue' : 'text-gray-500 hover:border-b border-primary hover:bg-BgLightBlue'} flex-1 text-center cursor-pointer font-bold py-1`">등록 글</div>
+            <div @click="currentTab = 'like'" :class="`${currentTab === 'like' ? 'border-b border-primary text-primary bg-BgLightBlue' : 'text-gray-500 hover:border-b border-primary hover:bg-BgLightBlue'} flex-1 text-center cursor-pointer font-bold py-1`">좋아요</div>
+        </div>
+
+        <!-- Posts -->
+        <div class="overflow-y-auto">
+            <Post v-for="post in currentTab == 'post' ? posts : likePosts" :key="post" :userInfo="userInfo" :post="post"/>
+        </div>
     </div>
+
+    <profile-edit-modal v-if="showProfileEditModal" @close_modal="showProfileEditModal = false"></profile-edit-modal>
 </template>
 
 <script>
