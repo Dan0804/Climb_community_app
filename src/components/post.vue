@@ -100,11 +100,21 @@ export default {
         }
 
         const videoStatus = ref(null)
+        const previousVideo = ref(null)
 
         const videoPlay = (video) => {
             var preVideo = document.getElementById(`${video}`)
             var nowVideo = preVideo.getAttribute('src')
+
+            if (previousVideo.value === null) {
+                previousVideo.value = preVideo
+            }
+
             if (videoStatus.value != nowVideo) {
+                if (previousVideo.value != preVideo) {
+                    previousVideo.value.pause()
+                    previousVideo.value = preVideo
+                }
                 preVideo.play()
                 videoStatus.value = nowVideo
                 preVideo.addEventListener('ended', () => {
@@ -129,6 +139,7 @@ export default {
             handleDeletePost,
             linkCopy,
             videoStatus,
+            previousVideo,
             videoPlay,
             openFullscreen,
         }
