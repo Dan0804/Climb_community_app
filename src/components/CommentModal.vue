@@ -9,9 +9,9 @@
                     <button @click="$emit('close_modal')" class="fas fa-times text-blue-400 text-xl h-10 w-10 p-2 hover:bg-blue-50 rounded-full"></button>
                     <!-- posting button -->
                     <div class="text-right sm:hidden mr-2 mb-1">
-                        <buttonv v-if="!commentBody.length" @click="onCommentPost" class="bg-light text-sm text-white font-bold px-4 py-2 rounded-full">
+                        <button v-if="!commentBody.length" @click="onCommentPost" class="bg-light text-sm text-white font-bold px-4 py-2 rounded-full">
                             답글 등록
-                        </buttonv>
+                        </button>
                         <button v-else @click="onCommentPost" class="bg-hover_primary text-white hover:text-hover_primary hover:bg-BgLightBlue hover:border-hover_primary text-sm font-bold px-4 py-2 rounded-full">
                             답글 등록
                         </button>
@@ -19,10 +19,10 @@
                 </div>
 
                 <!-- original posting section -->
-                <div class="flex px-3 pt-3 pb-2">
+                <div class="flex px-3 pt-1 pb-2">
                     <div class="flex flex-col">
-                        <img :src="post.profile_image_url" class="w-10 h-10 rounded-full hover:opacity-80">
-                        <div class="ml-5 w-0.5 h-full bg-gray-300 mt-2 -mb-2"></div>
+                        <img :src="post.profile_image_url" class="w-10 h-10 rounded-full hover:opacity-80 mb-2 flex-none">
+                        <span class="ml-5 w-0.5 h-full bg-gray-300 -mb-3"></span>
                     </div>
                     <div class="flex-1 ml-3">
                         <div class="flex text-sm space-x-2 items-center">
@@ -30,32 +30,43 @@
                             <span class="text-gray-500 text-xs">{{ post.email }}</span>
                             <span class="text-gray-500 text-xs">{{ dayjs(post.created_at).locale("ko").fromNow() }}</span>
                         </div>
-                        <div>
+                        <div class="pb-5">
                             {{ post.post_body }}
                         </div>
-                        <div class="flex items-baseline">
-                            <span class="text-blue-400 font-bold text-sm">{{ post.nick_name }}</span>
-                            <span class="text-gray-500 text-xs pt-2">님에게 보내는 답글</span>
+                        <div class="overflow-y-auto border-y h-96 sm:max-h-52">
+                            <div v-for="comment in comments" :key="comment" class="pl-3 mb-2">
+                                <div class="flex space-x-5 items-center">
+                                    <span class="font-bold text-sm">{{ comment.nick_name }}</span>
+                                    <span class="text-gray-500 text-xs">{{ dayjs(post.created_at).locale("ko").fromNow() }}</span>
+                                </div>
+                                <span class="ml-2 text-sm">{{ comment.comment_body }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- reply section -->
-                <div class="flex px-3 py-3">
-                    <img :src="userInfo.profile_image_url" class="w-10 h-10 rounded-full hover:opacity-80 cursor-pointer">
-                    <div class="flex flex-1 flex-col ml-2">
-                        <textarea v-model="commentBody" class="w-full font-bold focus:outline-none mb-3 resize-none" rows="10" placeholder="어떻게 생각하시나요?"></textarea>
-                        
-                        <!-- reply button -->
-                        <div class="text-right hidden sm:block mr-2 mb-1">
-                            <buttonv v-if="!commentBody.length" @click="onCommentPost" class="bg-light text-sm text-white font-bold px-4 py-2 rounded-full">
-                                답글 등록
-                            </buttonv>
-                            <button v-else @click="onCommentPost" class="bg-hover_primary text-white hover:text-hover_primary hover:bg-BgLightBlue hover:border-hover_primary text-sm font-bold px-4 py-2 rounded-full">
-                                답글 등록
-                            </button>
+                <div class="stick bottom-0">
+                    <div class="flex items-baseline pb-1 pl-14">
+                        <span class="text-blue-400 font-bold text-sm">{{ post.nick_name }}</span>
+                        <span class="text-gray-500 text-xs pt-2">님에게 보내는 답글</span>
+                    </div>
+                    <div class="flex px-3 pb-3">
+                        <img :src="userInfo.profile_image_url" class="w-10 h-10 rounded-full hover:opacity-80 cursor-pointer">
+                        <div class="flex flex-1 flex-col ml-2">
+                            <textarea v-model="commentBody" class="w-full font-bold focus:outline-none mb-3 resize-none" rows="2" :placeholder="`${userInfo.user_name}님의 생각을 들려주세요!`"></textarea>
                         </div>
                     </div>
+                </div>
+                
+                <!-- reply button -->
+                <div class="text-right hidden sm:block mr-5 mt-1 mb-5">
+                    <button v-if="!commentBody.length" @click="onCommentPost" class="bg-light text-sm text-white font-bold px-4 py-2 rounded-full">
+                        답글 등록
+                    </button>
+                    <button v-else @click="onCommentPost" class="bg-hover_primary text-white hover:text-hover_primary hover:bg-BgLightBlue hover:border-hover_primary text-sm font-bold px-4 py-2 rounded-full">
+                        답글 등록
+                    </button>
                 </div>
             </div>
         </div>
@@ -63,20 +74,25 @@
 </template>
 
 <script>
-import { ref, computed } from "vue"
+import { ref, computed, onBeforeMount } from "vue"
 import store from "../store"
 import { CommentCollection, db } from '../firebase'
-import { doc, increment, setDoc, updateDoc } from "firebase/firestore"
+import { doc, getDocs, increment, orderBy, query, setDoc, updateDoc, where } from "firebase/firestore"
 import dayjs from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime"
 import "dayjs/locale/ko"
+import { useRoute } from 'vue-router'
 dayjs.extend(relativeTime)
+import getCommentInfo from "../utils/getCommentInfo.js"
 
 export default {
     props: ["post"],
     setup(props, { emit }) {
         const commentBody = ref('')
         const userInfo = computed(() => store.state.user)
+        const comments = ref([])
+        const route = useRoute()
+
         const onCommentPost = async () => {
             try {
                 const docu = doc(CommentCollection)
@@ -84,6 +100,7 @@ export default {
                     id: docu.id,
                     from_post_id: props.post.id,
                     comment_body: commentBody.value,
+                    nick_name: userInfo.value.nick_name,
                     uid: userInfo.value.uid,
                     created_at: Date.now(),
                 })
@@ -96,9 +113,17 @@ export default {
                 console.log('on comment post error : ', e)
             }
         }
+
+        onBeforeMount( async () => {
+            const querySnapshot = await getDocs(query(CommentCollection, where("from_post_id", "==", route.params.id), orderBy("created_at", "desc")))
+            querySnapshot.docs.forEach( async (doc) => {
+                comments.value.push(await getCommentInfo(doc.data()))
+            })
+        })
         
         return {
             commentBody,
+            comments,
             onCommentPost,
             userInfo,
             dayjs,

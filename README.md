@@ -133,3 +133,8 @@ firebase authentication 회원가입 및 firestore 데이터 저장 완료
 
 - 22.05.11(수)
   profile edit 수정 최종 완료 / background image 없앰, user 정보 수정 관련 구현 완료
+
+- 22.06.08(수)
+  비디오 여러개 업로드 완료
+  - 코멘트 모달 편집 목표
+    ㄴ 코멘트 모달 팝업 시 이전 코멘트들 보이게하기

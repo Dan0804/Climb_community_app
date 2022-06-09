@@ -11,7 +11,7 @@
         <div class="ml-3 mt-1">
         <!-- post contents -->
             <router-link :to="`/post/${ post.id }`">
-                {{ post.post_body }}
+                <div class="my-2">{{ post.post_body }}</div>
             </router-link>
                 <div class="flex flex-1 overflow-x-scroll">
                     <div class="flex-none relative" v-for="video in post.post_media" :key="video">

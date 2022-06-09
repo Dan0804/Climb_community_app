@@ -1,7 +1,7 @@
 <template>
     <div class="flex flex-1 flex-col border-r border-l border-border_line">
         <!-- page title -->
-        <div class="border-b border-border_line px-3 py-4 font-bold text-lg text-center">
+        <div class="border-b border-border_line px-3 py-1 font-bold text-lg text-center">
             검색
         </div>
 

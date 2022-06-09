@@ -2,7 +2,10 @@
     <div v-if="userInfo" class="flex flex-col justify-between lg:w-1/7 w-30 pt-5 ml-3 border-r border-gray-200">
         <!-- icons -->
         <div>
-            <div class="flex pt-12 flex-col items-start">
+            <button class="mt-1 ml-4 border-4 h-8 w-8 rounded-full">
+                <i :class="`fa-solid fa-circle text-2xl -mt-1 ${auth.currentUser === null ? 'text-red-500' : 'text-green-400'}`"></i>
+            </button>
+            <div class="flex pt-16 flex-col items-start">
                 <router-link :to="route.path" :class="`cursor-pointer hover:text-hover_primary hover:bg-BgLightBlue w-14 lg:w-28 py-2 lg:px-4 my-1 rounded-full ${router.currentRoute.value.name === route.name ? 'text-hover_primary bg-BgLightBlue' : ''}`" v-for="route in routes" :key="route">
                     <div v-if="route.meta.isMenu" class="text-center lg:text-left">
                         <i :class="route.icon"></i>
@@ -62,6 +65,7 @@ import store from '../store'
 import PostModal from './PostModal.vue'
 import LogoutModal from './LogoutModal.vue'
 import CenterModal from './CenterModal.vue'
+import { auth } from '../firebase'
 
 export default {
     components: { PostModal, LogoutModal, CenterModal, },
@@ -86,7 +90,8 @@ export default {
             showCenterRegisterModal,
             showLogoutModal,
             userInfo,
-            router
+            router,
+            auth
         }
     }
 }

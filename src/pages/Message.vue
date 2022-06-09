@@ -60,7 +60,6 @@
                         <i class="fa-solid fa-share text-blue-300 text-lg px-2 py-1 mr-1 hover:bg-gray-100 rounded-full"></i>
                     </button>
                 </div>
-
             </div>
         </div>
     </div>

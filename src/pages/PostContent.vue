@@ -19,7 +19,7 @@
                     <div class="text-gray-500 text-xs">{{ post.email }}</div>
                 </div>
                 <div class="-ml-10 mt-1">
-                    <span>{{ post.post_body }}</span>
+                    <div class="my-2">{{ post.post_body }}</div>
                     <div class="flex flex-1 overflow-x-scroll">
                         <div class="flex-none relative" v-for="video in post.post_media" :key="video">
                             <video :src="video" :id="`${video}`" class="object-contain h-64 bg-black rounded-xl mr-2 p-1" @click="videoPlay(video)" type="video/mp4"></video>
@@ -62,17 +62,17 @@
                 <router-link :to="`/profile/${comment.uid}`">
                     <img :src="comment.profile_image_url" class="w-10 h-10 rounded-full hover:opacity-90 cursor-pointer" />
                 </router-link>
-                <div class="flex-1 ml-3 space-y-2">
-                    <div class="space-x-1 -mt-0.5">
+                <div class="flex-1 ml-3 space-y-1">
+                    <div class="relative space-x-1 -mt-0.5">
                         <span class="font-bold">{{ comment.nick_name }}</span>
                         <span class="text-gray text-xs">{{ dayjs(comment.created_at).locale("ko").fromNow() }}</span>
                         <div class="text-gray-500 text-xs">{{ comment.email }}</div>
+                        <button @click="handleDeleteComment(comment)" v-if="comment.uid === userInfo.uid" class="absolute right-1 top-0.5">
+                            <i class="fas fa-trash text-red-400 hover:bg-red-50 m-2 rounded-full p-2"></i>
+                        </button>
                     </div>
-                    <div>{{ comment.comment_body }}</div>
+                    <div class="text-sm">{{ comment.comment_body }}</div>
                 </div>
-                <button @click="handleDeleteComment(comment)" v-if="comment.uid === userInfo.uid">
-                    <i class="fas fa-trash text-red-400 hover:bg-red-50 m-2 rounded-full p-2"></i>
-                </button>
             </div>
         </div>
     </div>
