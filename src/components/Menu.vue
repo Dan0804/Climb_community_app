@@ -2,7 +2,7 @@
     <div v-if="userInfo" class="flex flex-col justify-between lg:w-1/7 w-30 pt-5 ml-3 border-r border-gray-200">
         <!-- icons -->
         <div>
-            <button class="mt-1 ml-4 border-4 h-8 w-8 rounded-full">
+            <button @click="showConnectModal =true" class="mt-1 ml-4 border-4 h-8 w-8 rounded-full">
                 <i :class="`fa-solid fa-circle text-2xl -mt-1 ${auth.currentUser === null ? 'text-red-500' : 'text-green-400'}`"></i>
             </button>
             <div class="relative flex pt-16 flex-col items-start">
@@ -41,6 +41,9 @@
         <!-- post modal popup -->
         <post-modal v-if="showPostModal" @close_modal="showPostModal = false"></post-modal>
 
+        <!-- connect modal popup -->
+        <ConnectModal v-if="showConnectModal" @close_modal="showConnectModal = false"></ConnectModal>
+
         <!-- center register modal popup -->
         <CenterModal v-if="showCenterRegisterModal" @center_register_close_modal="showCenterRegisterModal = false"></CenterModal>
 
@@ -68,14 +71,16 @@ import store from '../store'
 import PostModal from './PostModal.vue'
 import LogoutModal from './LogoutModal.vue'
 import CenterModal from './CenterModal.vue'
+import ConnectModal from './ConnectModal.vue'
 import { auth } from '../firebase'
 
 export default {
-    components: { PostModal, LogoutModal, CenterModal, },
+    components: { PostModal, LogoutModal, CenterModal, ConnectModal, },
     setup() {
         const routes = ref([])
         const showProfileDropdown = ref(false)
         const showPostModal = ref(false)
+        const showConnectModal = ref(false)
         const showCenterRegisterModal = ref(false)
         const showLogoutModal = ref(false)
         const userInfo = computed(() => store.state.user)
@@ -88,6 +93,7 @@ export default {
             routes,
             showProfileDropdown,
             showPostModal,
+            showConnectModal,
             showCenterRegisterModal,
             showLogoutModal,
             userInfo,
