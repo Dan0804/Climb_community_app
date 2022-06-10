@@ -5,7 +5,10 @@
             <button class="mt-1 ml-4 border-4 h-8 w-8 rounded-full">
                 <i :class="`fa-solid fa-circle text-2xl -mt-1 ${auth.currentUser === null ? 'text-red-500' : 'text-green-400'}`"></i>
             </button>
-            <div class="flex pt-16 flex-col items-start">
+            <div class="relative flex pt-16 flex-col items-start">
+                <div class="absolute mt-16 ml-1 rounded-full px-2 pt-0.5 max-w-10 h-5 text-xs text-center bg-red-500 text-white">
+                    1
+                </div>
                 <router-link :to="route.path" :class="`cursor-pointer hover:text-hover_primary hover:bg-BgLightBlue w-14 lg:w-28 py-2 lg:px-4 my-1 rounded-full ${router.currentRoute.value.name === route.name ? 'text-hover_primary bg-BgLightBlue' : ''}`" v-for="route in routes" :key="route">
                     <div v-if="route.meta.isMenu" class="text-center lg:text-left">
                         <i :class="route.icon"></i>
@@ -79,8 +82,6 @@ export default {
 
         onBeforeMount(() => {
             routes.value = router.options.routes.filter((route) => route.meta.isMenu === true)
-
-            // console.log(router.currentRoute.value)
         })
 
         return {
@@ -91,7 +92,7 @@ export default {
             showLogoutModal,
             userInfo,
             router,
-            auth
+            auth,
         }
     }
 }
