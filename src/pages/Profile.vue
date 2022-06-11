@@ -25,11 +25,15 @@
                     <button class="absolute w-24 -bottom-12 right-0 border-2 border-blue-300 text-sm text-blue-300 px-3 py-2 hover:bg-blue-50 font-bold rounded-full">팔로우</button>
                 </div>
             </div>
-            <div class="absolute -bottom-20 right-0 text-sm">
-                <span class="font-bold mr-1">{{ profileUser.followings.length }}</span>
-                <span class="text-gray mr-3">팔로우 중</span>
-                <span class="font-bold mr-1">{{ profileUser.followers.length }}</span>
-                <span class="text-gray">팔로워</span>
+            <div class="absolute -bottom-20 right-0 text-sm mr-4">
+                <button class="mr-4" @click="showFollowingModal = true">
+                    <span class="font-bold mr-1">{{ profileUser.followings.length }}</span>
+                    <span class="text-gray">팔로우 중</span>
+                </button>
+                <button @click="showFollowerModal = true">
+                    <span class="font-bold mr-1">{{ profileUser.followers.length }}</span>
+                    <span class="text-gray">팔로워</span>
+                </button>
             </div>
         </div>
 
@@ -47,8 +51,8 @@
                     <i :class="`fa-solid fa-circle ${profileUser.my_level}`"></i>
                 </span>
             </div>
-            <div class="text-gray">{{ profileUser.email }}</div>
-            <div>
+            <div class="text-gray text-sm mt-1">{{ profileUser.email }}</div>
+            <div class="text-sm">
                 <span class="text-gray pr-1">가입일 :</span>
                 <span class="text-gray">{{ dayjs(profileUser.created_at).format("YYYY년 MM월 DD일") }}</span>
             </div>
@@ -67,6 +71,8 @@
     </div>
 
     <profile-edit-modal v-if="showProfileEditModal" @close_modal="showProfileEditModal = false"></profile-edit-modal>
+    <FollowerModal v-if="showFollowerModal" @close_modal="showFollowerModal = false"></FollowerModal>
+    <FollowingModal v-if="showFollowingModal" @close_modal="showFollowingModal = false"></FollowingModal>
 </template>
 
 <script>
@@ -81,9 +87,11 @@ import { useRoute } from 'vue-router'
 import router from '../router'
 import getPostInfo from '../utils/getPostInfo'
 import dayjs from 'dayjs'
+import FollowerModal from '../components/followerModal.vue'
+import FollowingModal from '../components/followingModal.vue'
 
 export default {
-    components: { Follow, Post, ProfileEditModal },
+    components: { Follow, Post, ProfileEditModal, FollowerModal, FollowingModal, },
     setup() {
         const userInfo = computed(() => store.state.user)
         const profileUser = ref(null)
@@ -92,6 +100,8 @@ export default {
         const currentTab = ref("post")
         const route = useRoute()
         const showProfileEditModal = ref(false)
+        const showFollowerModal = ref(false)
+        const showFollowingModal = ref(false)
 
         onBeforeMount(() => {
             const profileUID = route.params.uid ?? userInfo.value.uid
@@ -168,6 +178,8 @@ export default {
             router,
             onFollow,
             onUnfollow,
+            showFollowerModal,
+            showFollowingModal,
         }
     }
 }

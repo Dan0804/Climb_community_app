@@ -36,7 +36,6 @@ export default {
     setup(props, {emit}) {
 
     }
-
 }
 </script>
 

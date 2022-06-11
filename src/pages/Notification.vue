@@ -28,19 +28,17 @@
 </template>
 
 <script>
-import Follow from '../components/Follow.vue'
 import { ref, computed, onBeforeMount } from 'vue'
 import store from '../store'
 import { getDocs, orderBy, where, query } from 'firebase/firestore'
 import { PostCollection } from '../firebase'
-import getNotificationInfo from '../utils/getNotificationInfo.js'
+import getUserInfo from '../utils/getUserInfo.js'
 import dayjs from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime"
 import "dayjs/locale/ko"
 dayjs.extend(relativeTime)
 
 export default {
-    components: { Follow, },
     setup() {
         const userInfo = computed(() => store.state.user)
         const notifications = ref([])
@@ -50,7 +48,7 @@ export default {
                 const dateFrom = Date.now() - (10 * 60 * 60 * 24 * 1000)
                 const querySnapshot = await getDocs(query(PostCollection, where("uid", "==", following), where("created_at", ">", dateFrom), orderBy("created_at", "desc")))
                 querySnapshot.docs.forEach( async (doc) => {
-                    let post = await getNotificationInfo(doc.data())
+                    let post = await getUserInfo(doc.data())
                     notifications.value.push(post)
                 })
             })
