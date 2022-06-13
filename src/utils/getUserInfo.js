@@ -6,6 +6,7 @@ export default async (user) => {
     user.profile_image_url = docu.data().profile_image_url
     user.email = docu.data().email
     user.nick_name = docu.data().nick_name
+    user.uid = docu.data().uid
 
     return user
 }
