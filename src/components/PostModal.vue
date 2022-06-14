@@ -41,9 +41,12 @@
                             <i class="fa-solid fa-circle-exclamation text-xl text-gray-300 ml-5" title="동영상 코덱(확장자)은 mp4로 사용해야합니다."></i>
                         </div>
                         <div class="flex">
-                            <button @click="onChangeVideo" class="bg-gray-300 h-64 w-36 rounded-xl mr-2 fas fa-camera text-3xl text-white"></button>
                             <div class="flex overflow-x-auto">
-                                <video v-for="video in videoList.slice().reverse()" :key="video" :id="`${video}`" @click="videoPlay(video)" class="object-contain h-64 p-1 bg-black rounded-xl mr-2 max-w-48" :src="`${video}`"></video>
+                                <div class="flex-none relative" v-for="(video, index) in videoList" :key="index">
+                                    <video :id="`${video}`" @click="videoPlay(video)" class="object-contain h-64 p-1 bg-black rounded-xl mr-2 max-w-48" :src="`${video}`"></video>
+                                    <i @click="deletePreview(index)" class="absolute top-0 right-4 fa-solid fa-xmark text-4xl text-white cursor-pointer"></i>
+                                </div>
+                                <button @click="onChangeVideo" class="flex-none bg-gray-300 h-64 w-36 rounded-xl mr-2 fas fa-camera text-3xl text-white"></button>
                             </div>
                         </div>
                     </div>
@@ -94,11 +97,29 @@ export default {
             const file = event.target.files[0]
 
             if (file.size > 1024*1024*200) {
-                alert("100MB 이하의 동영상만 등록할 수 있습니다.\n\n" + "현재 파일 용량" + (Math.round(file.size / (1024 * 1024))) + "MB")    
+                alert("200MB 이하의 동영상만 등록할 수 있습니다.\n\n" + "현재 파일 용량" + (Math.round(file.size / (1024 * 1024))) + "MB")
+            } else if (videoData.value.length > 4) {
+                alert("게시글 당 최대 동영상 등록 갯수를 채웠습니다.")
+            } else if (Object.keys(videoData.value).find(key => videoData.value[key].name == file.name && videoData.value[key].lastModified == file.lastModified) != undefined) {
+                alert("중복된 영상이 있습니다.")
             } else {
                 videoData.value.push(file)
                 videoList.value.push(URL.createObjectURL(file))
             }
+        }
+
+        const deletePreview = (index) => {
+            var i = 0
+            const tempVideoData = []
+            const tempVideoList = []
+            for (i=0 ; i < videoData.value.length ; i++) {
+                if (i != index) {
+                    tempVideoData.push(videoData.value[i])
+                    tempVideoList.push(videoList.value[i])
+                }
+            }
+            videoData.value = tempVideoData
+            videoList.value = tempVideoList
         }
 
         // center hashtag data
@@ -183,6 +204,7 @@ export default {
             onAddPost,
             onChangeVideo,
             previewVideo,
+            deletePreview,
             centerList,
             search,
             filter,
