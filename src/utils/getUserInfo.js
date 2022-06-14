@@ -7,6 +7,8 @@ export default async (user) => {
     user.email = docu.data().email
     user.nick_name = docu.data().nick_name
     user.uid = docu.data().uid
+    user.main_center = docu.data().main_center
+    user.my_level = docu.data().my_level
 
     return user
 }

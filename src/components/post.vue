@@ -13,7 +13,7 @@
             <router-link :to="`/post/${ post.id }`">
                 <div class="my-2">{{ post.post_body }}</div>
             </router-link>
-                <div class="flex flex-1 overflow-x-scroll">
+                <div class="flex flex-1 overflow-x-auto">
                     <div class="flex-none relative" v-for="video in post.post_media" :key="video">
                     <video :src="video" :id="`${video}`" class="object-contain h-64 bg-black rounded-xl mr-2 p-1" @click="videoPlay(video)" type="video/mp4"></video>
                     <i v-if="videoStatus != video" class="absolute fa-solid fa-play top-2 left-3 text-white text-4xl"></i>

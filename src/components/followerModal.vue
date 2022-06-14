@@ -8,17 +8,33 @@
                     <span class="ml-16 font-semibold">팔로워</span>
                 </div>
                 <div class="h-80 overflow-y-auto">
-                    <div v-for="follower in followerInfo" :key="follower" class=" border-b py-1 px-2 mx-1">
-                    <router-link :to="`/profile/${follower.uid === userInfo.uid ? '' : follower.uid}`" class="flex items-center">
-                        <div class=" w-10 h-10 rounded-full">
-                            <img :src="follower.profile_image_url" class="rounded-full opacity-90 hover:opacity-100 cursor-pointer w-full h-full object-cover">
+                    <div v-for="follower in followerInfo" :key="follower" class="relative border-b py-1 px-2 mx-1">
+                        <router-link :to="`/profile/${follower.uid === userInfo.uid ? '' : follower.uid}`" class="flex items-center">
+                            <div class=" w-10 h-10 rounded-full">
+                                <img :src="follower.profile_image_url" class="rounded-full opacity-90 hover:opacity-100 cursor-pointer w-full h-full object-cover">
+                            </div>
+                            <div class="ml-1">
+                                <div class="text-sm">
+                                    {{ follower.nick_name }}
+                                    <span class="text-xs border-2 border-blue-300 py-0.5 px-1 rounded-full">
+                                        <i class="fa-solid fa-location-dot text-primary"></i>
+                                        {{ follower.main_center }}
+                                        <i :class="`fa-solid fa-circle ${follower.my_level}`"></i>
+                                    </span>
+                                </div>
+                                <div class="text-xs text-gray-500">{{ follower.email }}</div>
+                            </div>
+                        </router-link>
+                        <div v-if="userInfo.uid != follower.uid">
+                            <div v-if="userInfo.followings.includes(follower.uid)" @click="onUnfollow(follower.uid)">
+                                <button class="absolute right-1 top-2.5 text-xs px-1.5 py-1 h-7 w-14 rounded-full text-white bg-primary hover:opacity-0 font-bold">팔로잉</button>
+                                <button class="absolute right-1 top-2.5 text-xs px-1.5 py-1 h-7 w-14 rounded-full text-white bg-red-400 opacity-0 hover:opacity-100 font-bold">언팔로우</button>
+                            </div>
+                            <div v-else @click="onFollow(follower.uid)">
+                                <button class="absolute right-1 top-2.5 border-2 border-blue-300 text-blue-300 text-xs px-1.5 py-1 h-7 w-14 rounded-full font-bold">팔로우</button>
+                            </div>
                         </div>
-                        <div class="ml-1">
-                            <div class="text-sm">{{ follower.nick_name }}</div>
-                            <div class="text-xs text-gray-500">{{ follower.email }}</div>
-                        </div>
-                    </router-link>
-                </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -27,7 +43,7 @@
 
 <script>
 import { ref, computed, onBeforeMount } from 'vue'
-import { getDocs, where, query, collection, getDoc, doc } from 'firebase/firestore'
+import { getDocs, where, query, collection, getDoc, doc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore'
 import { db } from '../firebase'
 import store from '../store'
 import getUserInfo from '../utils/getUserInfo.js'
@@ -42,7 +58,6 @@ export default {
 
         onBeforeMount( async () => {
             const profileUID = route.params.uid ?? userInfo.value.uid
-            
             const docu = await getDoc(doc(db, "users", profileUID))
 
             docu.data().followers.forEach( async (follower) => {
@@ -53,11 +68,37 @@ export default {
             })
         })
 
+        const onFollow = async (followerUID) => {
+            await updateDoc(doc(db, "users", userInfo.value.uid), {
+                followings: arrayUnion(followerUID)
+            })
+
+            await updateDoc(doc(db, "users", followerUID), {
+                followers: arrayUnion(userInfo.value.uid)
+            })
+
+            store.commit("setFollow", followerUID)
+        }
+
+        const onUnfollow = async (followerUID) => {
+            await updateDoc(doc(db, "users", userInfo.value.uid), {
+                followings: arrayRemove(followerUID)
+            })
+
+            await updateDoc(doc(db, "users", followerUID), {
+                followers: arrayRemove(userInfo.value.uid)
+            })
+
+            store.commit("setUnFollow", followerUID)
+        }
+
         return {
             userInfo,
             profileUser,
             followerInfo,
             getUserInfo,
+            onFollow,
+            onUnfollow,
         }
     }
 }
