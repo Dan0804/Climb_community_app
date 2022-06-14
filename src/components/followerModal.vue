@@ -14,15 +14,12 @@
                                 <img :src="follower.profile_image_url" class="rounded-full opacity-90 hover:opacity-100 cursor-pointer w-full h-full object-cover">
                             </div>
                             <div class="ml-1">
-                                <div class="text-sm">
-                                    {{ follower.nick_name }}
-                                    <span class="text-xs border-2 border-blue-300 py-0.5 px-1 rounded-full">
-                                        <i class="fa-solid fa-location-dot text-primary"></i>
-                                        {{ follower.main_center }}
-                                        <i :class="`fa-solid fa-circle ${follower.my_level}`"></i>
-                                    </span>
+                                <div class="text-sm">{{ follower.nick_name }}</div>
+                                <div class="text-xs border-2 border-blue-300 py-0.5 px-1 rounded-full">
+                                    <i class="fa-solid fa-location-dot text-primary"></i>
+                                    {{ follower.main_center }}
+                                    <i :class="`fa-solid fa-circle ${follower.my_level}`"></i>
                                 </div>
-                                <div class="text-xs text-gray-500">{{ follower.email }}</div>
                             </div>
                         </router-link>
                         <div v-if="userInfo.uid != follower.uid">

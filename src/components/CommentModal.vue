@@ -27,19 +27,21 @@
                     <div class="flex-1 ml-3">
                         <div class="flex text-sm space-x-2 items-center">
                             <span class="font-bold">{{ post.nick_name }}</span>
-                            <span class="text-gray-500 text-xs">{{ post.email }}</span>
                             <span class="text-gray-500 text-xs">{{ dayjs(post.created_at).locale("ko").fromNow() }}</span>
                         </div>
                         <div class="pb-5">
                             {{ post.post_body }}
                         </div>
                         <div class="overflow-y-auto border-y h-96 sm:max-h-52">
-                            <div v-for="comment in comments" :key="comment" class="pl-3 mb-2">
-                                <div class="flex space-x-5 items-center">
-                                    <span class="font-bold text-sm">{{ comment.nick_name }}</span>
-                                    <span class="text-gray-500 text-xs">{{ dayjs(post.created_at).locale("ko").fromNow() }}</span>
-                                </div>
-                                <span class="ml-2 text-sm">{{ comment.comment_body }}</span>
+                            <div v-for="comment in comments" :key="comment" class="pl-3 mb-2 mt-1">
+                                <router-link :to="`/profile/${comment.uid}`" class="flex">
+                                    <img :src="comment.profile_image_url" class="w-10 h-10 rounded-full hover:opacity-90 cursor-pointer" />
+                                    <div class="ml-2">
+                                        <div class="font-bold text-sm">{{ comment.nick_name }}</div>
+                                        <div class="text-gray-500 text-xs">{{ dayjs(comment.created_at).locale("ko").fromNow() }}</div>
+                                    </div>
+                                </router-link>
+                                <span class="ml-12 text-sm">{{ comment.comment_body }}</span>
                             </div>
                         </div>
                     </div>
@@ -103,6 +105,7 @@ export default {
                     nick_name: userInfo.value.nick_name,
                     uid: userInfo.value.uid,
                     created_at: Date.now(),
+                    profile_image_url: userInfo.value.profile_image_url,
                 })
 
                 await updateDoc(doc(db, "posts", props.post.id), {
@@ -115,7 +118,7 @@ export default {
         }
 
         onBeforeMount( async () => {
-            const querySnapshot = await getDocs(query(CommentCollection, where("from_post_id", "==", route.params.id), orderBy("created_at", "desc")))
+            const querySnapshot = await getDocs(query(CommentCollection, where("from_post_id", "==", props.post.id), orderBy("created_at", "desc")))
             querySnapshot.docs.forEach( async (doc) => {
                 comments.value.push(await getCommentInfo(doc.data()))
             })

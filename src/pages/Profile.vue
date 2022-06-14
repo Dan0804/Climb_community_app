@@ -51,8 +51,7 @@
                     <i :class="`fa-solid fa-circle ${profileUser.my_level}`"></i>
                 </span>
             </div>
-            <div class="text-gray text-sm mt-1">{{ profileUser.email }}</div>
-            <div class="text-sm">
+            <div class="text-sm mt-1">
                 <span class="text-gray pr-1">가입일 :</span>
                 <span class="text-gray">{{ dayjs(profileUser.created_at).format("YYYY년 MM월 DD일") }}</span>
             </div>
