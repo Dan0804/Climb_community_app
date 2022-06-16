@@ -11,10 +11,9 @@
                 <img class="hover:opacity-80 rounded-full w-10 h-10" :src="notification.profile_image_url">
             </router-link>
             <div class="flex flex-1 flex-col ml-3">
-                <div class="space-x-1 -mt-0.5">
-                    <span class="font-bold">{{ notification.nick_name }}</span>
-                    <span class="text-gray-500 text-xs">{{ dayjs(notification.created_at).locale("ko").fromNow() }}</span>
-                    <div class="text-gray-500 text-xs">{{ notification.email }}</div>
+                <div class="-mt-0.5">
+                    <div class="font-bold">{{ notification.nick_name }}</div>
+                    <div class="text-gray-500 text-xs">{{ dayjs(notification.created_at).locale("ko").fromNow() }}</div>
                 </div>
                 <div class="space-x-1 mt-2">
                     <router-link :to="`/post/${notification.id}`">

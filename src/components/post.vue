@@ -1,7 +1,7 @@
 <template>
   <div v-if="userInfo" class="px-3 py-2 border-b border-border_line">
         <router-link :to="`/profile/${post.uid}`" class="flex">
-            <img :src="post.profile_image_url" class="hover:opacity-80 cursor-pointer w-10 h-10 rounded-full">
+            <img :src="post.profile_image_url" class="hover:opacity-80 cursor-pointer w-10 h-10 rounded-full object-cover">
             <div class="ml-2 -mt-0.5">
                 <div class="font-bold">{{ post.nick_name }}</div>
                 <div class="text-gray-500 text-xs">{{ dayjs(post.created_at).locale("ko").fromNow() }}</div>
@@ -10,15 +10,18 @@
         <div class="ml-3 mt-1">
         <!-- post contents -->
             <router-link :to="`/post/${ post.id }`">
-                <div class="my-2">{{ post.post_body }}</div>
-            </router-link>
-                <div class="flex flex-1 overflow-x-auto">
-                    <div class="flex-none relative" v-for="video in post.post_media" :key="video">
-                    <video :src="video" :id="`${video}`" class="object-contain h-64 bg-black rounded-xl mr-2 p-1" @click="videoPlay(video)" type="video/mp4"></video>
-                    <i v-if="videoStatus != video" class="absolute fa-solid fa-play top-2 left-3 text-white text-4xl"></i>
-                    <i class="absolute fa-solid fa-expand bottom-2 right-4 text-white" @click="openFullscreen(`${video}`)"></i>
-                    </div>
+                <div class="break-words w-56 max-h-12 overflow-hidden" :id="`${post.id}`" style="white-space:pre-line">
+                    {{ post.post_body }}
                 </div>
+            </router-link>
+            <i class="fa-solid fa-ellipsis mb-2" @click="textHeight(`${post.id}`)"></i>
+            <div class="flex flex-1 overflow-x-auto">
+                <div class="flex-none relative" v-for="video in post.post_media" :key="video">
+                <video :src="video" :id="`${video}`" class="object-contain h-64 bg-black rounded-xl mr-2 p-1" @click="videoPlay(video)" type="video/mp4"></video>
+                <i v-if="videoStatus != video" class="absolute fa-solid fa-play top-2 left-3 text-white text-4xl"></i>
+                <i class="absolute fa-solid fa-expand bottom-2 right-4 text-white" @click="openFullscreen(`${video}`)"></i>
+                </div>
+            </div>
                     
 
             <!-- post icon -->

@@ -4,21 +4,23 @@
             <button @click="router.go(-1)">
                 <i class="fas fa-arrow-left text-primary text-lg ml-3 hover:bg-blue-50 p-2 h-10 w-10 rounded-full"></i>
             </button>
-            <span class="font-bold text-lg ml-6">게시글</span>
+            <div class="flex ml-5">
+                <router-link :to="`/profile/${post.uid}`">
+                <img :src="post.profile_image_url" class="w-10 h-10 rounded-full hover:opacity-90 cursor-pointer" />
+                </router-link>
+                <div class="ml-1 -mt-0.5">
+                    <div class="font-bold">{{ post.nick_name }}님의 게시글</div>
+                    <div class="text-gray-500 text-xs">{{ dayjs(post.created_at).locale("ko").fromNow() }}</div>
+                </div>
+            </div>
         </div>
 
         <!-- post -->
         <div class="px-3 py-2 flex">
-            <router-link :to="`/profile/${post.uid}`">
-                <img :src="post.profile_image_url" class="w-10 h-10 rounded-full hover:opacity-90 cursor-pointer" />
-            </router-link>
+            
             <div class="flex-1 ml-3">
-                <div class="-ml-1 -mt-0.5">
-                    <div class="font-bold">{{ post.nick_name }}</div>
-                    <div class="text-gray-500 text-xs">{{ dayjs(post.created_at).locale("ko").fromNow() }}</div>
-                </div>
-                <div class="-ml-10 mt-1">
-                    <div class="my-2">{{ post.post_body }}</div>
+                <div class="mt-1">
+                    <div class="my-2 break-words lg:w-96 w-52" style="white-space:pre-line">{{ post.post_body }}</div>
                     <div class="flex flex-1 overflow-x-auto">
                         <div class="flex-none relative" v-for="video in post.post_media" :key="video">
                             <video :src="video" :id="`${video}`" class="object-contain h-64 bg-black rounded-xl mr-2 p-1" @click="videoPlay(video)" type="video/mp4"></video>

@@ -91,7 +91,6 @@ export default {
         onBeforeMount( async () => {
             const document = await getDoc(doc(db, 'centersList', 'List'))
             centerList.value = document.data().centers
-            console.log(centerList.value)
         })
 
         const filter = computed(() => {

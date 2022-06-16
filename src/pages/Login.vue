@@ -1,7 +1,6 @@
 <template>
     <div class="flex flex-col items-center space-y-6 mt-32">
-        <span class="text-2xl font-bold">Climb View</span>
-        <span class="text-2xl font-bold">로그인</span>
+        <span class="text-3xl font-bold mb-16">Climb View</span>
         <button class="w-52 rounded bg-primary text-white py-4" @click="GoogleLogin">
             <i class="fa-brands fa-google mr-2"></i>
             Google 로그인
