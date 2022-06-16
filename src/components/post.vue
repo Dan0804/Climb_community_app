@@ -9,12 +9,17 @@
         </router-link>
         <div class="ml-3 mt-1">
         <!-- post contents -->
-            <router-link :to="`/post/${ post.id }`">
-                <div class="break-words w-56 max-h-12 overflow-hidden" :id="`${post.id}`" style="white-space:pre-line">
+            <router-link :to="`/post/${ post.id }`" v-if="post.post_body.includes('\n') || len > 32">
+                <div class="break-words w-56 h-6 overflow-hidden" :id="`${post.id}`" style="white-space:pre-line">
+                    {{ post.post_body }}
+                </div>
+                <i class="fa-solid fa-ellipsis mb-2"></i>
+            </router-link>
+            <router-link :to="`/post/${ post.id }`" v-else>
+                <div class="break-words w-56 h-6 overflow-hidden" :id="`${post.id}`">
                     {{ post.post_body }}
                 </div>
             </router-link>
-            <i class="fa-solid fa-ellipsis mb-2" @click="textHeight(`${post.id}`)"></i>
             <div class="flex flex-1 overflow-x-auto">
                 <div class="flex-none relative" v-for="video in post.post_media" :key="video">
                 <video :src="video" :id="`${video}`" class="object-contain h-64 bg-black rounded-xl mr-2 p-1" @click="videoPlay(video)" type="video/mp4"></video>
@@ -51,7 +56,7 @@
 </template>
 
 <script>
-import { ref, computed } from "vue"
+import { ref, computed, onBeforeMount, } from "vue"
 import CommentModal from "./CommentModal.vue"
 import { db, LikeCollection, CommentCollection, storage } from '../firebase'
 import { deleteDoc, doc, increment, query, updateDoc, where, getDocs } from 'firebase/firestore'
@@ -66,10 +71,21 @@ dayjs.extend(relativeTime)
 export default {
     components: { CommentModal },
     props: ['userInfo', 'post'],
-    setup() {
+    setup(props) {
         const showCommentModal = ref(false)
         const userInfo = computed(() => store.state.user)
         let i = 0
+        const len = ref(null)
+
+        onBeforeMount(() => {
+            if( props.post.post_body == "" ) {
+                len.value = 0
+            }
+
+            for (var i = 0 ; i < props.post.post_body.length ; i++) {
+                len.value += (props.post.post_body.charCodeAt(i) > 128) ? 2 : 1
+            }
+        })
 
         const handleDeletePost = async (post) => {
             if (confirm("정말로 해당 게시글을 삭제하겠습니까?")) {
@@ -136,6 +152,7 @@ export default {
         return {
             dayjs,
             showCommentModal,
+            len,
             userInfo,
             handleLike,
             handleDeletePost,
