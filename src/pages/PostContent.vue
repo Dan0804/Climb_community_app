@@ -51,7 +51,7 @@
             <div class="cursor-pointer hover:bg-green-100 hover:text-green-400 rounded-full p-2" @click="linkCopy()">
                 <i class="fa-solid fa-share-from-square px-1"></i>
             </div>
-            <div v-if="post.uid === userInfo.uid" @click="handleDeletePost(post)" class="cursor-pointer hover:bg-red-100 text-red-400 rounded-full p-2">
+            <div v-if="post.uid === userInfo.uid" @click="handleDeletePost(post, postId)" class="cursor-pointer hover:bg-red-100 text-red-400 rounded-full p-2">
                 <i class="fas fa-trash px-1"></i>
             </div>
         </div>
@@ -85,8 +85,9 @@ import router from "../router"
 import { useRoute } from "vue-router"
 import { ref, computed, onBeforeMount } from 'vue'
 import store from '../store'
-import { deleteDoc, doc, increment, onSnapshot, orderBy, query, updateDoc, where } from 'firebase/firestore'
-import { CommentCollection, db } from "../firebase"
+import { deleteDoc, doc, increment, onSnapshot, orderBy, query, updateDoc, where, getDocs, } from 'firebase/firestore'
+import { deleteObject, ref as storageRef } from "firebase/storage"
+import { CommentCollection, LikeCollection, db, storage, } from "../firebase"
 import getPostInfo from '../utils/getPostInfo'
 import handleLike from "../utils/handleLike"
 import dayjs from "dayjs"
@@ -101,7 +102,7 @@ export default {
         const comments = ref([])
         const userInfo = computed(() => store.state.user)
         const showCommentModal = ref(false)
-
+        const postId = ref(null)
         const route = useRoute()
 
         const handleDeleteComment = async (comment) => {
@@ -122,22 +123,27 @@ export default {
             textarea.select()
             document.execCommand("copy")
             document.body.removeChild(textarea)
-            alert("주소 복사가 완료되었습니다.")       
+            alert("주소 복사가 완료되었습니다.")
         }
 
-        const handleDeletePost = async (post) => {
+        const handleDeletePost = async (post, postId) => {
             if (confirm("정말로 해당 게시글을 삭제하겠습니까?")) {
+                let i = 0
                 await updateDoc(doc(db, "users", post.uid), {
                     num_posts: increment(-1),
                 })
-                await deleteObject(storageRef(storage, `video/${post.uid}/${post.center_id}/${post.created_at}_${i}.mp4`))
-                await deleteDoc(doc(db, "posts", post.id))
+                for (i=0 ; i < post.post_media.length ; i++) {
+                    await deleteObject(storageRef(storage, `video/${post.uid}/${post.center_id}/${post.created_at}_${i}.mp4`))
+                }
+                await deleteDoc(doc(db, "posts", postId))
 
-                const commentSnapshot = await getDocs(query(CommentCollection, where("from_post_id", "==", post.id)))
+                const commentSnapshot = await getDocs(query(CommentCollection, where("from_post_id", "==", postId)))
                 commentSnapshot.docs.forEach( async (doc) => await deleteDoc(doc.ref))
 
-                const likeSnapshot = await getDocs(query(LikeCollection, where("from_like_id", "==", post.id)))
+                const likeSnapshot = await getDocs(query(LikeCollection, where("from_like_id", "==", postId)))
                 likeSnapshot.docs.forEach( async (doc) => await deleteDoc(doc.ref))
+
+                router.replace('/')
             }
         }
 
@@ -145,6 +151,7 @@ export default {
             await onSnapshot(doc(db, "posts", route.params.id), async (doc) => {
                 const postInfo = await getPostInfo(doc.data())
                 post.value = postInfo
+                postId.value = route.params.id
             })
 
             const q = query(CommentCollection, where("from_post_id", "==", route.params.id), orderBy("created_at", "desc"))
@@ -192,6 +199,7 @@ export default {
             post, 
             comments, 
             showCommentModal,
+            postId,
             handleLike,
             handleDeleteComment,
             handleDeletePost,

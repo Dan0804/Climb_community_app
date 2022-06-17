@@ -9,7 +9,7 @@
         </router-link>
         <div class="ml-3 mt-1">
         <!-- post contents -->
-            <router-link :to="`/post/${ post.id }`" v-if="post.post_body.includes('\n') || len > 32">
+            <router-link :to="`/post/${ post.id }`" :postId="post.id" v-if="post.post_body.includes('\n') || len > 32">
                 <div class="break-words w-56 h-6 overflow-hidden" :id="`${post.id}`" style="white-space:pre-line">
                     {{ post.post_body }}
                 </div>
