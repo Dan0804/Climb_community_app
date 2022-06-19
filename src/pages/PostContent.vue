@@ -2,11 +2,11 @@
     <div v-if="post" class="flex flex-1 flex-col border-r border-gray-100">
         <div class="flex items-center px-3 py-2 border-b border-gray-100">
             <button @click="router.go(-1)">
-                <i class="fas fa-arrow-left text-primary text-lg ml-3 hover:bg-blue-50 p-2 h-10 w-10 rounded-full"></i>
+                <i class="fas fa-arrow-left text-primary text-lg hover:bg-blue-50 p-2 h-10 w-10 rounded-full"></i>
             </button>
-            <div class="flex ml-5">
+            <div class="flex ml-2">
                 <router-link :to="`/profile/${post.uid}`">
-                <img :src="post.profile_image_url" class="w-10 h-10 rounded-full hover:opacity-90 cursor-pointer" />
+                <img :src="post.profile_image_url" class="w-10 h-10 rounded-full hover:opacity-90 cursor-pointer object-cover" />
                 </router-link>
                 <div class="ml-1 -mt-0.5">
                     <div class="font-bold">{{ post.nick_name }}님의 게시글</div>

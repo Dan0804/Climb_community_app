@@ -47,8 +47,11 @@
                     </div>
 
                     <span class="mt-5">주 난이도</span>
-                    <div class="p-1 border-2 border-blue-300 mr-auto rounded-full space-x-1">
-                        <button v-for="level in LevelList" :key="level" :class="`${level} w-8 border-2 border-BgLightBlue rounded-full hover:border-primary hover:bg-BgLightBlue text-xl ${levelColor === level ? 'border-primary bg-BgLightBlue' : ''}`" @click="LevelSelect(level)"><i class="fa-solid fa-circle"></i></button>
+                    <div v-if="hashTagCenter != ''" class="p-1 border-2 border-blue-300 mr-auto rounded-full space-x-1">
+                        <button v-for="level in LevelList" :key="level" :class="`${level} w-8 border-2 border-BgLightBlue rounded-full hover:border-primary hover:bg-BgLightBlue text-xl ${levelColor === level && hashTagCenter === userInfo.main_center ? 'border-primary bg-BgLightBlue' : ''}`" @click="LevelSelect(level)"><i class="fa-solid fa-circle"></i></button>
+                    </div>
+                    <div v-else>
+                        암장을 먼저 선택해주세요
                     </div>
                 </div>
             </div>
@@ -69,6 +72,7 @@ export default {
         const profileImage = ref(null)
         const profileImageData = ref(null)
         const NickName = ref(userInfo.value.nick_name)
+        const LevelList = ref(null)
 
         const onChangeProfileImage = () => {
             document.getElementById('profileImageInput').click()
@@ -91,6 +95,9 @@ export default {
         onBeforeMount( async () => {
             const document = await getDoc(doc(db, 'centersList', 'List'))
             centerList.value = document.data().centers
+
+            const docSnap = await getDoc(doc(db, "centers", hashTagCenter.value))
+            LevelList.value = docSnap.data().level_list
         })
 
         const filter = computed(() => {
@@ -110,9 +117,11 @@ export default {
 
         const hashTagCenter = ref(userInfo.value.main_center)
 
-        const hashTagAdd = (event) => {
+        const hashTagAdd = async (event) => {
             if ( hashTagCenter.value === '' ) {
                 hashTagCenter.value = event.target.value
+                const docSnap = await getDoc(doc(db, "centers", hashTagCenter.value))
+                LevelList.value = docSnap.data().level_list 
             } else {
                 alert("이미 암장을 선택하셨습니다.")
             }
@@ -120,15 +129,15 @@ export default {
 
         const hashTagDelete = () => {
             hashTagCenter.value = ''
+            LevelList.value = null
         }
 
         // const levelClick = ref(false)
         const levelColor = ref(userInfo.value.my_level)
-        const LevelList = ['text-white', `text-yellow-400`, 'text-orange-400', 'text-green-800', 'text-sky-500', 'text-red-600', 'text-purple-600', 'text-gray-300', 'text-black']
+
         const LevelSelect = (level) => {
             if (levelColor.value != level) {
                 levelColor.value = level
-                console.log(levelColor.value)
             } else {
                 levelColor.value = ''
             }
