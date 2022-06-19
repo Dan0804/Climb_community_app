@@ -17,7 +17,6 @@
 
         <!-- post -->
         <div class="px-3 py-2 flex">
-            
             <div class="flex-1 ml-3">
                 <div class="mt-1">
                     <div class="my-2 break-words lg:w-96 w-52" style="white-space:pre-line">{{ post.post_body }}</div>
@@ -30,7 +29,6 @@
                     </div>
                 </div>
             </div>
-            
         </div>
         <div class="h-px w-full bg-gray-100"></div>
 
@@ -51,9 +49,6 @@
             <div class="cursor-pointer hover:bg-green-100 hover:text-green-400 rounded-full p-2" @click="linkCopy()">
                 <i class="fa-solid fa-share-from-square px-1"></i>
             </div>
-            <div v-if="post.uid === userInfo.uid" @click="handleDeletePost(post, postId)" class="cursor-pointer hover:bg-red-100 text-red-400 rounded-full p-2">
-                <i class="fas fa-trash px-1"></i>
-            </div>
         </div>
         <div class="h-px w-full bg-gray-100"></div>
         
@@ -67,11 +62,11 @@
                     <div class="relative -mt-0.5">
                         <div class="font-bold">{{ comment.nick_name }}</div>
                         <div class="text-gray-500 text-xs">{{ dayjs(comment.created_at).locale("ko").fromNow() }}</div>
-                        <button @click="handleDeleteComment(comment)" v-if="comment.uid === userInfo.uid" class="absolute right-1 top-0.5">
+                        <button @click="handleDeleteComment(comment)" v-if="comment.uid === userInfo.uid" class="absolute right-1 -top-1.5">
                             <i class="fas fa-trash text-red-400 hover:bg-red-50 m-2 rounded-full p-2"></i>
                         </button>
                     </div>
-                    <div class="text-sm">{{ comment.comment_body }}</div>
+                    <div class="text-sm" style="white-space:pre-line">{{ comment.comment_body }}</div>
                 </div>
             </div>
         </div>

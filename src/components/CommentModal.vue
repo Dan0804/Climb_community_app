@@ -35,13 +35,15 @@
                         <div class="overflow-y-auto border-y h-96 sm:max-h-52">
                             <div v-for="comment in comments" :key="comment" class="pl-3 mb-2 mt-1">
                                 <router-link :to="`/profile/${comment.uid}`" class="flex">
-                                    <img :src="comment.profile_image_url" class="w-10 h-10 rounded-full hover:opacity-90 cursor-pointer" />
+                                    <img :src="comment.profile_image_url" class="w-10 h-10 rounded-full hover:opacity-90 cursor-pointer"/>
                                     <div class="ml-2">
                                         <div class="font-bold text-sm">{{ comment.nick_name }}</div>
                                         <div class="text-gray-500 text-xs">{{ dayjs(comment.created_at).locale("ko").fromNow() }}</div>
                                     </div>
                                 </router-link>
-                                <span class="ml-12 text-sm">{{ comment.comment_body }}</span>
+                                <div class="ml-12 text-sm" style="white-space:pre-line">
+                                    {{ comment.comment_body }}
+                                </div>
                             </div>
                         </div>
                     </div>
