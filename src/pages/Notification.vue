@@ -44,7 +44,7 @@ export default {
 
         onBeforeMount(() => {
             userInfo.value.followings.forEach( async (following) => {
-                const dateFrom = Date.now() - (10 * 60 * 60 * 24 * 1000)
+                const dateFrom = Date.now() - (7 * 60 * 60 * 24 * 1000)
                 const querySnapshot = await getDocs(query(PostCollection, where("uid", "==", following), where("created_at", ">", dateFrom), orderBy("created_at", "desc")))
                 querySnapshot.docs.forEach( async (doc) => {
                     let post = await getUserInfo(doc.data())

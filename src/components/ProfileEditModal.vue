@@ -39,7 +39,7 @@
                                 <i class="fa-solid fa-xmark mr-2"></i>{{ hashTagCenter }}
                             </button>
                         </div>
-                        <div class="h-28 border-b border-gray-150 mr-40 overflow-y-auto">
+                        <div class="h-28 w-5/6 border-b border-gray-150 mr-40 overflow-y-auto">
                             <button class="px-3 py-1 my-0.5 mx-1 bg-BgLightBlue hover:bg-hover_primary hover:text-white rounded-full" v-for="center in filter" :key="center.id" :value="center" @click="hashTagAdd">
                                 {{ center }}
                             </button>
@@ -48,10 +48,19 @@
 
                     <span class="mt-5">주 난이도</span>
                     <div v-if="hashTagCenter != ''" class="p-1 border-2 border-blue-300 mr-auto rounded-full space-x-1">
-                        <button v-for="level in LevelList" :key="level" :class="`${level} w-8 border-2 border-BgLightBlue rounded-full hover:border-primary hover:bg-BgLightBlue text-xl ${levelColor === level && hashTagCenter === userInfo.main_center ? 'border-primary bg-BgLightBlue' : ''}`" @click="LevelSelect(level)"><i class="fa-solid fa-circle"></i></button>
+                        <button v-for="level in LevelList" :key="level" :class="`w-8 border-2 border-BgLightBlue rounded-full hover:border-primary hover:bg-BgLightBlue text-xl ${level} ${levelColor === level && hashTagCenter === userInfo.main_center ? 'border-primary bg-BgLightBlue' : ''}`" @click="LevelSelect(level)"><i class="fa-solid fa-circle"></i></button>
                     </div>
                     <div v-else>
                         암장을 먼저 선택해주세요
+                        <span class="text-white"></span>
+                        <span class="text-yellow-400"></span>
+                        <span class="text-orange-400"></span>
+                        <span class="text-green-800"></span>
+                        <span class="text-sky-500"></span>
+                        <span class="text-red-600"></span>
+                        <span class="text-purple-600"></span>
+                        <span class="text-gray-300"></span>
+                        <span class="text-black"></span>
                     </div>
                 </div>
             </div>
@@ -132,7 +141,6 @@ export default {
             LevelList.value = null
         }
 
-        // const levelClick = ref(false)
         const levelColor = ref(userInfo.value.my_level)
 
         const LevelSelect = (level) => {

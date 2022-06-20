@@ -2,10 +2,10 @@
     <div v-if="userInfo" class="flex flex-col justify-between lg:w-1/7 w-30 pt-5 ml-3 border-r border-gray-200">
         <!-- icons -->
         <div>
-            <button @click="showConnectModal =true" class="mt-1 ml-4 border-4 h-8 w-8 rounded-full">
-                <i :class="`fa-solid fa-circle text-2xl -mt-1 ${auth.currentUser === null ? 'text-red-500' : 'text-green-400'}`"></i>
+            <button @click="showConnectModal =true" class="ml-2 mt-6 border-8 rounded-full w-11 h-11 relative">
+                <i :class="`fa-solid fa-circle text-4xl -top-1.5 -left-1 ${auth.currentUser === null ? 'text-red-500' : 'text-green-400'} absolute`"></i>
             </button>
-            <div class="relative flex pt-16 flex-col items-start">
+            <div class="relative flex pt-12 flex-col items-start">
                 <router-link :to="route.path" :class="`cursor-pointer hover:text-hover_primary hover:bg-BgLightBlue w-14 lg:w-28 py-2 lg:px-4 my-1 rounded-full ${router.currentRoute.value.name === route.name ? 'text-hover_primary bg-BgLightBlue' : ''}`" v-for="route in routes" :key="route">
                     <div v-if="route.meta.isMenu" class="text-center lg:text-left">
                         <i :class="route.icon"></i>
