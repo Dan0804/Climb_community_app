@@ -29,11 +29,11 @@
                             <span class="font-bold">{{ post.nick_name }}</span>
                             <span class="text-gray-500 text-xs">{{ dayjs(post.created_at).locale("ko").fromNow() }}</span>
                         </div>
-                        <div class="pb-5">
+                        <div class="pb-5" style="white-space:pre-line">
                             {{ post.post_body }}
                         </div>
-                        <div class="overflow-y-auto border-y h-96 sm:max-h-52">
-                            <div v-for="comment in comments" :key="comment" class="pl-3 mb-2 mt-1">
+                        <div class="overflow-y-auto border-y h-80 sm:max-h-52">
+                            <div v-for="comment in comments" :key="comment" class="pl-3 mb-2 mt-1 relative">
                                 <router-link :to="`/profile/${comment.uid}`" class="flex">
                                     <img :src="comment.profile_image_url" class="w-10 h-10 rounded-full hover:opacity-90 cursor-pointer"/>
                                     <div class="ml-2">
@@ -41,6 +41,9 @@
                                         <div class="text-gray-500 text-xs">{{ dayjs(comment.created_at).locale("ko").fromNow() }}</div>
                                     </div>
                                 </router-link>
+                                <div v-if="comment.uid === userInfo.uid" @click="handleDeleteComment(comment)" class="cursor-pointer hover:bg-red-100 text-red-400 rounded-full p-2 absolute right-10 top-0">
+                                    <i class="fas fa-trash px-1"></i>
+                                </div>
                                 <div class="ml-12 text-sm" style="white-space:pre-line">
                                     {{ comment.comment_body }}
                                 </div>
@@ -81,7 +84,7 @@
 import { ref, computed, onBeforeMount } from "vue"
 import store from "../store"
 import { CommentCollection, db } from '../firebase'
-import { doc, getDocs, increment, orderBy, query, setDoc, updateDoc, where } from "firebase/firestore"
+import { doc, getDocs, increment, orderBy, query, setDoc, updateDoc, where, deleteDoc } from "firebase/firestore"
 import dayjs from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime"
 import "dayjs/locale/ko"
@@ -119,6 +122,16 @@ export default {
             }
         }
 
+
+        const handleDeleteComment = async (comment) => {
+            if (confirm("comment를 삭제하시겠습니까?")) {
+                await deleteDoc(doc(db, "comments", comment.id))
+                await updateDoc(doc(db, "posts", comment.from_post_id), {
+                    num_comments: increment(-1),
+                })
+            }
+        }
+
         onBeforeMount( async () => {
             const querySnapshot = await getDocs(query(CommentCollection, where("from_post_id", "==", props.post.id), orderBy("created_at", "desc")))
             querySnapshot.docs.forEach( async (doc) => {
@@ -130,6 +143,7 @@ export default {
             commentBody,
             comments,
             onCommentPost,
+            handleDeleteComment,
             userInfo,
             dayjs,
         }

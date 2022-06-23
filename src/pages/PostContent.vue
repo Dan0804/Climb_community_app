@@ -22,7 +22,8 @@
                     <div class="my-2 break-words xl:w-96 w-64" style="white-space:pre-line">{{ post.post_body }}</div>
                     <div class="flex flex-1 overflow-x-auto w-64 xl:w-auto pr-5">
                         <div class="flex-none relative" v-for="video in post.post_media" :key="video">
-                            <video playsinline muted autoplay loop :src="video" :id="`${video}`" class="object-contain h-96 w-60 bg-black rounded-xl mr-2 p-1" @click="videoPlay(video)" type="video/mp4" name="video"></video>
+                            <video playsinline muted autoplay loop :src="`${video}`" :id="`${video}`" class="object-contain h-96 w-60 bg-black rounded-xl mr-2 p-1" @click="videoPlay(video)" type="video/mp4" name="video"></video>
+                            <i v-if="videoStatus != video" class="absolute fa-solid fa-play top-40 left-28 text-white text-5xl"></i>
                         </div>
                     </div>
                 </div>
@@ -76,9 +77,9 @@
 import CommentModal from "../components/CommentModal.vue"
 import router from "../router"
 import { useRoute } from "vue-router"
-import { ref, computed, onBeforeMount, onMounted } from 'vue'
+import { ref, computed, onBeforeMount, } from 'vue'
 import store from '../store'
-import { deleteDoc, doc, getDoc, increment, onSnapshot, orderBy, query, updateDoc, where, } from 'firebase/firestore'
+import { deleteDoc, doc, increment, onSnapshot, orderBy, query, updateDoc, where, } from 'firebase/firestore'
 import { CommentCollection, db, } from "../firebase"
 import getPostInfo from '../utils/getPostInfo'
 import handleLike from "../utils/handleLike"
@@ -94,6 +95,7 @@ export default {
         const comments = ref([])
         const userInfo = computed(() => store.state.user)
         const showCommentModal = ref(false)
+        const postVideos = ref([])
         const route = useRoute()
 
         const handleDeleteComment = async (comment) => {
@@ -121,6 +123,9 @@ export default {
             await onSnapshot(doc(db, "posts", route.params.id), async (doc) => {
                 const postInfo = await getPostInfo(doc.data())
                 post.value = postInfo
+                for (var i = 0 ; i < doc.data().post_media.length ; i++) {
+                    postVideos.value.push(doc.data().post_media[i])
+                }
             })
 
             const q = query(CommentCollection, where("from_post_id", "==", route.params.id), orderBy("created_at", "desc"))
@@ -139,25 +144,30 @@ export default {
             })
         })
 
-        const videoList = ref([])
+        const videoStatus = ref(null)
+        const previousVideo = ref(null)
 
         const videoPlay = (video) => {
-            const nowVideo = document.getElementById(`${video}`)
-            if (!videoList.value.includes(video) && nowVideo.paused) {
-                nowVideo.play()
-                videoList.value.push(video)
-                console.log('비디오 진행')
-            } else {
-                nowVideo.pause()
-                var i = 0
-                const tempVideoList = []
-                for (i=0 ; i < videoList.value.length ; i++) {
-                    if (videoList.value[i] != video) {
-                        tempVideoList.push(videoList.value[i])
-                    }
+            const preVideo = document.getElementById(`${video}`)
+            const nowVideo = preVideo.getAttribute('src')
+
+            if (previousVideo.value === null) {
+                previousVideo.value = preVideo
+            }
+            if (videoStatus.value != nowVideo) {
+                if (previousVideo.value != preVideo) {
+                    previousVideo.value.pause()
+                    previousVideo.value = preVideo
                 }
-                videoList.value = tempVideoList
-                console.log('비디오 멈춤')
+                preVideo.play()
+                videoStatus.value = nowVideo
+                preVideo.addEventListener('ended', () => {
+                    preVideo.currentTime = 0
+                    videoStatus.value = null
+                })
+            } else {
+                preVideo.pause()
+                videoStatus.value = null
             }
         }
 
@@ -166,12 +176,14 @@ export default {
             router, 
             userInfo, 
             post,
-            comments, 
+            comments,
             showCommentModal,
+            postVideos,
             handleLike,
             handleDeleteComment,
             linkCopy,
-            videoList,
+            videoStatus,
+            previousVideo,
             videoPlay,
         }
     }

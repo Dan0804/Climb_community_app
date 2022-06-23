@@ -9,20 +9,22 @@
         </router-link>
         <div class="ml-3 mt-1">
         <!-- post contents -->
-            <router-link :to="`/post/${ post.id }`" :postId="post.id" v-if="post.post_body.includes('\n') || len > 32">
-                <div class="break-words w-56 h-6 overflow-hidden" :id="`${post.id}`" style="white-space:pre-line">
+            <div v-if="post.post_body.includes('\n') || len > 32">
+                <div :class="`break-words w-56 ${textextend === false ? 'h-6 overflow-hidden' : 'h-auto'}`" :id="`${post.id}`" style="white-space:pre-line">
                     {{ post.post_body }}
                 </div>
-                <i class="fa-solid fa-ellipsis mb-2"></i>
-            </router-link>
-            <router-link :to="`/post/${ post.id }`" v-else>
+                <i v-if="textextend === true" class="fa-solid fa-arrow-up font-bold" @click="textextend = false"></i>
+                <i v-else class="fa-solid fa-ellipsis mb-2" @click="textextend = true"></i>
+            </div>
+            <div v-else>
                 <div class="break-words w-56 h-6 overflow-hidden" :id="`${post.id}`">
                     {{ post.post_body }}
                 </div>
-            </router-link>
+            </div>
             <div class="flex flex-1 overflow-x-auto w-48 xl:w-96">
                 <div class="flex-none relative" v-for="video in post.post_media" :key="video">
                     <video playsinline autoplay muted loop :src="`${video}`" :id="`${video}`" class="object-contain h-64 w-44 bg-black rounded-xl mr-2 p-0.5" @click="videoPlay(video)" type="video/mp4"></video>
+                    <i v-if="videoStatus != video" class="absolute fa-solid fa-play top-2 left-3 text-white text-4xl"></i>
                 </div>
             </div>
                     
@@ -73,6 +75,7 @@ export default {
         const showCommentModal = ref(false)
         const userInfo = computed(() => store.state.user)
         const len = ref(null)
+        const textextend = ref(false)
 
         onBeforeMount(() => {
             if( props.post.post_body == "" ) {
@@ -89,7 +92,7 @@ export default {
                 await updateDoc(doc(db, "users", post.uid), {
                     num_posts: increment(-1),
                 })
-                for (i=0 ; i < post.post_media.length ; i++) {
+                for (var i=0 ; i < post.post_media.length ; i++) {
                     await deleteObject(storageRef(storage, `video/${post.uid}/${post.center_id}/${post.created_at}_${i}.mp4`))
                 }
                 await deleteDoc(doc(db, "posts", post.id))
@@ -120,30 +123,34 @@ export default {
                 const initialVideo = document.getElementById(props.post.post_media[i])
                 if (initialVideo.currentTime = 0.01) {
                     initialVideo.pause()
-                    console.log(i + '번째 비디오 멈춤')
                 }
             }
         })
 
-        const videoList = ref([])
+        const videoStatus = ref(null)
+        const previousVideo = ref(null)
 
         const videoPlay = (video) => {
-            const nowVideo = document.getElementById(`${video}`)
-            if (!videoList.value.includes(video) && nowVideo.paused) {
-                nowVideo.play()
-                videoList.value.push(video)
-                console.log('비디오 진행')
-            } else {
-                nowVideo.pause()
-                var i = 0
-                const tempVideoList = []
-                for (i=0 ; i < videoList.value.length ; i++) {
-                    if (videoList.value[i] != video) {
-                        tempVideoList.push(videoList.value[i])
-                    }
+            const preVideo = document.getElementById(`${video}`)
+            const nowVideo = preVideo.getAttribute('src')
+
+            if (previousVideo.value === null) {
+                previousVideo.value = preVideo
+            }
+            if (videoStatus.value != nowVideo) {
+                if (previousVideo.value != preVideo) {
+                    previousVideo.value.pause()
+                    previousVideo.value = preVideo
                 }
-                videoList.value = tempVideoList
-                console.log('비디오 멈춤')
+                preVideo.play()
+                videoStatus.value = nowVideo
+                preVideo.addEventListener('ended', () => {
+                    preVideo.currentTime = 0
+                    videoStatus.value = null
+                })
+            } else {
+                preVideo.pause()
+                videoStatus.value = null
             }
         }
 
@@ -151,11 +158,13 @@ export default {
             dayjs,
             showCommentModal,
             len,
+            textextend,
             userInfo,
             handleLike,
             handleDeletePost,
             linkCopy,
-            videoList,
+            videoStatus,
+            previousVideo,
             videoPlay,
         }
     }
