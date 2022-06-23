@@ -9,10 +9,7 @@
                         정말로 로그아웃하겠습니까?
                     </div>
                     <div class="flex justify-center relative" @click="onLogout">
-                        <button class="absolute hover:opacity-0 text-center mt-10 rounded-full bg-primary text-white w-32 py-2">
-                            네!
-                        </button>
-                        <button class="absolute opacity-0 hover:opacity-100 text-center mt-10 rounded-full bg-red-400 text-white w-32 py-2">
+                        <button class="absolute text-center mt-10 rounded-full bg-red-400 text-white w-32 py-2">
                             로그아웃!
                         </button>
                     </div>

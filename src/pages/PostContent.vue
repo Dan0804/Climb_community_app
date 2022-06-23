@@ -19,12 +19,10 @@
         <div class="px-3 py-2 flex">
             <div class="flex-1 ml-3">
                 <div class="mt-1">
-                    <div class="my-2 break-words lg:w-96 w-52" style="white-space:pre-line">{{ post.post_body }}</div>
-                    <div class="flex flex-1 overflow-x-auto">
+                    <div class="my-2 break-words xl:w-96 w-64" style="white-space:pre-line">{{ post.post_body }}</div>
+                    <div class="flex flex-1 overflow-x-auto w-64 xl:w-auto pr-5">
                         <div class="flex-none relative" v-for="video in post.post_media" :key="video">
-                            <video :src="video" :id="`${video}`" class="object-contain h-64 bg-black rounded-xl mr-2 p-1" @click="videoPlay(video)" type="video/mp4"></video>
-                            <i v-if="videoStatus != video" class="absolute fa-solid fa-play top-2 left-3 text-white text-4xl"></i>
-                            <i class="absolute fa-solid fa-expand bottom-2 right-4 text-white" @click="openFullscreen(`${video}`)"></i>
+                            <video playsinline muted autoplay loop :src="video" :id="`${video}`" class="object-contain h-96 w-60 bg-black rounded-xl mr-2 p-1" @click="videoPlay(video)" type="video/mp4" name="video"></video>
                         </div>
                     </div>
                 </div>
@@ -66,7 +64,7 @@
                             <i class="fas fa-trash text-red-400 hover:bg-red-50 m-2 rounded-full p-2"></i>
                         </button>
                     </div>
-                    <div class="text-sm" style="white-space:pre-line">{{ comment.comment_body }}</div>
+                    <div class="text-xs" style="white-space:pre-line">{{ comment.comment_body }}</div>
                 </div>
             </div>
         </div>
@@ -78,11 +76,10 @@
 import CommentModal from "../components/CommentModal.vue"
 import router from "../router"
 import { useRoute } from "vue-router"
-import { ref, computed, onBeforeMount } from 'vue'
+import { ref, computed, onBeforeMount, onMounted } from 'vue'
 import store from '../store'
-import { deleteDoc, doc, increment, onSnapshot, orderBy, query, updateDoc, where, getDocs, } from 'firebase/firestore'
-import { deleteObject, ref as storageRef } from "firebase/storage"
-import { CommentCollection, LikeCollection, db, storage, } from "../firebase"
+import { deleteDoc, doc, getDoc, increment, onSnapshot, orderBy, query, updateDoc, where, } from 'firebase/firestore'
+import { CommentCollection, db, } from "../firebase"
 import getPostInfo from '../utils/getPostInfo'
 import handleLike from "../utils/handleLike"
 import dayjs from "dayjs"
@@ -97,7 +94,6 @@ export default {
         const comments = ref([])
         const userInfo = computed(() => store.state.user)
         const showCommentModal = ref(false)
-        const postId = ref(null)
         const route = useRoute()
 
         const handleDeleteComment = async (comment) => {
@@ -121,32 +117,10 @@ export default {
             alert("주소 복사가 완료되었습니다.")
         }
 
-        const handleDeletePost = async (post, postId) => {
-            if (confirm("정말로 해당 게시글을 삭제하겠습니까?")) {
-                let i = 0
-                await updateDoc(doc(db, "users", post.uid), {
-                    num_posts: increment(-1),
-                })
-                for (i=0 ; i < post.post_media.length ; i++) {
-                    await deleteObject(storageRef(storage, `video/${post.uid}/${post.center_id}/${post.created_at}_${i}.mp4`))
-                }
-                await deleteDoc(doc(db, "posts", postId))
-
-                const commentSnapshot = await getDocs(query(CommentCollection, where("from_post_id", "==", postId)))
-                commentSnapshot.docs.forEach( async (doc) => await deleteDoc(doc.ref))
-
-                const likeSnapshot = await getDocs(query(LikeCollection, where("from_like_id", "==", postId)))
-                likeSnapshot.docs.forEach( async (doc) => await deleteDoc(doc.ref))
-
-                router.replace('/')
-            }
-        }
-
         onBeforeMount( async () => {
             await onSnapshot(doc(db, "posts", route.params.id), async (doc) => {
                 const postInfo = await getPostInfo(doc.data())
                 post.value = postInfo
-                postId.value = route.params.id
             })
 
             const q = query(CommentCollection, where("from_post_id", "==", route.params.id), orderBy("created_at", "desc"))
@@ -165,43 +139,40 @@ export default {
             })
         })
 
-        const videoStatus = ref(null)
+        const videoList = ref([])
 
         const videoPlay = (video) => {
-            var preVideo = document.getElementById(`${video}`)
-            var nowVideo = preVideo.getAttribute('src')
-            if (videoStatus.value != nowVideo) {
-                preVideo.play()
-                videoStatus.value = nowVideo
-                preVideo.addEventListener('ended', () => {
-                    preVideo.currentTime = 0
-                    videoStatus.value = null
-                })
+            const nowVideo = document.getElementById(`${video}`)
+            if (!videoList.value.includes(video) && nowVideo.paused) {
+                nowVideo.play()
+                videoList.value.push(video)
+                console.log('비디오 진행')
             } else {
-                preVideo.pause()
-                videoStatus.value = null
+                nowVideo.pause()
+                var i = 0
+                const tempVideoList = []
+                for (i=0 ; i < videoList.value.length ; i++) {
+                    if (videoList.value[i] != video) {
+                        tempVideoList.push(videoList.value[i])
+                    }
+                }
+                videoList.value = tempVideoList
+                console.log('비디오 멈춤')
             }
-        }
-
-        const openFullscreen = (video) => {
-            document.getElementById(`${video}`).requestFullscreen()
         }
 
         return {
             dayjs,
             router, 
             userInfo, 
-            post, 
+            post,
             comments, 
             showCommentModal,
-            postId,
             handleLike,
             handleDeleteComment,
-            handleDeletePost,
             linkCopy,
-            videoStatus,
+            videoList,
             videoPlay,
-            openFullscreen,
         }
     }
 }

@@ -20,11 +20,9 @@
                     {{ post.post_body }}
                 </div>
             </router-link>
-            <div class="flex flex-1 overflow-x-auto">
+            <div class="flex flex-1 overflow-x-auto w-48 xl:w-96">
                 <div class="flex-none relative" v-for="video in post.post_media" :key="video">
-                <video :src="video" :id="`${video}`" class="object-contain h-64 bg-black rounded-xl mr-2 p-1" @click="videoPlay(video)" type="video/mp4"></video>
-                <i v-if="videoStatus != video" class="absolute fa-solid fa-play top-2 left-3 text-white text-4xl"></i>
-                <i class="absolute fa-solid fa-expand bottom-2 right-4 text-white" @click="openFullscreen(`${video}`)"></i>
+                    <video playsinline autoplay muted loop :src="`${video}`" :id="`${video}`" class="object-contain h-64 w-44 bg-black rounded-xl mr-2 p-0.5" @click="videoPlay(video)" type="video/mp4"></video>
                 </div>
             </div>
                     
@@ -56,7 +54,7 @@
 </template>
 
 <script>
-import { ref, computed, onBeforeMount, } from "vue"
+import { ref, computed, onBeforeMount, onMounted, } from "vue"
 import CommentModal from "./CommentModal.vue"
 import { db, LikeCollection, CommentCollection, storage } from '../firebase'
 import { deleteDoc, doc, increment, query, updateDoc, where, getDocs } from 'firebase/firestore'
@@ -74,7 +72,6 @@ export default {
     setup(props) {
         const showCommentModal = ref(false)
         const userInfo = computed(() => store.state.user)
-        let i = 0
         const len = ref(null)
 
         onBeforeMount(() => {
@@ -117,38 +114,39 @@ export default {
             alert("주소 복사가 완료되었습니다.")
         }
 
-        const videoStatus = ref(null)
-        const previousVideo = ref(null)
+        onMounted(() => {
+            var i = 0
+            for (i = 0 ; i < props.post.post_media.length ; i++) {
+                const initialVideo = document.getElementById(props.post.post_media[i])
+                if (initialVideo.currentTime = 0.01) {
+                    initialVideo.pause()
+                    console.log(i + '번째 비디오 멈춤')
+                }
+            }
+        })
+
+        const videoList = ref([])
 
         const videoPlay = (video) => {
-            var preVideo = document.getElementById(`${video}`)
-            var nowVideo = preVideo.getAttribute('src')
-
-            if (previousVideo.value === null) {
-                previousVideo.value = preVideo
-            }
-
-            if (videoStatus.value != nowVideo) {
-                if (previousVideo.value != preVideo) {
-                    previousVideo.value.pause()
-                    previousVideo.value = preVideo
-                }
-                preVideo.play()
-                videoStatus.value = nowVideo
-                preVideo.addEventListener('ended', () => {
-                    preVideo.currentTime = 0
-                    videoStatus.value = null
-                })
+            const nowVideo = document.getElementById(`${video}`)
+            if (!videoList.value.includes(video) && nowVideo.paused) {
+                nowVideo.play()
+                videoList.value.push(video)
+                console.log('비디오 진행')
             } else {
-                preVideo.pause()
-                videoStatus.value = null
+                nowVideo.pause()
+                var i = 0
+                const tempVideoList = []
+                for (i=0 ; i < videoList.value.length ; i++) {
+                    if (videoList.value[i] != video) {
+                        tempVideoList.push(videoList.value[i])
+                    }
+                }
+                videoList.value = tempVideoList
+                console.log('비디오 멈춤')
             }
         }
 
-        const openFullscreen = (video) => {
-            document.getElementById(`${video}`).requestFullscreen()
-        }
-        
         return {
             dayjs,
             showCommentModal,
@@ -157,10 +155,8 @@ export default {
             handleLike,
             handleDeletePost,
             linkCopy,
-            videoStatus,
-            previousVideo,
+            videoList,
             videoPlay,
-            openFullscreen,
         }
     }
 }

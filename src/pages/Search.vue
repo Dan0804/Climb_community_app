@@ -2,13 +2,13 @@
     <div class="flex flex-1 flex-col border-r border-l border-border_line">
         <!-- page title -->
         <div class="border-b border-border_line px-3 py-1 font-bold text-lg text-center">
-            검색
+            암장 검색
         </div>
 
         <!-- Search bar -->
-        <div class="relative mx-3 my-5">
+        <div class="relative px-3 py-5 border-b">
           <input class="bg-gray-100 focus:ring-2 focus:ring-blue-300 focus:bg-white text-sm rounded-full w-full p-2 pl-8" type="text" placeholder="어느 암장이세요?" v-model="search">
-          <i class="fa-solid fa-magnifying-glass absolute left-0 mt-2 ml-3 text-sm text-light"></i>
+          <i class="fa-solid fa-magnifying-glass absolute left-3 mt-2 ml-3 text-sm text-light"></i>
         </div>
 
         <!-- Center list -->

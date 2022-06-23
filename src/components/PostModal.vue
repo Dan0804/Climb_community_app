@@ -43,7 +43,7 @@
                         <div class="flex">
                             <div class="flex overflow-x-auto">
                                 <div class="flex-none relative" v-for="(video, index) in videoList" :key="index">
-                                    <video :id="`${video}`" @click="videoPlay(video)" class="object-contain h-64 p-1 bg-black rounded-xl mr-2 max-w-48" :src="`${video}`"></video>
+                                    <video :id="`${video}`" @click="videoPlay(video)" class="object-contain h-64 p-1 bg-black rounded-xl mr-2 max-w-48" :src="`${video}`" playsinline muted autoplay></video>
                                     <i @click="deletePreview(index)" class="absolute top-0 right-4 fa-solid fa-xmark text-4xl text-white cursor-pointer"></i>
                                 </div>
                                 <button @click="onChangeVideo" class="flex-none bg-gray-300 h-64 w-36 rounded-xl mr-2 fas fa-camera text-3xl text-white"></button>
@@ -182,16 +182,23 @@ export default {
             }
         }
 
-        const videoStatus = ref(false)
+        const preVideoList = ref([])
 
         const videoPlay = (video) => {
             const preVideo = document.getElementById(`${video}`)
-            if (videoStatus.value === false) {
+            if (!preVideoList.value.includes(video) && preVideo.paused) {
                 preVideo.play()
-                videoStatus.value = true
+                preVideoList.value.push(video)
             } else {
                 preVideo.pause()
-                videoStatus.value = false
+                var i = 0
+                const tempPreVideoList = []
+                for (i=0 ; i < preVideoList.value.length ; i++) {
+                    if (preVideoList.value[i] != video) {
+                        tempPreVideoList.push(preVideoList.value[i])
+                    }
+                }
+                preVideoList.value = tempPreVideoList
             }
         }
 
@@ -211,7 +218,7 @@ export default {
             hashTagCenter,
             hashTagAdd,
             hashTagDelete,
-            videoStatus,
+            preVideoList,
             videoPlay,
             videoList,
         }
