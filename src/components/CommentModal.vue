@@ -1,7 +1,7 @@
 <template>
     <div class="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="flex justify-center min-h-screen sm:pt-4 sm:px-4 sm:pb-20 text-center sm:block sm:p-0">
-            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+            <div class="fixed inset-0 sm:bg-gray-500 sm:bg-opacity-75 transition-opacity" aria-hidden="true"></div>
 
             <!-- contents -->
             <div class="relative inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full">
@@ -32,7 +32,7 @@
                         <div class="pb-5" style="white-space:pre-line">
                             {{ post.post_body }}
                         </div>
-                        <div class="overflow-y-auto border-y h-80 sm:max-h-52">
+                        <div class="overflow-y-auto border-y max-h-80 sm:max-h-52">
                             <div v-for="comment in comments" :key="comment" class="pl-3 mb-2 mt-1 relative">
                                 <router-link :to="`/profile/${comment.uid}`" class="flex">
                                     <img :src="comment.profile_image_url" class="w-10 h-10 rounded-full hover:opacity-90 cursor-pointer"/>
@@ -53,16 +53,14 @@
                 </div>
 
                 <!-- reply section -->
-                <div class="stick bottom-0">
-                    <div class="flex items-baseline pb-1 pl-14">
-                        <span class="text-blue-400 font-bold text-sm">{{ post.nick_name }}</span>
-                        <span class="text-gray-500 text-xs pt-2">님에게 보내는 답글</span>
-                    </div>
-                    <div class="flex px-3 pb-3">
-                        <img :src="userInfo.profile_image_url" class="w-10 h-10 rounded-full hover:opacity-80 cursor-pointer">
-                        <div class="flex flex-1 flex-col ml-2">
-                            <textarea v-model="commentBody" class="w-full font-bold focus:outline-none mb-3 resize-none" rows="2" :placeholder="`${userInfo.user_name}님의 생각을 들려주세요!`"></textarea>
-                        </div>
+                <div class="flex items-baseline pb-1 pl-14 sticky bottom-0">
+                    <span class="text-blue-400 font-bold text-sm">{{ post.nick_name }}</span>
+                    <span class="text-gray-500 text-xs pt-2">님에게 보내는 답글</span>
+                </div>
+                <div class="flex px-3 pb-3">
+                    <img :src="userInfo.profile_image_url" class="w-10 h-10 rounded-full hover:opacity-80 cursor-pointer">
+                    <div class="flex flex-1 flex-col ml-2">
+                        <textarea v-model="commentBody" class="w-full font-bold focus:outline-none mb-3 resize-none" rows="2" :placeholder="`${userInfo.user_name}님의 생각을 들려주세요!`"></textarea>
                     </div>
                 </div>
                 
@@ -133,7 +131,7 @@ export default {
         }
 
         onBeforeMount( async () => {
-            const querySnapshot = await getDocs(query(CommentCollection, where("from_post_id", "==", props.post.id), orderBy("created_at", "desc")))
+            const querySnapshot = await getDocs(query(CommentCollection, where("from_post_id", "==", props.post.id), orderBy("created_at")))
             querySnapshot.docs.forEach( async (doc) => {
                 comments.value.push(await getCommentInfo(doc.data()))
             })

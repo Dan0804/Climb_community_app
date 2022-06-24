@@ -51,8 +51,7 @@
                     <i :class="`fa-solid fa-circle ${profileUser.my_level}`"></i>
                 </span>
             </div>
-            <div class="text-gray text-sm mt-1">{{ profileUser.email }}</div>
-            <div class="text-sm">
+            <div class="text-sm mt-1">
                 <span class="text-gray pr-1">가입일 :</span>
                 <span class="text-gray">{{ dayjs(profileUser.created_at).format("YYYY년 MM월 DD일") }}</span>
             </div>
@@ -60,8 +59,8 @@
 
         <!-- taps -->
         <div class="flex border-b border-color mt-1">
-            <div @click="currentTab = 'post'" :class="`${currentTab === 'post' ? 'border-b border-primary text-primary bg-BgLightBlue' : 'text-gray-500 hover:border-b border-primary hover:bg-BgLightBlue'} flex-1 text-center cursor-pointer font-bold py-1`">등록 글</div>
-            <div @click="currentTab = 'like'" :class="`${currentTab === 'like' ? 'border-b border-primary text-primary bg-BgLightBlue' : 'text-gray-500 hover:border-b border-primary hover:bg-BgLightBlue'} flex-1 text-center cursor-pointer font-bold py-1`">좋아요</div>
+            <div @click="currentTab = 'post'" :class="`${currentTab === 'post' ? 'border-b border-primary text-primary bg-BgLightBlue' : 'text-gray-500 hover:border-b border-primary hover:bg-BgLightBlue'} flex-1 text-center cursor-pointer font-bold py-1`"><i class="fas fa-folder"></i></div>
+            <div @click="currentTab = 'like'" :class="`${currentTab === 'like' ? 'border-b border-primary text-primary bg-BgLightBlue' : 'text-gray-500 hover:border-b border-primary hover:bg-BgLightBlue'} flex-1 text-center cursor-pointer font-bold py-1`"><i class="fa-solid fa-heart"></i></div>
         </div>
 
         <!-- Posts -->

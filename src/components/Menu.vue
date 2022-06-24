@@ -33,6 +33,16 @@
                     </button>
                 </div>
             </div> -->
+
+            <!-- show LogoutModal button -->
+            <div class="mr-3 mt-16" @click="showLogoutModal = true">
+                <div class="w-full h-12">
+                    <button class="flex items-center hover:bg-BgLightBlue px-2 py-1 w-full lg:w-28 h-12 rounded-full">
+                        <i class="fa-solid fa-right-from-bracket lg:ml-4 ml-3 py-2 mr-1 text-xl"></i>
+                        <span class="hidden lg:block text-sm">로그아웃</span>
+                    </button>
+                </div>
+            </div>
         </div>
 
         <!-- post modal popup -->
@@ -43,19 +53,6 @@
 
         <!-- center register modal popup -->
         <CenterModal v-if="showCenterRegisterModal" @center_register_close_modal="showCenterRegisterModal = false"></CenterModal>
-
-        <!-- show LogoutModal button -->
-        <div class="mr-3 mb-10" @click="showLogoutModal = true">
-            <div class="w-full h-12">
-                <button class="flex items-center hover:bg-BgLightBlue px-2 py-1 w-full h-12 rounded-full">
-                <img :src="userInfo.profile_image_url" class="w-10 h-10 rounded-full hidden lg:block" />
-                <div class="lg:ml-2 lg:block hidden">
-                    <div class="text-sm text-left font-bold">{{ userInfo.user_name }}</div>
-                </div>
-                <i class="fa-solid fa-right-from-bracket ml-auto p-2 mr-1"></i>
-                </button>
-            </div>
-        </div>
 
         <LogoutModal v-if="showLogoutModal" @logout_close_modal="showLogoutModal = false"></LogoutModal>
     </div>
