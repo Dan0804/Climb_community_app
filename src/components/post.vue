@@ -22,9 +22,10 @@
                 </div>
             </div>
             <div class="flex flex-1 overflow-x-auto w-48 xl:w-96">
-                <div class="flex-none relative" v-for="video in post.post_media" :key="video">
+                <div class="flex-none relative" v-for="(video, index) in post.post_media" :key="video">
                     <video playsinline autoplay muted loop :src="`${video}`" :id="`${video}`" class="object-contain h-64 w-44 bg-black rounded-xl mr-2 p-0.5" @click="videoPlay(video)" type="video/mp4"></video>
                     <i v-if="videoStatus != video" class="absolute fa-solid fa-play top-2 left-3 text-white text-4xl"></i>
+                    <i v-if="videoStatus != video" class="fa-solid fa-expand absolute bottom-1 right-5 text-lg text-white" @click="showVideoFocusModal = true, videoFocusIndex = index"></i>
                 </div>
             </div>
                     
@@ -52,12 +53,17 @@
             </div>
         </div>
     </div>
+    
     <comment-modal :post="post" v-if="showCommentModal" @close_modal="showCommentModal = false"></comment-modal>
+
+    <video-focus-modal :post="post" :index="videoFocusIndex" v-if="showVideoFocusModal" @close_modal="showVideoFocusModal = false"></video-focus-modal>
+
 </template>
 
 <script>
 import { ref, computed, onBeforeMount, onMounted, } from "vue"
 import CommentModal from "./CommentModal.vue"
+import VideoFocusModal from "./VideoFocusModal.vue"
 import { db, LikeCollection, CommentCollection, storage } from '../firebase'
 import { deleteDoc, doc, increment, query, updateDoc, where, getDocs } from 'firebase/firestore'
 import { deleteObject, ref as storageRef } from 'firebase/storage'
@@ -69,10 +75,12 @@ import store from '../store'
 dayjs.extend(relativeTime)
 
 export default {
-    components: { CommentModal },
+    components: { CommentModal, VideoFocusModal, },
     props: ['userInfo', 'post'],
     setup(props) {
         const showCommentModal = ref(false)
+        const showVideoFocusModal = ref(false)
+        const videoFocusIndex = ref(null)
         const userInfo = computed(() => store.state.user)
         const len = ref(null)
         const textextend = ref(false)
@@ -144,10 +152,6 @@ export default {
                 }
                 preVideo.play()
                 videoStatus.value = nowVideo
-                preVideo.addEventListener('ended', () => {
-                    preVideo.currentTime = 0
-                    videoStatus.value = null
-                })
             } else {
                 preVideo.pause()
                 videoStatus.value = null
@@ -157,6 +161,8 @@ export default {
         return {
             dayjs,
             showCommentModal,
+            showVideoFocusModal,
+            videoFocusIndex,
             len,
             textextend,
             userInfo,
