@@ -4,16 +4,16 @@
             <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
 
             <!-- contents -->
-            <div class="relative inline-block align-bottom bg-white rounded-md text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-72 h-fit mt-12 border-2 border-black">
-                <div class="border-b border-gray-100 m-2 mb-0.5 pb-2 items-center flex justify-between relative">
-                    <button @click="$emit('close_modal')" class="fas fa-times text-blue-400 text-xl h-10 w-10 p-2 hover:bg-blue-50 rounded-full"></button>
+            <div class="relative inline-block align-bottom rounded-md text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-72 h-fit mt-12">
+                <div class="relative">
+                    <button @click="$emit('close_modal')" class="fa-solid fa-circle-xmark text-4xl h-10 w-10 absolute -top-11 text-white"></button>
                     <!-- posting button -->
                 </div>
-                <video playsinline autoplay muted loop :src="`${nowVideo}`" :id="`${nowVideo}_${videoIndex}`" class="object-contain bg-white p-1 rounded-md" @click="videoPlay" type="video/mp4"></video>
+                <video playsinline autoplay muted loop :src="`${nowVideo}`" :id="`${nowVideo}_${videoIndex}`" class="object-contain bg-black p-1 rounded-md" @click="videoPlay" type="video/mp4"></video>
                 <div v-if="videoStatus === false">
-                    <i class="absolute fa-solid fa-play top-16 left-3 text-white text-5xl"></i>
-                    <i v-if="leftEnd === false" class="absolute fa-solid fa-circle-arrow-left bottom-60 left-3 text-white text-4xl" @click="moveLeft"></i>
-                    <i v-if="rightEnd === false" class="absolute fa-solid fa-circle-arrow-right bottom-60 right-3 text-white text-4xl" @click="moveRight"></i>
+                    <i class="absolute fa-solid fa-play top-5 left-5 text-white text-5xl"></i>
+                    <i v-if="leftEnd === false" class="absolute fa-solid fa-circle-arrow-left bottom-60 left-3 text-white text-5xl" @click="moveLeft"></i>
+                    <i v-if="rightEnd === false" class="absolute fa-solid fa-circle-arrow-right bottom-60 right-3 text-white text-5xl" @click="moveRight"></i>
                 </div>
             </div>
         </div>
