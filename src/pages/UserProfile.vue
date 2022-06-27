@@ -104,7 +104,6 @@ export default {
 
         onBeforeMount(() => {
             const profileUID = route.params.uid ?? userInfo.value.uid
-            console.log(profileUID)
 
             onSnapshot(doc(db, "users", profileUID), (doc) => {
                 profileUser.value = doc.data()
