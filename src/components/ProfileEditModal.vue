@@ -52,6 +52,7 @@
                     </div>
                     <div v-else>
                         암장을 먼저 선택해주세요
+                        <!-- <span class="text-yellow-400 text-orange-400 text-green-300 text-green-400 text-green-500 text-green-700 text-green-800 text-sky-400 text-sky-500 text-blue-600 text-blue-700 text-blue-800 text-red-600 text-purple-400 text-purple-500 text-purple-600 text-purple-700 text-pink-300 text-pink-400 text-pink-500 text-gray-300 text-gray-400 text-gray-500 text-gray-600 text-gray-700 text-amber-800 text-amber-900"></span> -->
                     </div>
                 </div>
             </div>
