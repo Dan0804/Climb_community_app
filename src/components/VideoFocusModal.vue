@@ -10,11 +10,7 @@
                     <!-- posting button -->
                 </div>
                 <video playsinline autoplay muted loop :src="`${nowVideo}`" :id="`${nowVideo}_${videoIndex}`" class="object-contain bg-black p-1 rounded-md" @click="videoPlay" type="video/mp4"></video>
-                <div v-if="videoStatus === false">
-                    <i class="absolute fa-solid fa-play top-5 left-5 text-white text-5xl"></i>
-                    <i v-if="leftEnd === false" class="absolute fa-solid fa-circle-arrow-left bottom-60 left-3 text-white text-5xl" @click="moveLeft"></i>
-                    <i v-if="rightEnd === false" class="absolute fa-solid fa-circle-arrow-right bottom-60 right-3 text-white text-5xl" @click="moveRight"></i>
-                </div>
+                <i v-if="videoStatus === false" class="absolute fa-solid fa-play top-5 left-5 text-white text-5xl"></i>
             </div>
         </div>
     </div>
@@ -30,22 +26,12 @@ export default {
         const nowVideo = ref(null)
         const videoIndex = ref(null)
         const videoStatus = ref(true)
-        const leftEnd = ref(false)
-        const rightEnd = ref(false)
 
         videoIndex.value = props.index
         nowVideo.value = props.post.post_media[videoIndex.value]
 
-        if (videoIndex.value === 0) {
-            leftEnd.value = true
-        } else if (videoIndex.value === props.post.post_media.length - 1) {
-            rightEnd.value = true
-        }
-
         const videoPlay = () => {
             videoValue.value = document.getElementById(`${props.post.post_media[videoIndex.value]}_${videoIndex.value}`)
-            console.log(leftEnd.value)
-            console.log(rightEnd.value)
 
             if (videoValue.value.paused) {
                 videoStatus.value = true
@@ -56,42 +42,12 @@ export default {
             }
         }
 
-        const moveLeft = () => {
-            videoIndex.value -= 1
-            nowVideo.value = props.post.post_media[videoIndex.value]
-            videoValue.value = document.getElementById(`${props.post.post_media[videoIndex.value]}_${videoIndex.value}`)
-
-            videoStatus.value = true
-            rightEnd.value = false
-
-            if (videoIndex.value === 0) {
-                leftEnd.value = true
-            }
-        }
-
-        const moveRight = () => {
-            videoIndex.value += 1
-            nowVideo.value = props.post.post_media[videoIndex.value]
-            videoValue.value = document.getElementById(`${props.post.post_media[videoIndex.value]}_${videoIndex.value}`)
-
-            videoStatus.value = true
-            leftEnd.value = false
-
-            if (videoIndex.value === props.post.post_media.length - 1) {
-                rightEnd.value = true
-            }
-        }
-
         return {
             videoValue,
             nowVideo,
             videoIndex,
             videoStatus,
-            leftEnd,
-            rightEnd,
             videoPlay,
-            moveLeft,
-            moveRight,
         }
     }
 }
