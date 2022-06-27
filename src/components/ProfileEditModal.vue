@@ -47,20 +47,11 @@
                     </div>
 
                     <span class="mt-5">주 난이도</span>
-                    <div v-if="hashTagCenter != ''" class="p-1 border-2 border-blue-300 mr-auto rounded-full space-x-1">
-                        <button v-for="level in LevelList" :key="level" :class="`w-8 border-2 border-BgLightBlue rounded-full hover:border-primary hover:bg-BgLightBlue text-xl ${level} ${levelColor === level && hashTagCenter === userInfo.main_center ? 'border-primary bg-BgLightBlue' : ''}`" @click="LevelSelect(level)"><i class="fa-solid fa-circle"></i></button>
+                    <div v-if="hashTagCenter != ''" class="p-1 border-2 border-blue-300 mr-auto rounded-lg space-x-1 w-72">
+                        <button v-for="level in LevelList" :key="level" :class="`w-8 border-2 border-BgLightBlue rounded-full hover:border-primary hover:bg-BgLightBlue text-xl my-1 ${level} ${levelColor === level ? 'border-primary bg-BgLightBlue' : ''}`" @click="LevelSelect(level)"><i class="fa-solid fa-circle"></i></button>
                     </div>
                     <div v-else>
                         암장을 먼저 선택해주세요
-                        <span class="text-white"></span>
-                        <span class="text-yellow-400"></span>
-                        <span class="text-orange-400"></span>
-                        <span class="text-green-800"></span>
-                        <span class="text-sky-500"></span>
-                        <span class="text-red-600"></span>
-                        <span class="text-purple-600"></span>
-                        <span class="text-gray-300"></span>
-                        <span class="text-black"></span>
                     </div>
                 </div>
             </div>
@@ -138,15 +129,19 @@ export default {
 
         const hashTagDelete = () => {
             hashTagCenter.value = ''
+            levelColor.value = ''
             LevelList.value = null
         }
 
         const levelColor = ref(userInfo.value.my_level)
 
         const LevelSelect = (level) => {
+            console.log(level)
             if (levelColor.value != level) {
+                console.log(levelColor.value)
                 levelColor.value = level
             } else {
+                console.log(levelColor.value)
                 levelColor.value = ''
             }
         }
