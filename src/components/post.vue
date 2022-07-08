@@ -23,7 +23,7 @@
             </div>
             <div class="flex flex-1 overflow-x-auto w-48 xl:w-96">
                 <div class="flex-none relative" v-for="(video, index) in post.post_media" :key="video">
-                    <video playsinline autoplay muted loop :src="`${video}`" :id="`${video}`" class="object-contain h-64 w-44 bg-black rounded-xl mr-2 p-0.5" @click="videoPlay(video)" type="video/mp4"></video>
+                    <video playsinline autoplay muted :src="`${video}`" :id="`${video}`" class="object-contain h-64 w-44 bg-black rounded-xl mr-2 p-0.5" @click="videoPlay(video)" type="video/mp4"></video>
                     <i v-if="videoStatus != video" class="absolute fa-solid fa-play top-2 left-3 text-white text-4xl"></i>
                     <i v-if="videoStatus != video" class="fa-solid fa-expand absolute bottom-1 right-5 text-lg text-white" @click="showVideoFocusModal = true, videoFocusIndex = index"></i>
                 </div>
@@ -132,6 +132,11 @@ export default {
                 if (initialVideo.currentTime = 0.01) {
                     initialVideo.pause()
                 }
+
+                initialVideo.addEventListener('ended', (event) => {
+                    initialVideo.currentTime = 0.01
+                    videoStatus.value = null
+                })
             }
         })
 
