@@ -12,9 +12,9 @@
                 </div>
 
                 <!-- Center list -->
-                    <div class="overflow-y-auto">
+                    <div class="h-64 overflow-y-auto">
                         <div v-for="center in filter" :key="center.id">
-                            <router-link @click="$emit('close_modal'), selectCenter(center)" :to="`/videoRecord`">
+                            <router-link @click="selectCenter(center), $emit('close_modal')" :to="`/videoRecord`">
                                 <div class="mx-5 px-5 bg-BgLightBlue py-1 cursor-pointer my-1 rounded-xl">{{ center }}</div>
                             </router-link>
                         </div>
@@ -29,10 +29,11 @@ import { doc, getDoc, updateDoc, } from 'firebase/firestore'
 import { db, } from '../firebase'
 import { computed, onBeforeMount, ref, } from 'vue'
 import store from '../store'
+import router from '../router'
 
 export default {
     emits: ['center'],
-    setup() {
+    setup({emit}) {
         const userInfo = computed(() => store.state.user)
         const centerList = ref([])
         const search = ref('')
@@ -60,11 +61,17 @@ export default {
         })
 
         const selectCenter = async (center) => {
-            await updateDoc(doc(db, 'users', userInfo.value.uid), {
-                buffer_center: center,
-            })
+            try {
+                await updateDoc(doc(db, 'users', userInfo.value.uid), {
+                    buffer_center: center,
+                })
 
-            store.commit("setBufferCenter", center)
+                store.commit("setBufferCenter", center)
+            } catch (e) {
+                alert("클라이머님!! 오류가 발생해서 재접속 부탁드려요 ㅠㅠ")
+                console.log('on centerSelectModal error on homepage:', e)
+                router.go(-1)
+            }
         }
         
         return {
