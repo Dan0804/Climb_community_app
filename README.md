@@ -142,3 +142,13 @@ firebase authentication 회원가입 및 firestore 데이터 저장 완료
 - 22.07.16(토)
   store / index.js 수정 완료
   
+- 22.07.17(일)
+  수정 완료 항목
+  1. src/pages/videoRecord.vue
+  2. src/components/VideoRecordFocusModal.vue
+  3. src/components/centerSelectModal.vue
+  4. src/components/PostModal.vue
+  5. src/components/VideoFocusModal.vue
+  6. src/components/post.vue
+  7. src/components/videoRecordPostModal.vue
+  8. src/components/Menu.vue

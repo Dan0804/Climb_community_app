@@ -18,7 +18,7 @@
 
 <script>
 import { db, auth } from '../firebase'
-import { getDoc, doc, setDoc } from 'firebase/firestore'
+import { getDoc, doc, setDoc, updateDoc } from 'firebase/firestore'
 import { useRouter } from 'vue-router'
 import store from '../store'
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
@@ -37,6 +37,14 @@ export default {
             const docSnap = await getDoc(doc(db, "users", user.uid))
             
             if ( docSnap.data() != undefined ) {
+                if (docSnap.data().buffer === undefined) {
+                    updateDoc(doc(db, "users", docSnap.data().uid), {
+                        buffer: [],
+                        posted_buffer: [],
+                        buffer_center: "",
+                    })
+                }
+
                 store.commit("setUser", docSnap.data())
                 router.replace("/")
             } else {
@@ -52,7 +60,10 @@ export default {
                     num_posts: 0,
                     followers: [],
                     followings: [],
-                    created_at: Date.now()
+                    created_at: Date.now(),
+                    buffer: [],
+                    posted_buffer: [],
+                    buffer_center: "",
                 })
                 const docSnap = await getDoc(doc(db, "users", user.uid))
                 store.commit("setUser", docSnap.data())

@@ -12,16 +12,24 @@
                         <span class="hidden lg:inline-block"> {{route.title}} </span>
                     </div>
                 </router-link>
-            </div>
 
-            <!-- post register button -->
-            <div class="mr-3">
-                <div class="w-full h-12">
-                    <button @click="showPostModal = true" class="bg-hover_primary text-white hover:text-hover_primary hover:bg-BgLightBlue hover:border-2 hover:border-hover_primary rounded-full w-14 lg:w-28 h-12 mt-3">
-                        <span class="hidden lg:block font-semibold">등록하기</span>
+                <button v-if="userInfo.buffer_center === ''" @click="showCenterSelectModal = true" class="bg-hover_primary text-white hover:text-hover_primary hover:bg-BgLightBlue hover:border-2 hover:border-hover_primary rounded-full w-14 lg:w-28 h-12 mt-3">
+                    <span class="hidden lg:block font-semibold">촬영하기</span>
+                    <i class="fa-solid fa-video text-xl lg:hidden"></i>
+                </button>
+
+                <router-link v-else :to="`/videoRecord`">
+                    <button class="bg-hover_primary text-white hover:text-hover_primary hover:bg-BgLightBlue hover:border-2 hover:border-hover_primary rounded-full w-14 lg:w-28 h-12 mt-3">
+                        <span class="hidden lg:block font-semibold">촬영하기</span>
                         <i class="fa-solid fa-video text-xl lg:hidden"></i>
                     </button>
-                </div>
+                </router-link>
+
+                <!-- post register button -->
+                <button @click="showPostModal = true" class="bg-hover_primary text-white hover:text-hover_primary hover:bg-BgLightBlue hover:border-2 hover:border-hover_primary rounded-full w-14 lg:w-28 h-12 mt-3">
+                    <span class="hidden lg:block font-semibold">등록하기</span>
+                    <i class="fa-solid fa-video text-xl lg:hidden"></i>
+                </button>
             </div>
 
             <!-- center register button, 관리자용!! -->
@@ -55,11 +63,17 @@
         <CenterModal v-if="showCenterRegisterModal" @center_register_close_modal="showCenterRegisterModal = false"></CenterModal>
 
         <LogoutModal v-if="showLogoutModal" @logout_close_modal="showLogoutModal = false"></LogoutModal>
+
+        <centerSelectModal v-if="showCenterSelectModal" @close_modal="showCenterSelectModal = false"></centerSelectModal>
+
     </div>
 </template>
 
 <script>
 import {ref, onBeforeMount, computed, } from 'vue'
+import { db, storage, } from '../firebase'
+import { doc, updateDoc } from 'firebase/firestore'
+import { deleteObject, ref as storageRef, } from "firebase/storage"
 import router from '../router'
 import store from '../store'
 import PostModal from './PostModal.vue'
@@ -67,9 +81,14 @@ import LogoutModal from './LogoutModal.vue'
 import CenterModal from './CenterModal.vue'
 import ConnectModal from './ConnectModal.vue'
 import { auth } from '../firebase'
+import centerSelectModal from "./centerSelectModal.vue"
+import dayjs from "dayjs"
+import relativeTime from "dayjs/plugin/relativeTime"
+import "dayjs/locale/ko"
+dayjs.extend(relativeTime)
 
 export default {
-    components: { PostModal, LogoutModal, CenterModal, ConnectModal, },
+    components: { PostModal, LogoutModal, CenterModal, ConnectModal, centerSelectModal, },
     setup() {
         const routes = ref([])
         const showProfileDropdown = ref(false)
@@ -77,20 +96,58 @@ export default {
         const showConnectModal = ref(false)
         const showCenterRegisterModal = ref(false)
         const showLogoutModal = ref(false)
+        const showCenterSelectModal = ref(false)
         const userInfo = computed(() => store.state.user)
+
+        const resetRecord = async () => {
+            return new Promise((resolve, reject) => {
+                let buffer = userInfo.value.buffer
+                let posted_buffer = userInfo.value.posted_buffer
+                for (let i=0 ; i<buffer.length ; i++) {
+                    if (posted_buffer.includes(buffer[i].video_name) === false) {
+                        const deleteRef = storageRef(storage, `video/${userInfo.value.uid}/${userInfo.value.buffer_center}/${buffer[i].video_name}`)
+                        deleteObject(deleteRef)
+                    }
+                }
+                resolve(true)
+            })
+        }
 
         onBeforeMount(() => {
             routes.value = router.options.routes.filter((route) => route.meta.isMenu === true)
+
+            let stored_date = userInfo.value.buffer_center_time
+            let now_date = dayjs(Date.now()).format("DD")
+            
+            if (stored_date != now_date) {
+                resetRecord().then(() => {
+                    updateDoc(doc(db, "users", userInfo.value.uid), {
+                        buffer: [],
+                        buffer_size: 0,
+                        posted_buffer: [],
+                        buffer_center: "",
+                        buffer_center_time: now_date
+                    })
+                    store.commit("resetBuffer")
+                    store.commit("resetPostedBuffer")
+                    store.commit("resetBufferSize")
+                    store.commit("setBufferCenter", "")
+                    store.commit("setBufferCenterTime", now_date)
+                })
+            }
         })
 
         return {
+            dayjs,
             routes,
             showProfileDropdown,
             showPostModal,
             showConnectModal,
             showCenterRegisterModal,
             showLogoutModal,
+            showCenterSelectModal,
             userInfo,
+            resetRecord,
             router,
             auth,
         }

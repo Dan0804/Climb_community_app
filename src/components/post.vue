@@ -22,10 +22,10 @@
                 </div>
             </div>
             <div class="flex flex-1 overflow-x-auto w-48 xl:w-96">
-                <div class="flex-none relative" v-for="(video, index) in post.post_media" :key="video">
-                    <video playsinline autoplay muted :src="`${video}`" :id="`${video}`" class="object-contain h-64 w-44 bg-black rounded-xl mr-2 p-0.5" @click="videoPlay(video)" type="video/mp4"></video>
-                    <i v-if="videoStatus != video" class="absolute fa-solid fa-play top-2 left-3 text-white text-4xl"></i>
-                    <i v-if="videoStatus != video" class="fa-solid fa-expand absolute bottom-1 right-5 text-lg text-white" @click="showVideoFocusModal = true, videoFocusIndex = index"></i>
+                <div class="flex-none relative" v-for="(postMedia) in post.post_media" :key="postMedia">
+                    <video playsinline autoplay muted :src="`${postMedia.video_url}`" :id="`${postMedia.video_url}`" class="object-contain h-64 w-44 bg-black rounded-xl mr-2 p-0.5" @click="videoPlay(postMedia.video_url)" type="video/mp4"></video>
+                    <i v-if="videoStatus != postMedia.video_url" class="absolute fa-solid fa-play top-2 left-3 text-white text-4xl"></i>
+                    <i v-if="videoStatus != postMedia.video_url" class="fa-solid fa-expand absolute bottom-1 right-5 text-lg text-white" @click="showVideoFocusModal = true, videoFocusIndex = postMedia.video_url"></i>
                 </div>
             </div>
                     
@@ -56,7 +56,7 @@
     
     <comment-modal :post="post" v-if="showCommentModal" @close_modal="showCommentModal = false"></comment-modal>
 
-    <video-focus-modal :post="post" :index="videoFocusIndex" v-if="showVideoFocusModal" @close_modal="showVideoFocusModal = false"></video-focus-modal>
+    <video-focus-modal :index="videoFocusIndex" v-if="showVideoFocusModal" @close_modal="showVideoFocusModal = false"></video-focus-modal>
 
 </template>
 
@@ -101,7 +101,7 @@ export default {
                     num_posts: increment(-1),
                 })
                 for (var i=0 ; i < post.post_media.length ; i++) {
-                    await deleteObject(storageRef(storage, `video/${post.uid}/${post.center_id}/${post.created_at}_${i}.mp4`))
+                    await deleteObject(storageRef(storage, `video/${post.uid}/${post.center_id}/${post.post_media[i].video_name}`))
                 }
                 await deleteDoc(doc(db, "posts", post.id))
 
@@ -128,12 +128,12 @@ export default {
         onMounted(() => {
             var i = 0
             for (i = 0 ; i < props.post.post_media.length ; i++) {
-                const initialVideo = document.getElementById(props.post.post_media[i])
+                const initialVideo = document.getElementById(props.post.post_media[i].video_url)
                 if (initialVideo.currentTime = 0.01) {
                     initialVideo.pause()
                 }
 
-                initialVideo.addEventListener('ended', (event) => {
+                initialVideo.addEventListener('ended', () => {
                     initialVideo.currentTime = 0.01
                     videoStatus.value = null
                 })

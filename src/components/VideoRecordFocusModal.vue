@@ -4,12 +4,12 @@
             <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
 
             <!-- contents -->
-            <div class="relative inline-block align-bottom rounded-md text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-72 h-fit mt-12">
+            <div class="relative inline-block align-bottom rounded-md text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-80 h-fit mt-12">
                 <div class="relative">
                     <button @click="$emit('close_modal')" class="fa-solid fa-circle-xmark text-4xl h-10 w-10 absolute -top-11 text-white"></button>
                     <!-- posting button -->
                 </div>
-                <video playsinline autoplay muted :src="`${nowVideo}`" :id="`${nowVideo}_temp`" class="object-contain bg-black p-1 rounded-md" @click="videoPlay" type="video/mp4"></video>
+                <video playsinline autoplay muted :src="`${nowVideo}`" :id="`${nowVideo}`" class="object-contain bg-black p-1 rounded-md" @click="videoPlay" type="video/mp4"></video>
                 <i v-if="videoStatus === false" class="absolute fa-solid fa-play top-5 left-5 text-white text-5xl"></i>
             </div>
         </div>
@@ -17,37 +17,33 @@
 </template>
 
 <script>
-import { onMounted, ref } from 'vue'
+import { ref } from 'vue'
 
 export default {
-    props: ["index"],
+    props: ["video", "index"],
     setup(props, { emit }) {
-        const videoValue = ref(null)
-        const nowVideo = props.index
+        const nowVideo = ref(null)
+        const videoIndex = ref(null)
         const videoStatus = ref(true)
 
-        onMounted(() => {
-            const initialVideo = document.getElementById(`${nowVideo}_temp`)
-            initialVideo.addEventListener('ended', () => {
-                videoStatus.value = false
-            })
-        })
+        videoIndex.value = props.index
+        nowVideo.value = props.video
 
         const videoPlay = () => {
-            videoValue.value = document.getElementById(`${nowVideo}_temp`)
+            const videoValue = document.getElementById(`${props.video}`)
 
-            if (videoValue.value.paused) {
+            if (videoValue.paused) {
                 videoStatus.value = true
-                videoValue.value.play()
+                videoValue.play()
             } else {
                 videoStatus.value = false
-                videoValue.value.pause()
+                videoValue.pause()
             }
         }
 
         return {
-            videoValue,
             nowVideo,
+            videoIndex,
             videoStatus,
             videoPlay,
         }

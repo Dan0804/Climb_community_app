@@ -42,8 +42,8 @@
                         </div>
                         <div class="flex">
                             <div class="flex overflow-x-auto">
-                                <div class="flex-none relative" v-for="(video, index) in videoList" :key="index">
-                                    <video :id="`${video}`" @click="videoPlay(video)" class="object-contain h-64 p-1 bg-black rounded-xl mr-2 max-w-48" :src="`${video}`" playsinline muted autoplay></video>
+                                <div class="flex-none relative" v-for="(value, index) in videoList" :key="index">
+                                    <video :id="`${value}`" @click="videoPlay(value)" class="object-contain h-64 p-1 bg-black rounded-xl mr-2 max-w-48" :src="`${value}`" playsinline muted autoplay></video>
                                     <i @click="deletePreview(index)" class="absolute top-0 right-4 fa-solid fa-xmark text-4xl text-white cursor-pointer"></i>
                                 </div>
                                 <button @click="onChangeVideo" class="flex-none bg-gray-300 h-64 w-36 rounded-xl mr-2 fas fa-camera text-3xl text-white"></button>
@@ -80,7 +80,7 @@ import { db, } from '../firebase'
 
 export default {
     components: { Loading },
-    setup(props, {emit}) {
+    setup({emit}) {
         // postbody, video data update
         const postBody = ref('')
         const postMedia = ref([])
@@ -167,9 +167,11 @@ export default {
                 DuringLoading.value = true
                 let createTime = Date.now()
                 for (i=0 ; i < videoList.value.length ; i++) {
-                    const videoRef = await storageRef(storage, `video/${userInfo.value.uid}/${hashTagCenter.value}/${createTime}_${i}.mp4`)
+                    const video_name = Date.now()
+                    const videoRef = await storageRef(storage, `video/${userInfo.value.uid}/${hashTagCenter.value}/${video_name}`)
                     await uploadBytes(videoRef, videoData.value[i])
-                    postMedia.value.push(await getDownloadURL(videoRef))
+                    const video_url = await getDownloadURL(videoRef)
+                    postMedia.value.push({ video_name, video_url })
                 }
 
                 addPost(postBody.value, hashTagCenter.value, userInfo.value, postMedia.value, createTime)
@@ -223,6 +225,5 @@ export default {
             videoList,
         }
     }
-
 }
 </script>
