@@ -138,3 +138,7 @@ firebase authentication 회원가입 및 firestore 데이터 저장 완료
   비디오 여러개 업로드 완료
   - 코멘트 모달 편집 목표
     ㄴ 코멘트 모달 팝업 시 이전 코멘트들 보이게하기
+
+- 22.07.16(토)
+  store / index.js 수정 완료
+  

@@ -32,6 +32,38 @@ const store = createStore({
             state.user.my_level = my_level
         },
 
+        setBufferCenter: (state, buffer_center) => {
+            state.user.buffer_center = buffer_center
+        },
+
+        setBufferCenterTime: (state, buffer_center_time) => {
+            state.user.buffer_center_time = buffer_center_time
+        },
+
+        setBuffer: (state, buffer) => {
+            state.user.buffer.push(buffer)
+        },
+
+        resetBuffer: (state) => {
+            state.user.buffer = []
+        },
+
+        setPostedBuffer: (state, posted_buffer) => {
+            state.user.posted_buffer.push(posted_buffer)
+        },
+
+        resetPostedBuffer: (state) => {
+            state.user.posted_buffer = []
+        },
+
+        setBufferSizeAdd: (state, buffer_size) => {
+            state.user.buffer_size += buffer_size
+        },
+
+        resetBufferSize: (state) => {
+            state.user.buffer_size = 0
+        },
+
         setFollow: (state, uid) => {
             state.user.followings.push(uid)
         },
