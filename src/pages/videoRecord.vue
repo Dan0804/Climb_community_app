@@ -4,7 +4,8 @@
             <div class="mx-auto">
                 <input type="file" accept="video/*" id="videoRecord" class="hidden" capture="camera" @change="storeRecordVideo">
                 <button @click="recordVideo" class="h-16 w-48 mt-10 bg-primary text-white rounded text-center">
-                    <span class="text-2xl font-bold">도 전 !!</span>
+                    <span v-if="userInfo.buffer.length != 0" class="text-2xl font-bold">도 전 !!</span>
+                    <span v-else class="text-2xl font-bold">시작해볼까요?</span>
                 </button>
             </div>
         </div>
@@ -36,7 +37,7 @@
 </template>
 
 <script>
-import { ref, computed, } from 'vue'
+import { ref, computed, onBeforeMount, } from 'vue'
 import store from "../store"
 import { db, storage, } from '../firebase'
 import { getDownloadURL, ref as storageRef, uploadBytes, } from "firebase/storage"
@@ -45,6 +46,7 @@ import VideoFocusModal from "../components/VideoFocusModal.vue"
 import centerSelectModal from "../components/centerSelectModal.vue"
 import videoRecordPostModal from "../components/videoRecordPostModal.vue"
 import router from '../router'
+import { auth } from '../firebase'
 import dayjs from "dayjs"
 import relativeTime from "dayjs/plugin/relativeTime"
 import "dayjs/locale/ko"
@@ -101,6 +103,13 @@ export default {
                 store.commit("setBufferSizeAdd", fileSize)
             }
         }
+
+        onBeforeMount(() => {
+            if (auth.currentUser === null) {
+                alert("리셋을 위해서 재로그인 부탁드립니다!!")
+                router.go(-1)
+            }
+        })
 
         return {
             dayjs,

@@ -26,14 +26,18 @@
 
 <script>
 import { doc, getDoc, updateDoc, } from 'firebase/firestore'
-import { db, } from '../firebase'
+import { db, auth, } from '../firebase'
 import { computed, onBeforeMount, ref, } from 'vue'
 import store from '../store'
 import router from '../router'
+import dayjs from "dayjs"
+import relativeTime from "dayjs/plugin/relativeTime"
+import "dayjs/locale/ko"
+dayjs.extend(relativeTime)
 
 export default {
     emits: ['center'],
-    setup({emit}) {
+    setup(props, {emit}) {
         const userInfo = computed(() => store.state.user)
         const centerList = ref([])
         const search = ref('')
@@ -41,6 +45,14 @@ export default {
         let i = 0
 
         onBeforeMount( async () => {
+            let stored_date = userInfo.value.buffer_center_time
+            let now_date = dayjs(Date.now()).format("DD")
+
+            if (stored_date != now_date && auth.currentUser === null) {
+                alert("리셋을 위해서 재로그인 부탁드립니다!!")
+                emit('close_modal')
+            }
+
             const document = await getDoc(doc(db, 'centersList', 'List'))
             centerList.value = document.data().centers
         })
@@ -70,11 +82,12 @@ export default {
             } catch (e) {
                 alert("클라이머님!! 오류가 발생해서 재접속 부탁드려요 ㅠㅠ")
                 console.log('on centerSelectModal error on homepage:', e)
-                router.go(-1)
+                emit("close_modal")
             }
         }
         
         return {
+            dayjs,
             userInfo,
             centerList,
             search,

@@ -28,7 +28,7 @@
                 <!-- post register button -->
                 <button @click="showPostModal = true" class="bg-hover_primary text-white hover:text-hover_primary hover:bg-BgLightBlue hover:border-2 hover:border-hover_primary rounded-full w-14 lg:w-28 h-12 mt-3">
                     <span class="hidden lg:block font-semibold">등록하기</span>
-                    <i class="fa-solid fa-video text-xl lg:hidden"></i>
+                    <i class="fa-solid fa-plus text-xl lg:hidden"></i>
                 </button>
             </div>
 
