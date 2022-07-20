@@ -27,7 +27,7 @@
                     <span class="text-xs ml-2 mr-2">게시글 작성과 같은 상호작용 시 버튼이 위와 같이 빨간색일 때에는 재로그인으로 녹색이 되도록 해주세요.</span>
                 </div>
                 <div class="ml-5 mr-2 mt-4 text-xs">
-                    본 사이트는 <span class="text-red-600 font-bold">현재 암장문제들을 공유하는 목적</span>으로 만들어졌습니다. 모든 게시물은 <span class="text-red-600 font-bold">등록시점부터 30일동안만 게시</span>됨을 알려드립니다.(모든 암장이 동일한 세팅 기간을 가지는 것이 아님을 알고있으므로 추후 각 암장에 맞는 게시 기간을 설정하도록 하겠습니다.)
+                    본 사이트는 <span class="text-red-600 font-bold">현재 암장문제들을 공유하는 목적</span>으로 만들어졌습니다. 모든 게시물은 <span class="text-red-600 font-bold">등록시점부터 30일동안만 게시</span>됨을 알려드립니다.
                 </div>
                 <div class="ml-5 mr-2 mt-4 text-xs">
                     <span class="text-red-600 font-bold">본 사이트의 목적과 부합하지 않는 게시글은 삭제</span>될 수 있는 점을 유의주시길바랍니다.

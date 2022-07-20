@@ -10,6 +10,11 @@
             </div>
         </div>
 
+        <div class="text-xs px-2 flex">
+            <i class="fa-solid fa-circle-exclamation pr-1 mt-0.5"></i>
+            <div>“날짜”기준으로 게시글에 등록 안한 영상들이 삭제되며, 영상들은 개인기기로 다운로드가 불가합니다.</div>
+        </div>
+
         <div class="pt-1.5 pl-5">
             <span class="font-bold text-lg">{{ userInfo.buffer_center }}</span>에서
         </div>
