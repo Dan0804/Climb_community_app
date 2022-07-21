@@ -80,7 +80,7 @@ import { db, } from '../firebase'
 
 export default {
     components: { Loading },
-    setup({emit}) {
+    setup(props, {emit}) {
         // postbody, video data update
         const postBody = ref('')
         const postMedia = ref([])
