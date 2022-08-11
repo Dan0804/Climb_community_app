@@ -28,7 +28,7 @@ import store from "../store"
 export default {
     setup(props, {emit}) {
         const onLogout = async () => {
-            await Logout
+            await Logout()
             store.commit("setUser", null)
             await router.replace("/login")
         }
